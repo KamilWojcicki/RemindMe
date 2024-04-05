@@ -44,6 +44,7 @@
 		E765B4572BACD2DB00C15A9D /* RemindMeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RemindMeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E765B45B2BACD2DB00C15A9D /* RemindMeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindMeUITests.swift; sourceTree = "<group>"; };
 		E765B45D2BACD2DB00C15A9D /* RemindMeUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindMeUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		E7D3DBBC2BC08AB00025371B /* Dependencies */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Dependencies; path = ../Dependencies; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +79,7 @@
 				E765B4502BACD2DB00C15A9D /* RemindMeTests */,
 				E765B45A2BACD2DB00C15A9D /* RemindMeUITests */,
 				E765B43E2BACD2DA00C15A9D /* Products */,
+				E7D3DBBB2BC08AB00025371B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -125,6 +127,14 @@
 				E765B45D2BACD2DB00C15A9D /* RemindMeUITestsLaunchTests.swift */,
 			);
 			path = RemindMeUITests;
+			sourceTree = "<group>";
+		};
+		E7D3DBBB2BC08AB00025371B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E7D3DBBC2BC08AB00025371B /* Dependencies */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
