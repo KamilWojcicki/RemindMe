@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -14,6 +14,7 @@
 		E765B4522BACD2DB00C15A9D /* RemindMeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765B4512BACD2DB00C15A9D /* RemindMeTests.swift */; };
 		E765B45C2BACD2DB00C15A9D /* RemindMeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765B45B2BACD2DB00C15A9D /* RemindMeUITests.swift */; };
 		E765B45E2BACD2DB00C15A9D /* RemindMeUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765B45D2BACD2DB00C15A9D /* RemindMeUITestsLaunchTests.swift */; };
+		E7D3DBBF2BC08DF00025371B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = E7D3DBBE2BC08DF00025371B /* Dependencies */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,7 +45,6 @@
 		E765B4572BACD2DB00C15A9D /* RemindMeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RemindMeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E765B45B2BACD2DB00C15A9D /* RemindMeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindMeUITests.swift; sourceTree = "<group>"; };
 		E765B45D2BACD2DB00C15A9D /* RemindMeUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindMeUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		E7D3DBBC2BC08AB00025371B /* Dependencies */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Dependencies; path = ../Dependencies; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7D3DBBF2BC08DF00025371B /* Dependencies in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,7 +80,6 @@
 				E765B4502BACD2DB00C15A9D /* RemindMeTests */,
 				E765B45A2BACD2DB00C15A9D /* RemindMeUITests */,
 				E765B43E2BACD2DA00C15A9D /* Products */,
-				E7D3DBBB2BC08AB00025371B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -129,14 +129,6 @@
 			path = RemindMeUITests;
 			sourceTree = "<group>";
 		};
-		E7D3DBBB2BC08AB00025371B /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				E7D3DBBC2BC08AB00025371B /* Dependencies */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -153,6 +145,9 @@
 			dependencies = (
 			);
 			name = RemindMe;
+			packageProductDependencies = (
+				E7D3DBBE2BC08DF00025371B /* Dependencies */,
+			);
 			productName = RemindMe;
 			productReference = E765B43D2BACD2DA00C15A9D /* RemindMe.app */;
 			productType = "com.apple.product-type.application";
@@ -225,6 +220,9 @@
 				Base,
 			);
 			mainGroup = E765B4342BACD2DA00C15A9D;
+			packageReferences = (
+				E7D3DBBD2BC08DF00025371B /* XCLocalSwiftPackageReference "../Dependencies" */,
+			);
 			productRefGroup = E765B43E2BACD2DA00C15A9D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -598,6 +596,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		E7D3DBBD2BC08DF00025371B /* XCLocalSwiftPackageReference "../Dependencies" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../Dependencies;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E7D3DBBE2BC08DF00025371B /* Dependencies */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Dependencies;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E765B4352BACD2DA00C15A9D /* Project object */;
 }
