@@ -11,7 +11,12 @@ let package = Package(
     products: [
         .library(
             name: "Navigation",
-            targets: ["Navigation"]),
+            targets: ["Navigation"]
+        ),
+        .library(
+            name: "NavigationInterface",
+            targets: ["NavigationInterface"]
+        )
     ],
     dependencies: [
         .package(path: "../DependencyInjection")
@@ -34,6 +39,7 @@ let package = Package(
         ),
         .testTarget(
             name: "NavigationTests",
-            dependencies: ["Navigation"]),
+            dependencies: ["Navigation"]
+        )
     ]
 )
