@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+public enum ModalType {
+    case sheet
+    case fullScreenCover
+}
+
 public struct Tab: Hashable {
     public let title: String
     public let image: String
