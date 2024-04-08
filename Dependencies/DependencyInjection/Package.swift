@@ -17,6 +17,10 @@ let package = Package(
         .package(
             url: "https://github.com/Swinject/Swinject.git",
             exact: "2.8.4"
+        ),
+        .package(
+            url: "https://github.com/Swinject/SwinjectStoryboard.git",
+            .upToNextMajor(from: "2.2.3")
         )
     ],
     targets: [
@@ -26,6 +30,10 @@ let package = Package(
                 .product(
                     name: "Swinject",
                     package: "Swinject"
+                ),
+                .product(
+                    name: "SwinjectStoryboard",
+                    package: "SwinjectStoryboard"
                 )
             ]
         ),

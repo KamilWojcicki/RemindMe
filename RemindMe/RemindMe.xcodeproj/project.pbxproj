@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E703F2FD2BC0A6720042FBA5 /* Assembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = E703F2FC2BC0A6720042FBA5 /* Assembly.swift */; };
+		E76572B92BC43D3900334597 /* AssemblyShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76572B82BC43D3900334597 /* AssemblyShared.swift */; };
 		E765B4412BACD2DA00C15A9D /* RemindMeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765B4402BACD2DA00C15A9D /* RemindMeApp.swift */; };
 		E765B4432BACD2DA00C15A9D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765B4422BACD2DA00C15A9D /* ContentView.swift */; };
 		E765B4452BACD2DB00C15A9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E765B4442BACD2DB00C15A9D /* Assets.xcassets */; };
@@ -35,6 +37,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E703F2FC2BC0A6720042FBA5 /* Assembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assembly.swift; sourceTree = "<group>"; };
+		E76572B82BC43D3900334597 /* AssemblyShared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblyShared.swift; sourceTree = "<group>"; };
 		E765B43D2BACD2DA00C15A9D /* RemindMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RemindMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E765B4402BACD2DA00C15A9D /* RemindMeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindMeApp.swift; sourceTree = "<group>"; };
 		E765B4422BACD2DA00C15A9D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -73,6 +77,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E703F2FB2BC0A64F0042FBA5 /* MainApp */ = {
+			isa = PBXGroup;
+			children = (
+				E703F2FC2BC0A6720042FBA5 /* Assembly.swift */,
+				E76572B82BC43D3900334597 /* AssemblyShared.swift */,
+			);
+			path = MainApp;
+			sourceTree = "<group>";
+		};
 		E765B4342BACD2DA00C15A9D = {
 			isa = PBXGroup;
 			children = (
@@ -96,6 +109,7 @@
 		E765B43F2BACD2DA00C15A9D /* RemindMe */ = {
 			isa = PBXGroup;
 			children = (
+				E703F2FB2BC0A64F0042FBA5 /* MainApp */,
 				E765B4402BACD2DA00C15A9D /* RemindMeApp.swift */,
 				E765B4422BACD2DA00C15A9D /* ContentView.swift */,
 				E765B4442BACD2DB00C15A9D /* Assets.xcassets */,
@@ -266,6 +280,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E765B4432BACD2DA00C15A9D /* ContentView.swift in Sources */,
+				E703F2FD2BC0A6720042FBA5 /* Assembly.swift in Sources */,
+				E76572B92BC43D3900334597 /* AssemblyShared.swift in Sources */,
 				E765B4412BACD2DA00C15A9D /* RemindMeApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
