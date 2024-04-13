@@ -6,10 +6,10 @@
 //
 
 import DependencyInjection
-import Navigation
+import Root
 
 extension Assemblies {
     static func setupDependencies() {
-        Navigation.Dependencies.inject()
+        Root.Dependencies.inject()
     }
 }

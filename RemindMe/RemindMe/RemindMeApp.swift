@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import Root
 
 @main
 struct RemindMeApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
         }
     }
 }
