@@ -20,13 +20,17 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../DependencyInjection"),
-        .package(path: "../Navigation")
+        .package(path: "../Navigation"),
+        .package(path: "../Onboarding")
     ],
     targets: [
         .target(
             name: "RootInterface",
             dependencies: [
-                
+                .product(
+                    name: "DependencyInjection",
+                    package: "DependencyInjection"
+                )
             ]
         ),
         .target(
@@ -38,8 +42,8 @@ let package = Package(
                     package: "Navigation"
                 ),
                 .product(
-                    name: "DependencyInjection",
-                    package: "DependencyInjection"
+                    name: "Onboarding",
+                    package: "Onboarding"
                 )
             ]
         ),

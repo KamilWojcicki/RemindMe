@@ -15,16 +15,21 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(path: "Navigation")
+        .package(path: "Root"),
+//        .package(path: "Design")
     ],
     targets: [
         .target(
             name: "Dependencies",
             dependencies: [
                 .product(
-                    name: "Navigation",
-                    package: "Navigation"
-                )
+                    name: "Root",
+                    package: "Root"
+                ),
+//                .product(
+//                    name: "Design",
+//                    package: "Design"
+//                )
             ]
         )
     ]

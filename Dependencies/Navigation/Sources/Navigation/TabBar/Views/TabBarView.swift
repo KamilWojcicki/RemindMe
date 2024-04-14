@@ -8,9 +8,12 @@
 import SwiftUI
 
 //MARK: Create TabBarView
-struct TabBarView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+public struct TabBarView: View {
+    
+    public init() { }
+    
+    public var body: some View {
+        Text("Tab Bar view")
     }
 }
 
