@@ -13,6 +13,10 @@ struct RemindMeApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                .onAppear {
+                    print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path())
+                    UserDefaults.standard.setValue(false, forKey: "_UIConstraintBasedLayoutLogUnsatisfiable")
+                }
         }
     }
 }
