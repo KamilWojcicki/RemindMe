@@ -8,3 +8,7 @@
 import Foundation
 
 //MARK: Create TabBarViewModel
+@MainActor
+final class TabBarViewModel: ObservableObject {
+    
+}
