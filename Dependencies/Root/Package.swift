@@ -49,6 +49,7 @@ let package = Package(
         ),
         .testTarget(
             name: "RootTests",
-            dependencies: ["Root"]),
+            dependencies: ["Root"]
+        )
     ]
 )

@@ -9,11 +9,12 @@ import SwiftUI
 
 //MARK: Create TabBarView
 public struct TabBarView: View {
+    @StateObject private var viewModel = TabBarViewModel()
     
     public init() { }
     
     public var body: some View {
-        Text("Tab Bar view")
+        Text("Tab Bar View")
     }
 }
 

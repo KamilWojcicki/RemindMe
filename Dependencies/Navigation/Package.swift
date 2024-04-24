@@ -34,7 +34,7 @@ let package = Package(
         .target(
             name: "Navigation",
             dependencies: [
-                "NavigationInterface"
+                "NavigationInterface"                
             ]
         ),
         .testTarget(

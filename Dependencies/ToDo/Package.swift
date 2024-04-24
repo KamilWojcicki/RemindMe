@@ -3,38 +3,38 @@
 import PackageDescription
 
 let package = Package(
-    name: "LocalDatabase",
+    name: "ToDo",
     platforms: [
         .iOS(.v17)
     ],
     products: [
         .library(
-            name: "LocalDatabase",
-            targets: ["LocalDatabase"]
+            name: "ToDo",
+            targets: ["ToDo"]
         ),
         .library(
-            name: "LocalDatabaseInterface",
-            targets: ["LocalDatabaseInterface"]
+            name: "ToDoInterface",
+            targets: ["ToDoInterface"]
         )
     ],
     dependencies: [
         .package(path: "../DependencyInjection"),
-        .package(url: "https://github.com/realm/realm-swift.git", exact: "10.49.2")
+        .package(path: "../LocalDatabase")
     ],
     targets: [
         .target(
-            name: "LocalDatabaseInterface",
+            name: "ToDoInterface",
             dependencies: [
                 .product(
-                    name: "RealmSwift",
-                    package: "realm-swift"
+                    name: "LocalDatabase",
+                    package: "LocalDatabase"
                 )
             ]
         ),
         .target(
-            name: "LocalDatabase",
+            name: "ToDo",
             dependencies: [
-                "LocalDatabaseInterface",
+                "ToDoInterface",
                 .product(
                     name: "DependencyInjection",
                     package: "DependencyInjection"
@@ -42,8 +42,8 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "LocalDatabaseTests",
-            dependencies: ["LocalDatabase"]
+            name: "ToDoTests",
+            dependencies: ["ToDo"]
         )
     ]
 )
