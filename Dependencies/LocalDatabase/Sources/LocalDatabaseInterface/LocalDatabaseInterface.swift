@@ -8,12 +8,12 @@
 import Foundation
 import RealmSwift
 
-public protocol LocalDAOInterface: Object {
+public protocol LocalDAOInterface: Identifiable, Object {
     associatedtype LocalModel: LocalStorable
     init(from: LocalModel)
 }
 
-public protocol LocalStorable: Codable, Equatable {
+public protocol LocalStorable: Identifiable, Codable, Equatable {
     associatedtype LocalDAO: LocalDAOInterface
     init(from: LocalDAO)
 }

@@ -19,7 +19,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../DependencyInjection"),
-        .package(url: "https://github.com/realm/realm-swift.git", exact: "10.49.1")
+        .package(url: "https://github.com/realm/realm-swift.git", exact: "10.49.2")
     ],
     targets: [
         .target(
