@@ -13,7 +13,6 @@ import ToDoInterface
 final class ToDoManager: ToDoManagerInterface {
     @Inject private var localDatabaseManager: LocalDatabaseManagerInterface
     
-    
     func createToDo(todo: ToDo) async throws {
         try await localDatabaseManager.create(todo)
     }
@@ -26,12 +25,12 @@ final class ToDoManager: ToDoManagerInterface {
         try await localDatabaseManager.read()
     }
     
-    func updateToDo(toDo: ToDo.Type, data: [String : Any]) async throws {
-        try await localDatabaseManager.update(type: toDo, withUpdates: data)
+    func updateToDo(data: [String : Any]) async throws {
+        try await localDatabaseManager.update(type: ToDo.self, withUpdates: data)
     }
     
-    func deleteToDo(toDo: ToDo.Type, primaryKey: String) async throws {
-        try await localDatabaseManager.delete(type: toDo, primaryKey: primaryKey)
+    func deleteToDo(primaryKey: String) async throws {
+        try await localDatabaseManager.delete(type: ToDo.self, primaryKey: primaryKey)
     }
     
     func deleteAllToDos() async throws {
