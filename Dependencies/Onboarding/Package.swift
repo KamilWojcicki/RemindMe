@@ -18,13 +18,16 @@ let package = Package(
         )
     ],
     dependencies: [
-    
+        .package(path: "../Design")
     ],
     targets: [
         .target(
             name: "OnboardingInterface",
             dependencies: [
-                
+                .product(
+                    name: "Design",
+                    package: "Design"
+                )
             ]
         ),
         .target(

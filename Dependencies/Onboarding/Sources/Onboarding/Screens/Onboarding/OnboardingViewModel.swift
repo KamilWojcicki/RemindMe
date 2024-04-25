@@ -5,6 +5,7 @@
 //  Created by Kamil Wójcicki on 13/04/2024.
 //
 
+import Design
 import Foundation
 import OnboardingInterface
 import SwiftUI
@@ -21,7 +22,7 @@ final class OnboardingViewModel: ObservableObject {
     }
     
     func dotAppearanceOnAppear() {
-        dotAppearance.currentPageIndicatorTintColor = .black
-        dotAppearance.pageIndicatorTintColor = .lightGray
+        dotAppearance.currentPageIndicatorTintColor = UIColor(Colors.night)
+        dotAppearance.pageIndicatorTintColor = UIColor(Colors.ghostWhite)
     }
 }
