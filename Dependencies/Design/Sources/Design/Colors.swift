@@ -17,4 +17,10 @@ public struct Colors {
     public static let mantis = Color("Mantis", bundle: .module)
 
     public static let vistaBlue = Color("VistaBlue", bundle: .module)
+    
+    public static let night = Color("Night", bundle: .module)
+    
+    public static let background = {
+        LinearGradient(colors: [blue, vistaBlue], startPoint: .topLeading, endPoint: .bottomTrailing)
+    }
 }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Design
 
 public struct OnboardingScreen: View {
     @StateObject private var viewModel = OnboardingViewModel()
@@ -15,28 +16,34 @@ public struct OnboardingScreen: View {
         self._onboardingToggle = onboardingToggle
     }
     public var body: some View {
-        TabView(selection: $viewModel.pageIndex) {
-            ForEach(viewModel.pages) { page in
-                VStack {
-                    
-                    if page == viewModel.pages.last {
-                        Button("Get started") {
-                            onboardingToggle = false
-                        }
-                    } else {
-                        Button("Next") {
-                            viewModel.incrementPage()
+        ZStack {
+            
+            Colors.background().ignoresSafeArea()
+            
+            TabView(selection: $viewModel.pageIndex) {
+                ForEach(viewModel.pages) { page in
+                    VStack {
+                        
+                        if page == viewModel.pages.last {
+                            Button("Get started") {
+                                onboardingToggle = false
+                            }
+                        } else {
+                            Button("Next") {
+                                viewModel.incrementPage()
+                            }
                         }
                     }
+                    .tint(Colors.ghostWhite)
+                    .tag(page.tag)
                 }
-                .tag(page.tag)
             }
-        }
-        .animation(.easeInOut, value: viewModel.pageIndex)
-        .tabViewStyle(.page)
-        .indexViewStyle(.page(backgroundDisplayMode: .interactive))
-        .onAppear {
-            viewModel.dotAppearanceOnAppear()
+            .animation(.easeInOut, value: viewModel.pageIndex)
+            .tabViewStyle(.page)
+            .indexViewStyle(.page(backgroundDisplayMode: .interactive))
+            .onAppear {
+                viewModel.dotAppearanceOnAppear()
+            }
         }
     }
 }
