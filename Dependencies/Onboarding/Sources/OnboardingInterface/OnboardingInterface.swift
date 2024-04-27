@@ -13,6 +13,11 @@ public struct Page: Identifiable, Equatable {
     public var description: String
     public var tag: Int
     
+    public static let samplePage: Page = Page(
+        name: "Test page",
+        description: "Test page description",
+        tag: 0
+    )
     
     public static let pages: [Page] = [
         Page(

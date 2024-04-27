@@ -20,27 +20,34 @@ public struct OnboardingScreen: View {
             
             Colors.background().ignoresSafeArea()
             
-            TabView(selection: $viewModel.pageIndex) {
-                ForEach(viewModel.pages) { page in
-                    VStack {
-                        
-                        if page == viewModel.pages.last {
-                            Button("Get started") {
-                                onboardingToggle = false
+            VStack {
+                TabView(selection: $viewModel.pageIndex) {
+                    ForEach(viewModel.pages) { page in
+                        VStack {
+                            
+                            if page == viewModel.pages.last {
+                                Button("Get started") {
+                                    onboardingToggle = false
+                                }
+                            } else {
+                                Button("Next") {
+                                    viewModel.incrementPage()
+                                }
                             }
-                        } else {
-                            Button("Next") {
-                                viewModel.incrementPage()
-                            }
+                            
                         }
+                        .tint(Colors.ghostWhite)
+                        .tag(page.tag)
                     }
-                    .tint(Colors.ghostWhite)
-                    .tag(page.tag)
+                    
+                    
                 }
+                
             }
+            
             .animation(.easeInOut, value: viewModel.pageIndex)
-            .tabViewStyle(.page)
-            .indexViewStyle(.page(backgroundDisplayMode: .interactive))
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            //.indexViewStyle(.page(backgroundDisplayMode: .never))
             .onAppear {
                 viewModel.dotAppearanceOnAppear()
             }
