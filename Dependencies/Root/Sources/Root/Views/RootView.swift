@@ -23,6 +23,7 @@ public struct RootView: View {
                 OnboardingScreen(changeView: $isFirstAppear)
             } else {
                TabBarView()
+                    .transition(.move(edge: .trailing))
             }
         }
     }
