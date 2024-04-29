@@ -18,6 +18,7 @@ let package = Package(
         )
     ],
     dependencies: [
+        .package(path: "../Animation"),
         .package(path: "../Components"),
         .package(path: "../Design")
     ],
@@ -38,6 +39,10 @@ let package = Package(
                 .product(
                     name: "Components",
                     package: "Components"
+                ),
+                .product(
+                    name: "Animation",
+                    package: "Animation"
                 )
             ]
         ),

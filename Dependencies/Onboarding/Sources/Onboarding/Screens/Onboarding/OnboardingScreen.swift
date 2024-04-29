@@ -5,7 +5,7 @@
 //  Created by Kamil Wójcicki on 13/04/2024.
 //
 
-
+import Animation
 import Components
 import SwiftUI
 import Design
@@ -18,33 +18,31 @@ public struct OnboardingScreen: View {
         self._changeView = changeView
     }
     public var body: some View {
-        VStack {
-            
-            //TODO: Animation
-            
-            GeometryReader { geometry in
-                VStack {
-                    Spacer()
-                    
-                    Rectangle()
-                        .fill(Colors.ghostWhite)
-                        .clipShape(.rect(cornerRadius: 40))
-                        .frame(height: geometry.size.height * 0.45)
-                        .overlay {
-                            VStack {
-                                tabView
-                                
-                                onboardingButton
-                            }
+        GeometryReader { geometry in
+            VStack {
+                
+                LottieView(animationConfiguration: .onboarding, loopMode: .loop)
+                
+                Spacer()
+                
+                Rectangle()
+                    .fill(Colors.ghostWhite)
+                    .clipShape(.rect(cornerRadius: 40))
+                    .frame(height: geometry.size.height * 0.45)
+                    .overlay {
+                        VStack {
+                            tabView
+                            
+                            onboardingButton
                         }
-                }
-                .offset(y: viewModel.animateRectangle ? geometry.size.height * 0.0 : geometry.size.height * 0.45)
+                    }
+                    .offset(y: viewModel.animateRectangle ? geometry.size.height * 0.0 : geometry.size.height * 0.45)
             }
-            .ignoresSafeArea()
-            .animation(.spring(duration: 0.6), value: viewModel.animateRectangle)
-            .onAppear {
-                viewModel.animateRectangle = true
-            }
+        }
+        .ignoresSafeArea()
+        .animation(.spring(duration: 0.6), value: viewModel.animateRectangle)
+        .onAppear {
+            viewModel.animateRectangle = true
         }
     }
 }
@@ -84,7 +82,9 @@ extension OnboardingScreen {
     private var onboardingButton: some View {
         Button(title: viewModel.pageIndex == viewModel.pages.count - 1 ? "Get Started" : "Next") {
             viewModel.buttonPressed {
-                changeView.toggle()
+                withAnimation(.default) {
+                    changeView.toggle()
+                }
             }
         }
         .padding()
