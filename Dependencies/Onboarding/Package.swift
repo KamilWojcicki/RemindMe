@@ -18,6 +18,7 @@ let package = Package(
         )
     ],
     dependencies: [
+        .package(path: "../Components"),
         .package(path: "../Design")
     ],
     targets: [
@@ -33,7 +34,11 @@ let package = Package(
         .target(
             name: "Onboarding",
             dependencies: [
-                "OnboardingInterface"
+                "OnboardingInterface",
+                .product(
+                    name: "Components",
+                    package: "Components"
+                )
             ]
         ),
         .testTarget(

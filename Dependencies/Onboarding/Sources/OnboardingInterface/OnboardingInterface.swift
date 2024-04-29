@@ -22,22 +22,22 @@ public struct Page: Identifiable, Equatable {
     public static let pages: [Page] = [
         Page(
             name: "Welcome to RemindMe",
-            description: "Click Next to choose a language and learn more about app",
+            description: "Click Next to choose a language and learn more about app.",
             tag: 0
         ),
         Page(
             name: "Choose a prefer language to use",
-            description: "You can change it later in settings",
+            description: "You can change it later in settings.",
             tag: 1
         ),
         Page(
             name: "Create new task",
-            description: "You can create a new task by clicking to plus button on Home Screen ",
+            description: "You can create a new task by clicking to plus button on Home Screen.",
             tag: 2
         ),
         Page(
             name: "Add notifications",
-            description: "Add notifications which will remind you about your upcoming tasks by clicking to notification button",
+            description: "Add notifications which will remind you about your upcoming tasks by clicking to notification button.",
             tag: 3
         ),
         Page(
