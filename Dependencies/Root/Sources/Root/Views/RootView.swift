@@ -5,6 +5,7 @@
 //  Created by Kamil Wójcicki on 13/04/2024.
 //
 
+import Design
 import SwiftUI
 import Onboarding
 import Navigation
@@ -16,9 +17,10 @@ public struct RootView: View {
     
     public var body: some View {
         ZStack {
-//            lepsze niż to będzie coś w stylu jeśli nie ma użytkownika w bazie to uruchom OnboardingScreen, jeśli użytkownik istnieje już w bazie to znaczy że pierwszy raz uruchamiał już aplikację więc przejdź do TabBarView
+            Colors.background().ignoresSafeArea()
+            
             if isFirstAppear {
-                OnboardingScreen(onboardingToggle: $isFirstAppear)
+                OnboardingScreen(changeView: $isFirstAppear)
             } else {
                TabBarView()
             }
