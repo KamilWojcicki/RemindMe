@@ -20,8 +20,11 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../DependencyInjection"),
+        .package(path: "../Home"),
         .package(path: "../Navigation"),
-        .package(path: "../Onboarding")
+        .package(path: "../Onboarding"),
+        .package(path: "../Settings"),
+        .package(path: "../Tasks")
     ],
     targets: [
         .target(
@@ -38,12 +41,24 @@ let package = Package(
             dependencies: [
                 "RootInterface",
                 .product(
+                    name: "Home",
+                    package: "Home"
+                ),
+                .product(
                     name: "Navigation",
                     package: "Navigation"
                 ),
                 .product(
                     name: "Onboarding",
                     package: "Onboarding"
+                ),
+                .product(
+                    name: "Settings",
+                    package: "Settings"
+                ),
+                .product(
+                    name: "Tasks",
+                    package: "Tasks"
                 )
             ]
         ),
