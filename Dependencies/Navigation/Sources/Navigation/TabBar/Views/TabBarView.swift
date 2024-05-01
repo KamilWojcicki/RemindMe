@@ -26,6 +26,9 @@ public struct TabBarView: View {
         
         NavigationStack {
             ZStack(alignment: .bottom) {
+                
+                Colors.background().ignoresSafeArea()
+                
                 SwiftUI.TabView(selection: selectedTab) {
                     ForEach(viewModel.tabs, id: \.title) { tab in
                         tab.rootView
@@ -33,11 +36,12 @@ public struct TabBarView: View {
                 }
                 
                 buildTabBarView
-                    .padding()
+                    .padding(5)
+                    .padding(.vertical, 3)
                     .background(
-                        Colors.night.ignoresSafeArea(edges: .bottom)
+                        .regularMaterial
                     )
-                    .clipShape(Circle())
+                    .cornerRadius(40)
                     .padding(.horizontal)
             }
         }
@@ -56,11 +60,12 @@ extension TabBarView {
                 Spacer()
                 
                 Image(systemName: isSelectedTab ? tab.activeImage : tab.image)
-                    .font(.caption)
+                    .font(.title2)
                     .scaleEffect(isSelectedTab ? 1.3 : 1.0)
-                    .foregroundStyle(isSelectedTab ? Color.gray : Colors.ghostWhite)
+                    .foregroundStyle(isSelectedTab ? Colors.ghostWhite : Color.gray)
                     .padding(.vertical, 10)
                     .frame(maxWidth: .infinity)
+                    .padding(5)
                     .background(
                         ZStack {
                             if isSelectedTab {
