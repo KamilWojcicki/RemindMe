@@ -31,7 +31,7 @@ public struct OnboardingScreen: View {
                     .frame(height: geometry.size.height * 0.45)
                     .overlay {
                         VStack {
-                            tabView
+                            pageView
                             
                             onboardingButton
                         }
@@ -53,7 +53,7 @@ public struct OnboardingScreen: View {
 
 extension OnboardingScreen {
     @ViewBuilder
-    private var tabView: some View {
+    private var pageView: some View {
         TabView(selection: $viewModel.pageIndex) {
             ForEach(viewModel.pages) { page in
                 VStack {

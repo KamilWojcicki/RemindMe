@@ -22,7 +22,7 @@ public struct Page: Identifiable, Equatable {
     public static let pages: [Page] = [
         Page(
             name: "Welcome to RemindMe",
-            description: "Click Next to choose a language and learn more about app.",
+            description: "Click NEXT or SLIDE screen to choose a language and learn more about app.",
             tag: 0
         ),
         Page(
