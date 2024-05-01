@@ -19,7 +19,8 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(path: "../DependencyInjection")
+        .package(path: "../DependencyInjection"),
+        .package(path: "../Design")
     ],
     targets: [
         .target(
@@ -34,7 +35,11 @@ let package = Package(
         .target(
             name: "Navigation",
             dependencies: [
-                "NavigationInterface"                
+                "NavigationInterface",
+                .product(
+                    name: "Design",
+                    package: "Design"
+                )
             ]
         ),
         .testTarget(
