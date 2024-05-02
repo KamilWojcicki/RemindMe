@@ -19,8 +19,8 @@ extension Tab {
     public static var tasks: Tab {
         Tab(
             title: "Tasks",
-            image: "folder",
-            activeImage: "folder.fill",
+            image: "checkmark.circle",
+            activeImage: "checkmark.circle.fill",
             rootView: AnyView(TasksView())
         )
     }
