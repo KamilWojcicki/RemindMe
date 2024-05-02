@@ -68,7 +68,7 @@ extension TabBarView {
                         .frame(width: 20, height: 20)
                     if isSelectedTab {
                         Text(tab.title)
-                            .font(.system(size: 20))
+                            .font(.system(size: 16))
                     }
                     
                     Spacer()
