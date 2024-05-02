@@ -36,10 +36,9 @@ public struct TabBarView: View {
                 }
                 
                 buildTabBarView
-                    .padding(5)
-                    .padding(.vertical, 3)
+                    .padding(.vertical, 8)
                     .background(
-                        .regularMaterial
+                        .thickMaterial
                     )
                     .cornerRadius(40)
                     .padding(.horizontal)
@@ -58,26 +57,29 @@ extension TabBarView {
                 let isSelectedTab = viewModel.selectedTab == tab.title
                 
                 Spacer()
-                
-                Image(systemName: isSelectedTab ? tab.activeImage : tab.image)
-                    .font(.title2)
-                    .scaleEffect(isSelectedTab ? 1.3 : 1.0)
-                    .foregroundStyle(isSelectedTab ? Colors.ghostWhite : Color.gray)
-                    .padding(.vertical, 10)
-                    .frame(maxWidth: .infinity)
-                    .padding(5)
-                    .background(
-                        ZStack {
-                            if isSelectedTab {
-                                Circle()
-                                    .fill(Colors.blue)
-                                    .matchedGeometryEffect(id: "background_circle", in: namespace)
-                            }
-                        }
-                    )
-                    .onTapGesture {
-                        viewModel.tapped(tab: tab.title)
+
+                HStack {
+                    Spacer()
+                    
+                    Image(systemName: isSelectedTab ? tab.activeImage : tab.image)
+                        .resizable()
+                        .renderingMode(.template)
+                        
+                        .frame(width: 20, height: 20)
+                    if isSelectedTab {
+                        Text(tab.title)
+                            .font(.system(size: 16))
                     }
+                    
+                    Spacer()
+                }
+                .frame(width: isSelectedTab ? nil : 60, height: 60)
+                .background(isSelectedTab ? Colors.blue.opacity(0.85) : .clear)
+                .cornerRadius(40)
+                .foregroundColor(isSelectedTab ? Colors.ghostWhite : Colors.night.opacity(0.5))
+                .onTapGesture {
+                    viewModel.tapped(tab: tab.title)
+                }
                 
                 Spacer()
             }

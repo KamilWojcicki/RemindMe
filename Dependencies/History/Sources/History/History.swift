@@ -11,17 +11,17 @@ public struct Dependencies {
     }
     
     public static func injectShared() {
-        Assemblies.resolve(TabCoordinatorInterface.self).register(tab: .tasks)
+        Assemblies.resolve(TabCoordinatorInterface.self).register(tab: .history)
     }
 }
 
 extension Tab {
-    public static var tasks: Tab {
+    public static var history: Tab {
         Tab(
-            title: "Tasks",
-            image: "checkmark.circle",
-            activeImage: "checkmark.circle.fill",
-            rootView: AnyView(TasksView())
+            title: "History",
+            image: "archivebox",
+            activeImage: "archivebox.fill",
+            rootView: AnyView(HistoryView())
         )
     }
 }
