@@ -20,6 +20,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../DependencyInjection"),
+        .package(path: "../History"),
         .package(path: "../Home"),
         .package(path: "../Navigation"),
         .package(path: "../Onboarding"),
@@ -40,6 +41,10 @@ let package = Package(
             name: "Root",
             dependencies: [
                 "RootInterface",
+                .product(
+                    name: "History",
+                    package: "History"
+                ),
                 .product(
                     name: "Home",
                     package: "Home"
