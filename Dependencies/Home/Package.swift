@@ -19,6 +19,7 @@ let package = Package(
         )
     ],
     dependencies: [
+        .package(path: "../Components"),
         .package(path: "../Navigation")
     ],
     targets: [
@@ -34,7 +35,11 @@ let package = Package(
         .target(
             name: "Home",
             dependencies: [
-                "HomeInterface"
+                "HomeInterface",
+                .product(
+                    name: "Components",
+                    package: "Components"
+                )
             ]
         ),
         .testTarget(
