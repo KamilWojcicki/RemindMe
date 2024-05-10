@@ -80,7 +80,7 @@ extension OnboardingScreen {
     }
     
     private var onboardingButton: some View {
-        Button(title: viewModel.pageIndex == viewModel.pages.count - 1 ? "Get Started" : "Next") {
+        ConfirmButton(title: viewModel.pageIndex == viewModel.pages.count - 1 ? "Get Started" : "Next") {
             viewModel.buttonPressed {
                 withAnimation(.default) {
                     changeView.toggle()
