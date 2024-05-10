@@ -8,14 +8,14 @@
 import Design
 import SwiftUI
 
-struct ActionButton: View {
+public struct ActionButton: View {
     public enum ButtonType: String, CaseIterable {
         case done = "Done"
         case edit = "Edit"
         case delete = "Delete"
         case history = "History"
         
-        private var image: String {
+        public var image: String {
             switch self {
             case .done:
                 "checkmark.seal"
@@ -28,25 +28,27 @@ struct ActionButton: View {
             }
         }
     }
-    private let button: ButtonType
     
-    public init(button: ButtonType) {
+    private let button: ButtonType
+    private let image: String
+    private let foregroundColor: Color
+    private let action: () -> Void
+    
+    public init(button: ButtonType, image: String, foregroundColor: Color, action: @escaping () -> Void) {
         self.button = button
+        self.image = image
+        self.foregroundColor = foregroundColor
+        self.action = action
     }
     
-    let image: String
-    let title: String
-    let foregroundColor: Color
-    let action: () -> Void
-    
-    var body: some View {
+    public var body: some View {
         Button {
             action()
         } label: {
             VStack(spacing: 5) {
                 Image(systemName: image)
                 
-                Text(title)
+                Text(button.rawValue)
                     .font(.footnote)
             }
             .foregroundStyle(foregroundColor)
@@ -55,30 +57,13 @@ struct ActionButton: View {
 }
 
 #Preview {
-    ActionButton(image: <#String#>, title: <#String#>, foregroundColor: <#Color#>, button: .done, action: <#() -> Void#>)
+    ZStack {
+        Colors.background().ignoresSafeArea()
+        
+        ActionButton(button: .done, image: "", foregroundColor: .red) {
+            
+        }
+    }
+    
 }
 
-
-//extension TaskTile {
-//    private func buildActionButton(image: String, title: String, button: ButtonType? = nil) -> some View {
-//        Button {
-//            Task {
-//                do {
-//                    guard let button = button else { return }
-//                    try await viewModel.buttonTapped(button)
-//                    isEdited(viewModel.showEditTask)
-//                } catch {
-//                    print(error)
-//                }
-//            }
-//        } label: {
-//            VStack(spacing: 5) {
-//                Image(systemName: button == .done && viewModel.isDone ? "\(image).fill" : image)
-//                
-//                Text(title)
-//                    .font(.footnote)
-//            }
-//            .foregroundStyle(button == .done && viewModel.isDone ? Color.green : Colors.ghostWhite)
-//        }
-//    }
-//}
