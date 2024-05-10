@@ -15,8 +15,6 @@ public struct HomeView: View {
     public init() { }
     
     public var body: some View {
-        
-        
         GeometryReader { geometry in
             VStack(alignment: .leading) {
                 
