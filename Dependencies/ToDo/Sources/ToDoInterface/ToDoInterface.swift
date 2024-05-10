@@ -67,4 +67,5 @@ public protocol ToDoManagerInterface {
     func updateToDo(data: [String : Any]) async throws
     func deleteToDo(primaryKey: String) async throws
     func deleteAllToDos() async throws
+    func getLatestToDo() async throws -> ToDo?
 }

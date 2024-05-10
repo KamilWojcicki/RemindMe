@@ -36,4 +36,21 @@ final class ToDoManager: ToDoManagerInterface {
     func deleteAllToDos() async throws {
         try await localDatabaseManager.deleteAll()
     }
+    
+    func getLatestToDo() async throws -> ToDo? {
+        var toDos: [ToDo] = []
+        toDos = try await readAllToDos()
+        
+        var latestToDo: ToDo? = nil
+        var latestExecutionTime: Date? = nil
+        
+        for toDo in toDos {
+            if latestExecutionTime == nil || toDo.executedTime > latestExecutionTime ?? Date() {
+                latestExecutionTime = toDo.executedTime
+                latestToDo = toDo
+            }
+        }
+        
+        return latestToDo
+    }
 }
