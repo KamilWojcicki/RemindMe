@@ -1,5 +1,5 @@
 //
-//  Button.swift
+//  ConfirmButton.swift
 //
 //
 //  Created by Kamil Wójcicki on 27/04/2024.
@@ -8,7 +8,7 @@
 import Design
 import SwiftUI
 
-public struct Button: View {
+public struct ConfirmButton: View {
     
     private var title: String
     private var action: () -> Void
@@ -35,5 +35,5 @@ public struct Button: View {
 }
 
 #Preview {
-    Button(title: "test", action: {})
+    ConfirmButton(title: "test", action: {})
 }

@@ -32,8 +32,10 @@ public struct TabBarView: View {
                 SwiftUI.TabView(selection: selectedTab) {
                     ForEach(viewModel.tabs, id: \.title) { tab in
                         tab.rootView
+                            
                     }
                 }
+                .ignoresSafeArea()
                 
                 buildTabBarView
                     .padding(.vertical, 8)
@@ -41,7 +43,12 @@ public struct TabBarView: View {
                         .thickMaterial
                     )
                     .cornerRadius(40)
+                    .shadow(
+                        color: Colors.night.opacity(0.3),
+                        radius: 10
+                    )
                     .padding(.horizontal)
+                    
             }
         }
         .navigationBarBackButtonHidden(true)
