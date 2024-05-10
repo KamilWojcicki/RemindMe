@@ -41,6 +41,10 @@ public struct TabBarView: View {
                         .thickMaterial
                     )
                     .cornerRadius(40)
+                    .shadow(
+                        color: Colors.night.opacity(0.3),
+                        radius: 10
+                    )
                     .padding(.horizontal)
             }
         }
