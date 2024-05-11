@@ -1,0 +1,11 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Kamil Wójcicki on 10/05/2024.
+  
+*/
+
+
+"test" = "Welcome to RemindMe";
+"prefer_language" = "Choose a prefer language to use";
