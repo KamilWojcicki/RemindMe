@@ -52,8 +52,7 @@ public struct TabBarView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
-        .tabViewStyle(.page)
-        .indexViewStyle(.page(backgroundDisplayMode: .never))
+        .tabViewStyle(.page(indexDisplayMode: .never))
     }
 }
 
