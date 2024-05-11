@@ -22,6 +22,7 @@ let package = Package(
         .package(path: "../DependencyInjection"),
         .package(path: "../History"),
         .package(path: "../Home"),
+        .package(path: "../Localizations"),
         .package(path: "../Navigation"),
         .package(path: "../Onboarding"),
         .package(path: "../Settings"),
@@ -48,6 +49,10 @@ let package = Package(
                 .product(
                     name: "Home",
                     package: "Home"
+                ),
+                .product(
+                    name: "Localizations",
+                    package: "Localizations"
                 ),
                 .product(
                     name: "Navigation",
