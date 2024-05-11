@@ -20,7 +20,8 @@ let package = Package(
     dependencies: [
         .package(path: "../Animation"),
         .package(path: "../Components"),
-        .package(path: "../Design")
+        .package(path: "../Design"),
+        .package(path: "../Localizations")
     ],
     targets: [
         .target(
@@ -37,12 +38,16 @@ let package = Package(
             dependencies: [
                 "OnboardingInterface",
                 .product(
+                    name: "Animation",
+                    package: "Animation"
+                ),
+                .product(
                     name: "Components",
                     package: "Components"
                 ),
                 .product(
-                    name: "Animation",
-                    package: "Animation"
+                    name: "Localizations",
+                    package: "Localizations"
                 )
             ]
         ),

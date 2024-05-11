@@ -7,12 +7,16 @@
 
 import Animation
 import Components
-import SwiftUI
 import Design
+import Localizations
+import OnboardingInterface
+import SwiftUI
+
 
 public struct OnboardingScreen: View {
     @StateObject private var viewModel = OnboardingViewModel()
     @Binding private var changeView: Bool
+    @EnvironmentObject private var languageSetting: LanguageSetting
     
     public init(changeView: Binding<Bool>) {
         self._changeView = changeView
@@ -44,6 +48,9 @@ public struct OnboardingScreen: View {
         .onAppear {
             viewModel.animateRectangle = true
         }
+        .onChange(of: viewModel.selectedLanguage) { _, newValue in
+            languageSetting.setLocale(language: newValue)
+        }
     }
 }
 
@@ -56,8 +63,9 @@ extension OnboardingScreen {
     private var pageView: some View {
         TabView(selection: $viewModel.pageIndex) {
             ForEach(viewModel.pages) { page in
-                VStack {
+                VStack(spacing: 20) {
                     //TODO: Add language option
+                    
                     Text(page.name)
                         .font(.title)
                         .bold()
@@ -68,8 +76,13 @@ extension OnboardingScreen {
                         .font(.subheadline)
                         .foregroundStyle(Colors.night)
                         .lineLimit(3)
-                        .frame(maxHeight: 40, alignment: .top)
+                    
+                    if page.name == "prefer_language".localized {
+                        languageButtons
+                    }
                 }
+                .frame(height: 200, alignment: .top)
+                .padding(.top, 60)
                 .padding()
                 .tag(page.tag)
                 .multilineTextAlignment(.center)
@@ -89,5 +102,21 @@ extension OnboardingScreen {
         }
         .padding()
         .padding(.bottom, 40)
+    }
+    
+    private var languageButtons: some View {
+        HStack(spacing: 100) {
+            LanguageButton(
+                currentLanguage: .polish,
+                text: "🇵🇱",
+                selectedLanguage: $viewModel.selectedLanguage
+            )
+            
+            LanguageButton(
+                currentLanguage: .english,
+                text: "🇺🇸",
+                selectedLanguage: $viewModel.selectedLanguage
+            )
+        }
     }
 }
