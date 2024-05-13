@@ -48,9 +48,6 @@ public struct OnboardingScreen: View {
         .onAppear {
             viewModel.animateRectangle = true
         }
-        .onChange(of: viewModel.selectedLanguage) { _, newValue in
-            languageSetting.setLocale(language: newValue)
-        }
     }
 }
 
@@ -106,17 +103,27 @@ extension OnboardingScreen {
     
     private var languageButtons: some View {
         HStack(spacing: 100) {
-            LanguageButton(
-                currentLanguage: .polish,
-                text: "🇵🇱",
-                selectedLanguage: $viewModel.selectedLanguage
-            )
+//            LanguageButton(
+//                currentLanguage: .polish,
+//                text: "🇵🇱",
+//                selectedLanguage: $viewModel.selectedLanguage
+//            )
+//            
+//            LanguageButton(
+//                currentLanguage: .english,
+//                text: "🇺🇸",
+//                selectedLanguage: $viewModel.selectedLanguage
+//            )
             
             LanguageButton(
-                currentLanguage: .english,
-                text: "🇺🇸",
-                selectedLanguage: $viewModel.selectedLanguage
-            )
+                text: "🇵🇱") {
+                    languageSetting.setLocale(language: .polish)
+                }
+            
+            LanguageButton(
+                text: "🇺🇸") {
+                    languageSetting.setLocale(language: .english)
+                }
         }
     }
 }

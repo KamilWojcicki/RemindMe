@@ -15,7 +15,6 @@ final class OnboardingViewModel: ObservableObject {
     private let dotAppearance = UIPageControl.appearance()
     @Published var pageIndex = 0
     @Published var animateRectangle: Bool = false
-    @Published var selectedLanguage: SupportedLanguage = .english
     
     let pages: [Page] = Page.pages
     let page: Page = Page.samplePage
