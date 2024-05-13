@@ -10,19 +10,17 @@ import Localizations
 import SwiftUI
 
 struct LanguageButton: View {
-    private var currentLanguage: SupportedLanguage
     private var text: String
-    @Binding var selectedLanguage: SupportedLanguage
+    let action: () -> Void
 
-    init(currentLanguage: SupportedLanguage, text: String, selectedLanguage: Binding<SupportedLanguage>) {
-        self.currentLanguage = currentLanguage
+    init(text: String, action: @escaping () -> Void) {
         self.text = text
-        self._selectedLanguage = selectedLanguage
+        self.action = action
     }
     
     var body: some View {
         Button {
-            selectedLanguage = currentLanguage
+            action()
         } label: {
             Text(text)
         }
@@ -35,5 +33,7 @@ struct LanguageButton: View {
 }
 
 #Preview {
-    LanguageButton(currentLanguage: .english, text: "🇵🇱", selectedLanguage: .constant(.english))
+    LanguageButton(text: "🇵🇱") {
+        
+    }
 }
