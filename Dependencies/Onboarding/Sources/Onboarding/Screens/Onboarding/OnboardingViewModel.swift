@@ -7,6 +7,7 @@
 
 import Design
 import Foundation
+import Localizations
 import OnboardingInterface
 import SwiftUI
 

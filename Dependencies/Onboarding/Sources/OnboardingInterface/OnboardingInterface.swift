@@ -5,6 +5,7 @@
 //  Created by Kamil Wójcicki on 13/04/2024.
 //
 
+import Localizations
 import SwiftUI
 
 public struct Page: Identifiable, Equatable {
@@ -21,12 +22,12 @@ public struct Page: Identifiable, Equatable {
     
     public static let pages: [Page] = [
         Page(
-            name: "Welcome to RemindMe",
+            name: "test".localized,
             description: "Click NEXT or SLIDE screen to choose a language and learn more about app.",
             tag: 0
         ),
         Page(
-            name: "Choose a prefer language to use",
+            name: "prefer_language".localized,
             description: "You can change it later in settings.",
             tag: 1
         ),
