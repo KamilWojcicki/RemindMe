@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 enum Constants: String {
     case languageKey = "language-key"
@@ -6,15 +7,20 @@ enum Constants: String {
 }
 
 public enum SupportedLanguage: String {
-    case english = "english"
-    case polish = "polish"
+    case english = "en"
+    case polish = "pl"
 }
 
-extension String {
-    public var localized: String {
-        NSLocalizedString(self, bundle: .module, value: self, comment: "")
-    }
-}
+//extension String {
+//    public var localized: String {
+//        if let savedLanguage = UserDefaults.standard.string(forKey: Constants.languageKey.rawValue) {
+//            let path = Bundle.module.path(forResource: savedLanguage, ofType: "lproj")
+//            let bundle = Bundle(path: path!)
+//            return NSLocalizedString(self, tableName: nil, bundle: bundle!, value: "", comment: "")
+//        }
+//        return "Wrong"
+//    }
+//}
 
 public class LanguageSetting: ObservableObject {
     
@@ -22,15 +28,13 @@ public class LanguageSetting: ObservableObject {
         setupInitialLocale()
     }
     
-    public var locale: Locale = .current {
-        didSet {
-            
-        }
-    }
+    @Published public var locale: Locale = .current
     
     private func setupInitialLocale() {
         if let language = UserDefaults.standard.string(forKey: Constants.languageKey.rawValue), let value = SupportedLanguage(rawValue: language) {
             setLocale(language: value)
+            print(language)
+            print(value)
         } else {
             guard let languages = UserDefaults.standard.array(forKey: Constants.appleLanguages.rawValue), let currentLanguage = languages.first as? String else { return }
             if currentLanguage.contains("pl") {
@@ -38,6 +42,8 @@ public class LanguageSetting: ObservableObject {
             } else {
                 setLocale(language: .english)
             }
+            print(languages)
+            print(currentLanguage)
         }
     }
     
