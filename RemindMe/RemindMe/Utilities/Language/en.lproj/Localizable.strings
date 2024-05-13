@@ -1,0 +1,18 @@
+/* 
+  Localizable.strings
+  RemindMe
+
+  Created by Kamil Wójcicki on 13/05/2024.
+  
+*/
+
+"onboarding_welcome_title" = "Welcome to RemindMe";
+"onboarding_welcome_description" = "Click NEXT or SLIDE screen to choose a language and learn more about app.";
+"onboarding_prefer_language_title" = "Choose a prefer language to use";
+"onboarding_prefer_language_description" = "You can change it later in settings.";
+"onboarding_create_new_task_title" = "Create new task";
+"onboarding_create_new_task_description" = "You can create a new task by clicking to plus button on Home Screen.";
+"onboarding_add_notification_title" = "Add notifications";
+"onboarding_add_notification_description" = "Add notifications which will remind you about your upcoming tasks by clicking to notification button.";
+"onboarding_well_done_title" = "Well done";
+"onboarding_well_done_description" = "That's all you need to know, let's get started!";

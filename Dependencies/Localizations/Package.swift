@@ -5,7 +5,6 @@ import PackageDescription
 
 let package = Package(
     name: "Localizations",
-    defaultLocalization: "en",
     platforms: [
         .iOS(.v17)
     ],
@@ -21,8 +20,7 @@ let package = Package(
     targets: [
         .target(
             name: "Localizations",
-            dependencies: [],
-            resources: [.process("Resources/")]
+            dependencies: []
         )
     ]
 )

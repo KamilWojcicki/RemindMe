@@ -11,20 +11,15 @@ public enum SupportedLanguage: String {
     case polish = "pl"
 }
 
-//extension String {
-//    public var localized: String {
-//        if let savedLanguage = UserDefaults.standard.string(forKey: Constants.languageKey.rawValue) {
-//            let path = Bundle.module.path(forResource: savedLanguage, ofType: "lproj")
-//            let bundle = Bundle(path: path!)
-//            return NSLocalizedString(self, tableName: nil, bundle: bundle!, value: "", comment: "")
-//        }
-//        return "Wrong"
-//    }
-//}
+extension String {
+    public var localized: LocalizedStringKey {
+        return LocalizedStringKey(self)
+    }
+}
 
 public class LanguageSetting: ObservableObject {
     
-    public init() { 
+    public init() {
         setupInitialLocale()
     }
     
