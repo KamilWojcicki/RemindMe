@@ -1,0 +1,18 @@
+/* 
+  Localizable.strings
+  RemindMe
+
+  Created by Kamil Wójcicki on 13/05/2024.
+  
+*/
+
+"onboarding_welcome_title" = "Witaj w aplikacji RemindMe";
+"onboarding_welcome_description" = "Kliknij przycisk DALEJ lub PRZESUŃ ekran aby wybrać język i dowiedzieć się więcej o aplikacji.";
+"onboarding_prefer_language_title" = "Wybierz domyślny język aplikacji";
+"onboarding_prefer_language_description" = "Możesz zmienić język później w ustawieniach.";
+"onboarding_create_new_task_title" = "Twórz nowe zadania";
+"onboarding_create_new_task_description" = "Możesz tworzyć nowe zadania klikając w przycisk plus na Ekranie Głównym.";
+"onboarding_add_notification_title" = "Włącz powiadomienia";
+"onboarding_add_notification_description" = "Dzięki tej opcji użytkownik będzie dostawał powiadomienia o zbliżających się zadaniach.";
+"onboarding_well_done_title" = "Gotowe";
+"onboarding_well_done_description" = "To wszystko co powinieneś wiedzieć, zaczynajny!";
