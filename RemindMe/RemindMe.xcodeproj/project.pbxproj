@@ -240,7 +240,6 @@
 				E7C1056B2BF20A140010B67A /* Tasks */,
 				E7C105652BF2092D0010B67A /* History */,
 				E7C105582BF206A40010B67A /* Home */,
-				E7C1057F2BF20C5C0010B67A /* TabBarModel.swift */,
 			);
 			path = TabBar;
 			sourceTree = "<group>";
@@ -381,6 +380,7 @@
 		E7C105782BF20BE80010B67A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				E7C1057F2BF20C5C0010B67A /* TabBarModel.swift */,
 				E7C105792BF20BF40010B67A /* TabBarViewModel.swift */,
 				E7C1057B2BF20BFC0010B67A /* TabBarView.swift */,
 			);
