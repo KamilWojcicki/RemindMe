@@ -10,10 +10,10 @@ import SwiftUI
 
 public struct ConfirmButton: View {
     
-    private var title: String
+    private var title: LocalizedStringKey
     private var action: () -> Void
     
-    public init(title: String, action: @escaping () -> Void) {
+    public init(title: LocalizedStringKey, action: @escaping () -> Void) {
         self.title = title
         self.action = action
     }
