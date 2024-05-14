@@ -22,11 +22,6 @@ final class OnboardingViewModel: ObservableObject {
         pageIndex += 1
     }
     
-    func dotAppearanceOnAppear() {
-        dotAppearance.currentPageIndicatorTintColor = UIColor(Colors.night)
-        dotAppearance.pageIndicatorTintColor = UIColor(Colors.ghostWhite)
-    }
-    
     func buttonPressed(action: () -> Void) {
         if pageIndex == pages.count - 1 {
             action()

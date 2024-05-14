@@ -60,8 +60,6 @@ extension OnboardingScreen {
         TabView(selection: $viewModel.pageIndex) {
             ForEach(viewModel.pages) { page in
                 VStack(spacing: 20) {
-                    //TODO: Add language option
-                    
                     Text(page.name)
                         .font(.title)
                         .bold()
@@ -89,9 +87,9 @@ extension OnboardingScreen {
     }
     
     private var onboardingButton: some View {
-        ConfirmButton(title: viewModel.pageIndex == viewModel.pages.count - 1 ? "Get Started" : "Next") {
+        ConfirmButton(title: viewModel.pageIndex == viewModel.pages.count - 1 ? "Get Started".localized : "Next".localized) {
             viewModel.buttonPressed {
-                withAnimation(.default) {
+                withAnimation(.spring) {
                     changeView.toggle()
                 }
             }
