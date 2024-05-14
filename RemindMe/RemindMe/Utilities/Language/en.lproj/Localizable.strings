@@ -16,3 +16,5 @@
 "onboarding_add_notification_description" = "Add notifications which will remind you about your upcoming tasks by clicking to notification button.";
 "onboarding_well_done_title" = "Well done";
 "onboarding_well_done_description" = "That's all you need to know, let's get started!";
+"onboarding_next_button" = "Next";
+"onboarding_get_started_button" = "Get Started";

@@ -9,7 +9,7 @@ import Design
 import SwiftUI
 
 public struct RootView: View {
-    @State private var isFirstAppear: Bool = true
+    @AppStorage("isFirstAppear") var isFirstAppear: Bool = true
     
     public init() { }
     
@@ -21,7 +21,7 @@ public struct RootView: View {
                 OnboardingScreen(changeView: $isFirstAppear)
             } else {
                TabBarView()
-                    .transition(.move(edge: .trailing))
+                    .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
             }
         }
     }

@@ -16,3 +16,5 @@
 "onboarding_add_notification_description" = "Dzięki tej opcji użytkownik będzie dostawał powiadomienia o zbliżających się zadaniach.";
 "onboarding_well_done_title" = "Gotowe";
 "onboarding_well_done_description" = "To wszystko co powinieneś wiedzieć, zaczynajny!";
+"onboarding_next_button" = "Dalej";
+"onboarding_get_started_button" = "Zaczynajmy";
