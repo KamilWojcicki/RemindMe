@@ -16,7 +16,7 @@ public struct TaskTile: View {
     let title: String
     var isEdited: ((Bool) -> Void)
     
-    public init(category: String, title: String, isEdited: @escaping (Bool) -> Void) {
+    public init(category: String = "Category", title: String = "Title", isEdited: @escaping (Bool) -> Void) {
         self.category = category
         self.title = title
         self.isEdited = isEdited
