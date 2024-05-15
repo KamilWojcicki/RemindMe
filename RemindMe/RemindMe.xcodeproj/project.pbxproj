@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		E703F2FD2BC0A6720042FBA5 /* Assembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = E703F2FC2BC0A6720042FBA5 /* Assembly.swift */; };
 		E73F3D462BF21E7B00E27F7D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E73F3D442BF21E7B00E27F7D /* Localizable.strings */; };
+		E73F3D492BF3959B00E27F7D /* QuickTaskTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E73F3D482BF3959B00E27F7D /* QuickTaskTile.swift */; };
+		E73F3D4C2BF4C87B00E27F7D /* QuickTaskTileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E73F3D4B2BF4C87B00E27F7D /* QuickTaskTileViewModel.swift */; };
 		E76572B92BC43D3900334597 /* AssemblyShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76572B82BC43D3900334597 /* AssemblyShared.swift */; };
 		E765B4412BACD2DA00C15A9D /* RemindMeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765B4402BACD2DA00C15A9D /* RemindMeApp.swift */; };
 		E765B4452BACD2DB00C15A9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E765B4442BACD2DB00C15A9D /* Assets.xcassets */; };
@@ -62,6 +64,8 @@
 		E703F2FC2BC0A6720042FBA5 /* Assembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assembly.swift; sourceTree = "<group>"; };
 		E73F3D452BF21E7B00E27F7D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E73F3D472BF21E9400E27F7D /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Localizable.strings; sourceTree = "<group>"; };
+		E73F3D482BF3959B00E27F7D /* QuickTaskTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickTaskTile.swift; sourceTree = "<group>"; };
+		E73F3D4B2BF4C87B00E27F7D /* QuickTaskTileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickTaskTileViewModel.swift; sourceTree = "<group>"; };
 		E76572B82BC43D3900334597 /* AssemblyShared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblyShared.swift; sourceTree = "<group>"; };
 		E765B43D2BACD2DA00C15A9D /* RemindMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RemindMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E765B4402BACD2DA00C15A9D /* RemindMeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindMeApp.swift; sourceTree = "<group>"; };
@@ -145,6 +149,15 @@
 				E73F3D442BF21E7B00E27F7D /* Localizable.strings */,
 			);
 			path = Language;
+			sourceTree = "<group>";
+		};
+		E73F3D4A2BF4C86700E27F7D /* QuickTaskTile */ = {
+			isa = PBXGroup;
+			children = (
+				E73F3D482BF3959B00E27F7D /* QuickTaskTile.swift */,
+				E73F3D4B2BF4C87B00E27F7D /* QuickTaskTileViewModel.swift */,
+			);
+			path = QuickTaskTile;
 			sourceTree = "<group>";
 		};
 		E765B4342BACD2DA00C15A9D = {
@@ -309,6 +322,7 @@
 		E7C1055A2BF207090010B67A /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				E73F3D4A2BF4C86700E27F7D /* QuickTaskTile */,
 				E7C1055B2BF2072A0010B67A /* TaskTile */,
 			);
 			path = Components;
@@ -353,8 +367,8 @@
 		E7C1056C2BF20A280010B67A /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				E7C1056E2BF20A400010B67A /* TasksViewModel.swift */,
 				E7C105702BF20A4B0010B67A /* TasksView.swift */,
+				E7C1056E2BF20A400010B67A /* TasksViewModel.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -527,6 +541,7 @@
 			files = (
 				E7C105832BF20FB90010B67A /* HomeTab.swift in Sources */,
 				E7C1057A2BF20BF40010B67A /* TabBarViewModel.swift in Sources */,
+				E73F3D492BF3959B00E27F7D /* QuickTaskTile.swift in Sources */,
 				E7C105892BF210CF0010B67A /* SettingsTab.swift in Sources */,
 				E7C1056F2BF20A400010B67A /* TasksViewModel.swift in Sources */,
 				E703F2FD2BC0A6720042FBA5 /* Assembly.swift in Sources */,
@@ -550,6 +565,7 @@
 				E7C105622BF2081E0010B67A /* HomeView.swift in Sources */,
 				E7C105522BF204940010B67A /* OnboardingViewModel.swift in Sources */,
 				E765B4412BACD2DA00C15A9D /* RemindMeApp.swift in Sources */,
+				E73F3D4C2BF4C87B00E27F7D /* QuickTaskTileViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
