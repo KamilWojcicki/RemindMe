@@ -18,13 +18,13 @@ public struct ActionButton: View {
         public var image: String {
             switch self {
             case .done:
-                "checkmark.seal"
+                Symbols.checkmarkSeal
             case .edit:
-                "pencil.and.list.clipboard"
+                Symbols.pencilAndListClipboard
             case .delete:
-                "minus.circle"
+                Symbols.minusCircle
             case .history:
-                "doc.badge.clock"
+                Symbols.docBadgeClock
             }
         }
     }

@@ -9,14 +9,26 @@ import Foundation
 import LocalDatabaseInterface
 import RealmSwift
 
+public enum Categories: String, CaseIterable {
+    case birthday
+    case shoppingList
+    case nameDay
+    case holidayEvent
+    case medicalCheck
+    case trip
+    case otherEvent
+}
+
 public struct ToDo: LocalStorable {
     public let id: String
+    public let category: Categories.RawValue
     public let name: String
     public let toDoDescription: String
     public let executedTime: Date
     
-    public init(id: String = UUID().uuidString, name: String, toDoDescription: String, executedTime: Date) {
+    public init(id: String = UUID().uuidString, category: String, name: String, toDoDescription: String, executedTime: Date) {
         self.id = id
+        self.category = category
         self.name = name
         self.toDoDescription = toDoDescription
         self.executedTime = executedTime
@@ -24,6 +36,7 @@ public struct ToDo: LocalStorable {
     
     public init(from dao: ToDoDAO) {
         self.id = dao.id
+        self.category = dao.category
         self.name = dao.name
         self.toDoDescription = dao.toDoDescription
         self.executedTime = dao.executedTime
@@ -31,6 +44,7 @@ public struct ToDo: LocalStorable {
     
     public enum CodingKeys: String, CodingKey {
         case id
+        case category
         case name
         case toDoDescription
         case executedTime
@@ -41,12 +55,14 @@ public final class ToDoDAO: RealmSwift.Object, LocalDAOInterface {
     
     @Persisted(primaryKey: true) public var id: String
     @Persisted public var name: String
+    @Persisted public var category: String
     @Persisted public var toDoDescription: String
     @Persisted var executedTime: Date
     
     override public init() {
         super.init()
         self.name = ""
+        self.category = ""
         self.toDoDescription = ""
         self.executedTime = Date()
     }
@@ -54,6 +70,7 @@ public final class ToDoDAO: RealmSwift.Object, LocalDAOInterface {
     public init(from todo: ToDo) {
         super.init()
         self.id = todo.id
+        self.category = todo.category
         self.name = todo.name
         self.toDoDescription = todo.toDoDescription
         self.executedTime = todo.executedTime
