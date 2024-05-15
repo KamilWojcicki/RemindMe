@@ -11,6 +11,7 @@ import SwiftUI
 public struct HomeView: View {
     
     @StateObject private var viewModel = HomeViewModel()
+    let columns = [GridItem(.flexible()), GridItem(.flexible())]
     
     public init() { }
     
@@ -30,7 +31,7 @@ public struct HomeView: View {
                 .foregroundStyle(Colors.ghostWhite)
                 .padding()
                 
-                TaskTile(category: "Test", title: "Test") { isEdited in
+                TaskTile() { isEdited in
                     viewModel.isEdited = isEdited
                 }
                 .padding()
@@ -39,10 +40,40 @@ public struct HomeView: View {
                 
                 Rectangle()
                     .fill(Colors.ghostWhite)
-                    .clipShape(.rect(cornerRadius: 40))
+                    .clipShape(.rect(topLeadingRadius: 40, topTrailingRadius: 40))
                     .frame(height: geometry.size.height * 0.55)
                     .overlay {
-
+                        VStack(alignment: .leading) {
+                            LazyVGrid(columns: columns,
+                                      spacing: 10,
+                                      content: {
+                                QuickTaskTile(
+                                    icon: Symbols.checklist,
+                                    title: "Shopping List",
+                                    description: "Create a shopping list"
+                                ) { }
+                                QuickTaskTile(
+                                    icon: Symbols.giftFill,
+                                    title: "Birthday",
+                                    description: "Add a birthday reminder") {
+                                        
+                                    }
+                                QuickTaskTile(
+                                    icon: Symbols.carFill,
+                                    title: "Trip",
+                                    description: "Add a trip reminder") {
+                                        
+                                    }
+                                QuickTaskTile(
+                                    icon: Symbols.crossCircleFill,
+                                    title: "Medical Check",
+                                    description: "Add a medical check reminder") {
+                                        
+                                    }
+                            })
+                            .frame(maxHeight: .infinity, alignment: .top)
+                        }
+                        .padding()
                     }
             }
             .padding(.top, 30)
