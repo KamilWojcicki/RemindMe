@@ -40,8 +40,8 @@ struct QuickTaskTile: View {
             }
             .padding(5)
             .foregroundStyle(Colors.ghostWhite)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(Colors.vistaBlue)
         .clipShape(.rect(cornerRadius: 40))
