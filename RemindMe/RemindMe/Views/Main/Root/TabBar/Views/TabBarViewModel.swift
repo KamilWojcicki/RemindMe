@@ -7,6 +7,7 @@
 
 import DependencyInjection
 import Foundation
+import Navigation
 import SwiftUI
 
 //MARK: Create TabBarViewModel

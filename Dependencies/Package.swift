@@ -20,6 +20,7 @@ let package = Package(
         .package(path: "DependencyInjection"),
         .package(path: "Design"),
         .package(path: "Localizations"),
+        .package(path: "Navigation"),
         .package(path: "ToDo")
     ],
     targets: [
@@ -45,6 +46,10 @@ let package = Package(
                 .product(
                     name: "Localizations",
                     package: "Localizations"
+                ),
+                .product(
+                    name: "Navigation",
+                    package: "Navigation"
                 ),
                 .product(
                     name: "ToDo",

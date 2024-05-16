@@ -16,4 +16,5 @@ public struct Symbols {
     public static let giftFill = "gift.fill"
     public static let carFill = "car.fill"
     public static let crossCircleFill = "cross.circle.fill"
+    public static let plusCircle = "plus.circle"
 }

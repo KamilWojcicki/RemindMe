@@ -7,6 +7,17 @@
 
 import SwiftUI
 
+enum Routes: Routable {
+    case addTask
+    
+    var body: some View {
+        switch self {
+        case .addTask:
+            AddTaskView()
+        }
+    }
+}
+
 public enum ModalType {
     case sheet
     case fullScreenCover

@@ -6,11 +6,13 @@
 //
 
 import Design
+import Navigation
 import SwiftUI
 
 //MARK: Create TabBarView
 public struct TabBarView: View {
     @StateObject private var viewModel = TabBarViewModel()
+    @StateObject private var router: Router<Routes> = .init()
     @Namespace private var namespace
     
     public init() {
@@ -24,7 +26,7 @@ public struct TabBarView: View {
             self.viewModel.selectedTab = $0
         }
         
-        NavigationStack {
+        RouterView(stack: $router.stack) {
             ZStack(alignment: .bottom) {
                 
                 Colors.background().ignoresSafeArea()
@@ -51,6 +53,7 @@ public struct TabBarView: View {
                     
             }
         }
+        .environmentObject(router)
         .navigationBarBackButtonHidden(true)
         .tabViewStyle(.page(indexDisplayMode: .never))
     }
