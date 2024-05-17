@@ -31,9 +31,11 @@ public struct HomeView: View {
                     .fill(Colors.ghostWhite)
                     .clipShape(.rect(topLeadingRadius: 40, topTrailingRadius: 40))
                     .frame(height: geometry.size.height * 0.55)
+                    .shadow(color: Colors.night.opacity(0.4), radius: 10, y: -5)
                     .overlay {
                         buildOverlayContent
                     }
+                    
             }
             .padding(.top, 30)
         }

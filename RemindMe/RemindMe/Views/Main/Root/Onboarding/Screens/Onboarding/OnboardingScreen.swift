@@ -32,6 +32,7 @@ public struct OnboardingScreen: View {
                     .fill(Colors.ghostWhite)
                     .clipShape(.rect(cornerRadius: 40))
                     .frame(height: geometry.size.height * 0.45)
+                    .shadow(color: Colors.night.opacity(0.4), radius: 10, y: -5)
                     .overlay {
                         VStack {
                             pageView
@@ -51,7 +52,11 @@ public struct OnboardingScreen: View {
 }
 
 #Preview {
-    OnboardingScreen(changeView: .constant(true))
+    ZStack {
+        Colors.background().ignoresSafeArea()
+        OnboardingScreen(changeView: .constant(true))
+    }
+    
 }
 
 extension OnboardingScreen {
