@@ -23,6 +23,13 @@ public struct OnboardingScreen: View {
     public var body: some View {
         GeometryReader { geometry in
             VStack {
+                Button("Skip") {
+                    viewModel.skipPages()
+                }
+                .padding(6)
+                .foregroundStyle(Colors.ghostWhite)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .padding()
                 
                 LottieView(animationConfiguration: .onboarding, loopMode: .loop)
                 
@@ -92,7 +99,7 @@ extension OnboardingScreen {
     }
     
     private var onboardingButton: some View {
-        ConfirmButton(title: viewModel.pageIndex == viewModel.pages.count - 1 ? "Get Started".localized : "Next".localized) {
+        ConfirmButton(title: viewModel.pageIndex == viewModel.pages.count - 1 ? "onboarding_get_started_button".localized : "onboarding_next_button".localized) {
             viewModel.buttonPressed {
                 withAnimation(.spring) {
                     changeView.toggle()

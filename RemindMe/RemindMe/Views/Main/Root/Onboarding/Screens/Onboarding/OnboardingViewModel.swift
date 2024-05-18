@@ -22,6 +22,10 @@ final class OnboardingViewModel: ObservableObject {
         pageIndex += 1
     }
     
+    func skipPages() {
+        pageIndex = pages.count - 1
+    }
+    
     func buttonPressed(action: () -> Void) {
         if pageIndex == pages.count - 1 {
             action()
