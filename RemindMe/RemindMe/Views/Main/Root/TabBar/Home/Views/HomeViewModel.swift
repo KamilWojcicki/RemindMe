@@ -6,7 +6,13 @@
 //
 
 import Foundation
+import ToDoInterface
 
+@MainActor
 final class HomeViewModel: ObservableObject {
     @Published var isEdited: Bool = false
+    
+    func updateToDoCategory(to category: Categories, using secViewModel: TabBarViewModel) {
+            secViewModel.toDoCategory = category
+        }
 }
