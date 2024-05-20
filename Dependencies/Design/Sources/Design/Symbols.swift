@@ -17,4 +17,9 @@ public struct Symbols {
     public static let carFill = "car.fill"
     public static let crossCircleFill = "cross.circle.fill"
     public static let plusCircle = "plus.circle"
+    public static let magnifyingGlass = "magnifyingglass"
+    public static let arrowLeft = "arrow.left"
+    public static let line3Horizontal = "line.3.horizontal"
+    public static let airplaneCircleFill = "airplane.circle.fill"
+    public static let starFill = "star.fill"
 }
