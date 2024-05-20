@@ -19,6 +19,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../DependencyInjection"),
+        .package(path: "../Design"),
         .package(path: "../LocalDatabase")
     ],
     targets: [
@@ -38,6 +39,10 @@ let package = Package(
                 .product(
                     name: "DependencyInjection",
                     package: "DependencyInjection"
+                ),
+                .product(
+                    name: "Design",
+                    package: "Design"
                 )
             ]
         ),
