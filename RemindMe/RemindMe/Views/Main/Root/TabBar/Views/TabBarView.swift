@@ -35,6 +35,7 @@ public struct TabBarView: View {
                     ForEach(viewModel.tabs, id: \.title) { tab in
                         tab.rootView
                             
+                            
                     }
                 }
                 .ignoresSafeArea()
@@ -53,6 +54,7 @@ public struct TabBarView: View {
                     
             }
         }
+        .environmentObject(viewModel)
         .environmentObject(router)
         .navigationBarBackButtonHidden(true)
         .tabViewStyle(.page(indexDisplayMode: .never))
