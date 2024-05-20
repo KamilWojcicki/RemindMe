@@ -23,13 +23,7 @@ public struct OnboardingScreen: View {
     public var body: some View {
         GeometryReader { geometry in
             VStack {
-                Button("Skip") {
-                    viewModel.skipPages()
-                }
-                .padding(6)
-                .foregroundStyle(Colors.ghostWhite)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding()
+                skipButton
                 
                 LottieView(animationConfiguration: .onboarding, loopMode: .loop)
                 
@@ -122,5 +116,15 @@ extension OnboardingScreen {
                     languageSetting.setLocale(language: .english)
                 }
         }
+    }
+    
+    private var skipButton: some View {
+        Button("Skip") {
+            viewModel.skipPages()
+        }
+        .padding(6)
+        .foregroundStyle(Colors.ghostWhite)
+        .frame(maxWidth: .infinity, alignment: .trailing)
+        .padding()
     }
 }
