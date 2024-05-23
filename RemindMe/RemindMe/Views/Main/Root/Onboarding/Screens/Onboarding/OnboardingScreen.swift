@@ -21,17 +21,17 @@ public struct OnboardingScreen: View {
         self._changeView = changeView
     }
     public var body: some View {
-        GeometryReader { geometry in
-            VStack {
-                
-                LottieView(animationConfiguration: .onboarding, loopMode: .loop)
-                
-                Spacer()
-                
+        VStack {
+            skipButton
+            
+            LottieView(animationConfiguration: .onboarding, loopMode: .loop)
+            
+            GeometryReader { geometry in
                 Rectangle()
                     .fill(Colors.ghostWhite)
                     .clipShape(.rect(cornerRadius: 40))
-                    .frame(height: geometry.size.height * 0.45)
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .shadow(color: Colors.night.opacity(0.4), radius: 10, y: -5)
                     .overlay {
                         VStack {
                             pageView
@@ -39,19 +39,24 @@ public struct OnboardingScreen: View {
                             onboardingButton
                         }
                     }
-                    .offset(y: viewModel.animateRectangle ? geometry.size.height * 0.0 : geometry.size.height * 0.45)
+                    
+                    .offset(y: viewModel.animateRectangle ? geometry.size.height * 0.0 : geometry.size.height * 1)
             }
-        }
-        .ignoresSafeArea()
-        .animation(.spring(duration: 0.6), value: viewModel.animateRectangle)
-        .onAppear {
-            viewModel.animateRectangle = true
+            .ignoresSafeArea()
+            .animation(.spring(duration: 0.6), value: viewModel.animateRectangle)
+            .onAppear {
+                viewModel.animateRectangle = true
+            }
         }
     }
 }
 
 #Preview {
-    OnboardingScreen(changeView: .constant(true))
+    ZStack {
+        Colors.background().ignoresSafeArea()
+        OnboardingScreen(changeView: .constant(true))
+    }
+    
 }
 
 extension OnboardingScreen {
@@ -87,7 +92,7 @@ extension OnboardingScreen {
     }
     
     private var onboardingButton: some View {
-        ConfirmButton(title: viewModel.pageIndex == viewModel.pages.count - 1 ? "Get Started".localized : "Next".localized) {
+        ConfirmButton(title: viewModel.pageIndex == viewModel.pages.count - 1 ? "onboarding_get_started_button".localized : "onboarding_next_button".localized) {
             viewModel.buttonPressed {
                 withAnimation(.spring) {
                     changeView.toggle()
@@ -110,5 +115,14 @@ extension OnboardingScreen {
                     languageSetting.setLocale(language: .english)
                 }
         }
+    }
+    
+    private var skipButton: some View {
+        Button("Skip") {
+            viewModel.skipPages()
+        }
+        .foregroundStyle(Colors.ghostWhite)
+        .frame(maxWidth: .infinity, alignment: .trailing)
+        .padding(.horizontal, 20)
     }
 }

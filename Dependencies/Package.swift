@@ -21,7 +21,8 @@ let package = Package(
         .package(path: "Design"),
         .package(path: "Localizations"),
         .package(path: "Navigation"),
-        .package(path: "ToDo")
+        .package(path: "ToDo"),
+        .package(path: "Utilities")
     ],
     targets: [
         .target(
@@ -54,6 +55,10 @@ let package = Package(
                 .product(
                     name: "ToDo",
                     package: "ToDo"
+                ),
+                .product(
+                    name: "Utilities",
+                    package: "Utilities"
                 )
             ]
         )

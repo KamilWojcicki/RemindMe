@@ -9,7 +9,6 @@ import Design
 import SwiftUI
 
 struct QuickTaskTile: View {
-    
     let icon: String
     let title: LocalizedStringKey
     let description: LocalizedStringKey

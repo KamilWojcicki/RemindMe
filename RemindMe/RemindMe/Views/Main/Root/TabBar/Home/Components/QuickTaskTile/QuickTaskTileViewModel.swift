@@ -10,8 +10,4 @@ import ToDoInterface
 
 final class QuickTaskTileViewModel: ObservableObject {
     @Published var quickTaskCategories: [Categories] = [.shoppingList, .birthday, .trip, .medicalCheck]
-    
-    func buttonTapped() {
-        
-    }
 }

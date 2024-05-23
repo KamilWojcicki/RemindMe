@@ -18,6 +18,11 @@
 		E765B4522BACD2DB00C15A9D /* RemindMeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765B4512BACD2DB00C15A9D /* RemindMeTests.swift */; };
 		E765B45C2BACD2DB00C15A9D /* RemindMeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765B45B2BACD2DB00C15A9D /* RemindMeUITests.swift */; };
 		E765B45E2BACD2DB00C15A9D /* RemindMeUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765B45D2BACD2DB00C15A9D /* RemindMeUITestsLaunchTests.swift */; };
+		E769B8122BF7580200DFFE92 /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E769B80F2BF7580200DFFE92 /* AddTaskView.swift */; };
+		E769B8142BF8CAB500DFFE92 /* AddTaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E769B8132BF8CAB500DFFE92 /* AddTaskViewModel.swift */; };
+		E769B8272BF9026900DFFE92 /* CategoryPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E769B8262BF9026900DFFE92 /* CategoryPickerView.swift */; };
+		E78E1BBF2BFE0E2000FAB19D /* CategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78E1BBE2BFE0E2000FAB19D /* CategoriesView.swift */; };
+		E78E1BC12BFE0E5D00FAB19D /* CategoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78E1BC02BFE0E5D00FAB19D /* CategoriesViewModel.swift */; };
 		E7C1054C2BF204390010B67A /* LanguageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C1054B2BF204390010B67A /* LanguageButton.swift */; };
 		E7C105502BF204840010B67A /* OnboardingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C1054F2BF204840010B67A /* OnboardingScreen.swift */; };
 		E7C105522BF204940010B67A /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C105512BF204940010B67A /* OnboardingViewModel.swift */; };
@@ -76,6 +81,11 @@
 		E765B4572BACD2DB00C15A9D /* RemindMeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RemindMeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E765B45B2BACD2DB00C15A9D /* RemindMeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindMeUITests.swift; sourceTree = "<group>"; };
 		E765B45D2BACD2DB00C15A9D /* RemindMeUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindMeUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		E769B80F2BF7580200DFFE92 /* AddTaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
+		E769B8132BF8CAB500DFFE92 /* AddTaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskViewModel.swift; sourceTree = "<group>"; };
+		E769B8262BF9026900DFFE92 /* CategoryPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPickerView.swift; sourceTree = "<group>"; };
+		E78E1BBE2BFE0E2000FAB19D /* CategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesView.swift; sourceTree = "<group>"; };
+		E78E1BC02BFE0E5D00FAB19D /* CategoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewModel.swift; sourceTree = "<group>"; };
 		E7C1054B2BF204390010B67A /* LanguageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageButton.swift; sourceTree = "<group>"; };
 		E7C1054F2BF204840010B67A /* OnboardingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScreen.swift; sourceTree = "<group>"; };
 		E7C105512BF204940010B67A /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
@@ -218,6 +228,50 @@
 			path = RemindMeUITests;
 			sourceTree = "<group>";
 		};
+		E769B8102BF7580200DFFE92 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E769B80F2BF7580200DFFE92 /* AddTaskView.swift */,
+				E769B8132BF8CAB500DFFE92 /* AddTaskViewModel.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E769B8112BF7580200DFFE92 /* AddTask */ = {
+			isa = PBXGroup;
+			children = (
+				E769B8242BF9024700DFFE92 /* CategoryPicker */,
+				E769B8152BF8FED400DFFE92 /* CategoriesViews */,
+				E769B8102BF7580200DFFE92 /* Views */,
+			);
+			path = AddTask;
+			sourceTree = "<group>";
+		};
+		E769B8152BF8FED400DFFE92 /* CategoriesViews */ = {
+			isa = PBXGroup;
+			children = (
+				E78E1BBE2BFE0E2000FAB19D /* CategoriesView.swift */,
+				E78E1BC02BFE0E5D00FAB19D /* CategoriesViewModel.swift */,
+			);
+			path = CategoriesViews;
+			sourceTree = "<group>";
+		};
+		E769B8242BF9024700DFFE92 /* CategoryPicker */ = {
+			isa = PBXGroup;
+			children = (
+				E769B8252BF9025100DFFE92 /* Views */,
+			);
+			path = CategoryPicker;
+			sourceTree = "<group>";
+		};
+		E769B8252BF9025100DFFE92 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E769B8262BF9026900DFFE92 /* CategoryPickerView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		E7C105452BF203F50010B67A /* Root */ = {
 			isa = PBXGroup;
 			children = (
@@ -358,6 +412,7 @@
 		E7C1056B2BF20A140010B67A /* Tasks */ = {
 			isa = PBXGroup;
 			children = (
+				E769B8112BF7580200DFFE92 /* AddTask */,
 				E7C1056C2BF20A280010B67A /* Views */,
 				E7C105862BF210940010B67A /* TasksTab.swift */,
 			);
@@ -550,12 +605,17 @@
 				E7C105772BF20A760010B67A /* SettingsViewModel.swift in Sources */,
 				E76572B92BC43D3900334597 /* AssemblyShared.swift in Sources */,
 				E7C105602BF2074A0010B67A /* TaskTileViewModel.swift in Sources */,
+				E769B8142BF8CAB500DFFE92 /* AddTaskViewModel.swift in Sources */,
 				E7C105872BF210940010B67A /* TasksTab.swift in Sources */,
 				E7C105682BF209E10010B67A /* HistoryView.swift in Sources */,
 				E7C105712BF20A4B0010B67A /* TasksView.swift in Sources */,
+				E769B8272BF9026900DFFE92 /* CategoryPickerView.swift in Sources */,
+				E78E1BC12BFE0E5D00FAB19D /* CategoriesViewModel.swift in Sources */,
 				E7C105542BF2050B0010B67A /* OnboardingModel.swift in Sources */,
+				E769B8122BF7580200DFFE92 /* AddTaskView.swift in Sources */,
 				E7C105572BF2055F0010B67A /* RootView.swift in Sources */,
 				E7C1055E2BF207400010B67A /* TaskTile.swift in Sources */,
+				E78E1BBF2BFE0E2000FAB19D /* CategoriesView.swift in Sources */,
 				E7C105852BF20FE60010B67A /* HistoryTab.swift in Sources */,
 				E7C105642BF2084D0010B67A /* HomeViewModel.swift in Sources */,
 				E7C1056A2BF209FC0010B67A /* HistoryViewModel.swift in Sources */,

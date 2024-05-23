@@ -6,3 +6,9 @@
 //
 
 import Foundation
+import ToDoInterface
+
+final class TasksViewModel: ObservableObject {
+    @Published var tasks: [ToDo] = []
+
+}
