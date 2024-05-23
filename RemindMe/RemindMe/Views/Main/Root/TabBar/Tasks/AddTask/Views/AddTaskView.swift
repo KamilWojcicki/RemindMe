@@ -10,6 +10,7 @@ import Design
 import SwiftUI
 import Navigation
 import ToDoInterface
+import Utilities
 
 struct AddTaskView: View {
     @StateObject private var viewModel = AddTaskViewModel()
@@ -38,9 +39,22 @@ struct AddTaskView: View {
                         .fill(Colors.ghostWhite)
                         .clipShape(.rect(topLeadingRadius: 40, topTrailingRadius: 40))
                         .overlay {
-                            if let selectedCategory = secViewModel.toDoCategory {
-                                buildCategoryView(for: selectedCategory)
+                            VStack {
+                                if let selectedCategory = secViewModel.toDoCategory {
+                                    buildCategoryView(for: selectedCategory)
+                                } else {
+                                    CategoriesView()
+                                }
+                                
+                                Spacer()
+                                
+                                ConfirmButton(title: "Create Task") {
+                                    //add task action
+                                }
+                                .frame(maxHeight: .infinity, alignment: .bottom)
+                                .padding(.vertical, 20)
                             }
+                            .padding(20)
                         }
                         .frame(maxHeight: .infinity, alignment: .bottom)
                         .shadow(color: Colors.night.opacity(0.5), radius: 10)
@@ -66,13 +80,7 @@ struct AddTaskView: View {
         .environmentObject(TabBarViewModel())
 }
 
-extension AddTaskView {
-    private var dateFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM dd, yyyy"
-        return formatter
-    }
-    
+extension AddTaskView {    
     private var divider: some View {
         Divider()
             .frame(height: 1)
@@ -83,21 +91,22 @@ extension AddTaskView {
     @ViewBuilder
     private var datePickerField: some View {
         Text("Date")
-            .font(.body).opacity(0.7)
-        
-        Text(dateFormatter.string(from: viewModel.selectDate))
+            .withOpacityFont()
+    
+        Text(dateFormatter(dateFormat: .date).string(from: viewModel.selectDate))
             .foregroundStyle(Colors.ghostWhite)
             .overlay {
                 DatePicker(
                     "",
                     selection: $viewModel.selectDate,
+                    in: Date()...,
                     displayedComponents: .date
                 )
                 .blendMode(.destinationOver)
                 .labelsHidden()
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .font(.system(size: 23, weight: .bold, design: .default))
+            .font(.size23Default)
         
         divider
     }
@@ -105,7 +114,7 @@ extension AddTaskView {
     @ViewBuilder
     private var titleTextField: some View {
         Text("Title")
-            .font(.body).opacity(0.7)
+            .withOpacityFont()
         
         TextField(textFieldLogin: $viewModel.titleTextFieldText)
         
@@ -150,27 +159,18 @@ extension AddTaskView {
         VStack {
             switch category {
             case .birthday:
-                BirthdayView()
+                CategoriesView(startTimeTitle: "Starting Party", endTimeTitle: "Ending Party", description: "List of guests")
             case .shoppingList:
-                ShoppingListView()
+                CategoriesView(startTimeTitle: "Shopping Time", endTimeTitle: nil, description: "List of products")
             case .holidayEvent:
-                HolidayView()
+                CategoriesView(startTimeTitle: "Starting Holiday", endTimeTitle: "Ending Holiday", description: "Holiday Description")
             case .medicalCheck:
-                MedicalCheckView()
+                CategoriesView(startTimeTitle: "Starting visit", endTimeTitle: nil, description: "Visit Description")
             case .trip:
-                TripView()
+                CategoriesView(startTimeTitle: "Starting Trip", endTimeTitle: "Ending Trip", description: "Plan of a Trip")
             case .otherEvent:
-                OtherEventView()
+                CategoriesView(startTimeTitle: "Starting Event", endTimeTitle: "Ending Event", description: "Event Description")
             }
-            
-            Spacer()
-            
-            ConfirmButton(title: "Create Task") {
-                //add task action
-            }
-            .frame(maxHeight: .infinity, alignment: .bottom)
-            .padding(.vertical, 20)
         }
-        .padding(30)
     }
 }
