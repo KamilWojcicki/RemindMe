@@ -16,7 +16,7 @@ import ToDoInterface
 final class TabBarViewModel: ObservableObject {
     @Published private(set) var tabs: [Tab] = [.home, .history, .tasks, .settings]
     @Published var selectedTab: String?
-    @Published var toDoCategory: Categories? = .otherEvent
+    @Published var toDoCategory: Categories?
     
     init() {
         self.selectedTab = "Home"
