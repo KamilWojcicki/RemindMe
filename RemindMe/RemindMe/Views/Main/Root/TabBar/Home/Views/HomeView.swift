@@ -26,7 +26,6 @@ struct HomeView: View {
                 }
                 .ignoresSafeArea()
             }
-            
         }
     }
 }
@@ -56,7 +55,7 @@ extension HomeView {
         }
         .padding()
     }
-    
+
     private var buildOverlayContent: some View {
         VStack(alignment: .leading) {
             LazyVGrid(columns: columns,
