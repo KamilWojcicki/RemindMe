@@ -17,7 +17,6 @@ struct TasksView: View {
     var body: some View {
         if viewModel.tasks.isEmpty {
             buildViewWithoutTasks
-//                .withModal(.sheet, destinationView: AddTaskView(), isPresented: $viewModel.isSheetPresented, presentationDetent: .height(550))
         } else {
             buildTaskView
         }
@@ -38,7 +37,6 @@ extension TasksView {
                 .foregroundStyle(Colors.ghostWhite.opacity(0.5))
                 .multilineTextAlignment(.center)
             Button {
-//                viewModel.withSheetPreseted()
                 router.navigate(to: .addTask)
             } label: {
                 Image(systemName: Symbols.plusCircle)
@@ -49,6 +47,7 @@ extension TasksView {
         .frame(maxWidth: 250)
     }
     
+    //TODO: Create buildTaskView when tasks is not empty
     private var buildTaskView: some View {
         VStack {
             

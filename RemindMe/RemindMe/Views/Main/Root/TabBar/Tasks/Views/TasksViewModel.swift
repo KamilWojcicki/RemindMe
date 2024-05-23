@@ -10,9 +10,5 @@ import ToDoInterface
 
 final class TasksViewModel: ObservableObject {
     @Published var tasks: [ToDo] = []
-    @Published var isSheetPresented: Bool = false
-    
-    func withSheetPreseted() {
-        isSheetPresented.toggle()
-    }
+
 }
