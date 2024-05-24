@@ -12,6 +12,8 @@ import Navigation
 import ToDoInterface
 import Utilities
 
+
+
 struct AddTaskView: View {
     @StateObject private var viewModel = AddTaskViewModel()
     @EnvironmentObject private var secViewModel: TabBarViewModel
@@ -33,31 +35,9 @@ struct AddTaskView: View {
                 .padding(.horizontal, 25)
                 
                 Spacer()
+                
                 GeometryReader { geometry in
-                    
-                    Rectangle()
-                        .fill(Colors.ghostWhite)
-                        .clipShape(.rect(topLeadingRadius: 40, topTrailingRadius: 40))
-                        .overlay {
-                            VStack {
-                                if let selectedCategory = secViewModel.toDoCategory {
-                                    buildCategoryView(for: selectedCategory)
-                                } else {
-                                    CategoriesView()
-                                }
-                                
-                                Spacer()
-                                
-                                ConfirmButton(title: "Create Task") {
-                                    //add task action
-                                }
-                                .frame(maxHeight: .infinity, alignment: .bottom)
-                                .padding(.vertical, 20)
-                            }
-                            .padding(20)
-                        }
-                        .frame(maxHeight: .infinity, alignment: .bottom)
-                        .shadow(color: Colors.night.opacity(0.5), radius: 10)
+                    buildOverlayContent
                 }
                 .ignoresSafeArea()
             }
@@ -80,18 +60,11 @@ struct AddTaskView: View {
         .environmentObject(TabBarViewModel())
 }
 
-extension AddTaskView {    
-    private var divider: some View {
-        Divider()
-            .frame(height: 1)
-            .background(Colors.ghostWhite.opacity(0.5))
-            .textInputAutocapitalization(.never)
-    }
-    
+extension AddTaskView {
     @ViewBuilder
     private var datePickerField: some View {
         Text("Date")
-            .withOpacityFont()
+            .withOpacityFont(foregroundColor: Colors.ghostWhite)
     
         Text(dateFormatter(dateFormat: .date).string(from: viewModel.selectDate))
             .foregroundStyle(Colors.ghostWhite)
@@ -108,22 +81,26 @@ extension AddTaskView {
             .frame(maxWidth: .infinity, alignment: .leading)
             .font(.size23Default)
         
-        divider
+        OpacityDivider()
     }
     
     @ViewBuilder
     private var titleTextField: some View {
         Text("Title")
-            .withOpacityFont()
+            .withOpacityFont(foregroundColor: Colors.ghostWhite)
         
         TextField(textFieldLogin: $viewModel.titleTextFieldText)
+            .textInputAutocapitalization(.never)
         
-        divider
+        OpacityDivider()
     }
     
     @ViewBuilder
     private var picker: some View {
         Colors.night.ignoresSafeArea().opacity(0.3)
+            .onTapGesture {
+                viewModel.showCategoryPickerView()
+            }
         CategoryPickerView(showPickerView: $viewModel.showCategories)
             .padding()
     }
@@ -172,5 +149,31 @@ extension AddTaskView {
                 CategoriesView(startTimeTitle: "Starting Event", endTimeTitle: "Ending Event", description: "Event Description")
             }
         }
+    }
+    
+    private var buildOverlayContent: some View {
+        Rectangle()
+            .fill(Colors.ghostWhite)
+            .clipShape(.rect(topLeadingRadius: 40, topTrailingRadius: 40))
+            .overlay {
+                VStack {
+                    if let selectedCategory = secViewModel.toDoCategory {
+                        buildCategoryView(for: selectedCategory)
+                    } else {
+                        CategoriesView()
+                    }
+                    
+                    Spacer()
+                    
+                    ConfirmButton(title: "Create Task") {
+                        //add task action
+                    }
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .padding(.vertical, 20)
+                }
+                .padding(20)
+            }
+            .frame(maxHeight: .infinity, alignment: .bottom)
+            .shadow(color: Colors.night.opacity(0.5), radius: 10)
     }
 }
