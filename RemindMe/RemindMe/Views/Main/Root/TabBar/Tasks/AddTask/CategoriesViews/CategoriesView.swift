@@ -5,13 +5,18 @@
 //  Created by Kamil Wójcicki on 22/05/2024.
 //
 
+import Components
 import Design
 import SwiftUI
 import Utilities
 
+private enum Field {
+    case description
+}
+
 struct CategoriesView: View {
     @StateObject private var viewModel = CategoriesViewModel()
-    
+    @FocusState private var isFocused: Field?
     private var startTimeTitle: String?
     private var endTimeTitle: String?
     private var description: String?
@@ -24,63 +29,14 @@ struct CategoriesView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            StartEndDatePicker
+            startEndDatePicker
             
-            Divider()
+            descriptionField
             
-            Text(description ?? "Description")
-                .withOpacityFont()
+            numbersOfNotifications
             
-            TextField("", text: $viewModel.text, axis: .vertical)
-                .lineLimit(4...5)
-                .font(.size23Default)
-            
-            Divider()
-            
-            Text("Numbers of notifications")
-                .withOpacityFont()
-            
-            Menu {
-                Picker("", selection: $viewModel.numberOfNotifications) {
-                    ForEach(1..<10) { value in
-                        Text(value.description)
-                            .tag(value)
-                            .font(.size23Default)
-                    }
-                }
-            } label: {
-                Text(viewModel.numberOfNotifications.description)
-                    .font(.size23Default)
-            }
-            .tint(Colors.night)
-            
-            Divider()
-            
-            Text("Periodic notifications")
-                .withOpacityFont()
-            
-            HStack {
-                Toggle("test", isOn: $viewModel.isOn)
-                    .labelsHidden()
-                
-                if viewModel.isOn {
-                    Menu {
-                        Picker("", selection: $viewModel.period) {
-                            ForEach(Period.allCases, id: \.self) { period in
-                                Text(period.rawValue)
-                                    .tag(period)
-                                    .font(.size23Default)
-                            }
-                        }
-                    } label: {
-                        Text(viewModel.period.rawValue)
-                            .font(.size23Default)
-                    }
-                    .tint(Colors.night)
-                }
-            }
+            periodicNotifications
         }
-//        .tint(Colors.night)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
@@ -90,7 +46,8 @@ struct CategoriesView: View {
 }
 
 extension CategoriesView {
-    private var StartEndDatePicker: some View {
+    @ViewBuilder
+    private var startEndDatePicker: some View {
         HStack(spacing: 60) {
             VStack(alignment: .leading, spacing: 13) {
                 Text(startTimeTitle ?? "Start Time")
@@ -130,6 +87,81 @@ extension CategoriesView {
                         }
                         .font(.size23Default)
                 }
+            }
+        }
+        
+        OpacityDivider()
+    }
+        
+    @ViewBuilder
+    private var descriptionField: some View {
+        Text(description ?? "Description")
+            .withOpacityFont()
+        
+        TextField("", text: $viewModel.text, axis: .vertical)
+            .lineLimit(4...5)
+            .font(.size23Default)
+            .focused($isFocused, equals: .description)
+            .toolbar {
+                if isFocused == .description {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        
+                        Spacer()
+                        
+                        Button("Done") {
+                            isFocused = nil
+                        }
+                    }
+                }
+            }
+        OpacityDivider()
+    }
+    
+    @ViewBuilder
+    private var numbersOfNotifications: some View {
+        Text("Numbers of notifications")
+            .withOpacityFont()
+        
+        Menu {
+            Picker("", selection: $viewModel.numberOfNotifications) {
+                ForEach(1..<10) { value in
+                    Text(value.description)
+                        .tag(value)
+                        .font(.size23Default)
+                }
+            }
+        } label: {
+            Text(viewModel.numberOfNotifications.description)
+                .font(.size23Default)
+        }
+        .tint(Colors.night)
+        
+        OpacityDivider()
+    }
+    
+    @ViewBuilder
+    private var periodicNotifications: some View {
+        Text("Periodic notifications")
+            .withOpacityFont()
+        
+        HStack {
+            Toggle("test", isOn: $viewModel.isOn)
+                .labelsHidden()
+            
+            if viewModel.isOn {
+                Menu {
+                    Picker("", selection: $viewModel.period) {
+                        ForEach(Period.allCases, id: \.self) { period in
+                            Text(period.rawValue)
+                                .tag(period)
+                                .font(.size23Default)
+                        }
+                    }
+                } label: {
+                    Text(viewModel.period.rawValue)
+                        .font(.size23Default)
+                }
+                .tint(Colors.night)
             }
         }
     }
