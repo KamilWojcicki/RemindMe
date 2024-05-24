@@ -43,7 +43,7 @@ public struct TabBarView: View {
                 buildTabBarView
                     .padding(.vertical, 8)
                     .background(
-                        .thickMaterial
+                        Colors.ghostWhite
                     )
                     .cornerRadius(40)
                     .shadow(
