@@ -27,6 +27,9 @@ struct HomeView: View {
                 .ignoresSafeArea()
             }
         }
+        .task {
+            await viewModel.getLatestTask()
+        }
     }
 }
 
@@ -50,9 +53,17 @@ extension HomeView {
         .foregroundStyle(Colors.ghostWhite)
         .padding()
         
-        TaskTile() { isEdited in
-            viewModel.isEdited = isEdited
-        }
+        TaskTile(
+            category: viewModel.latestToDo?.category.rawValue ?? "Category",
+            title: viewModel.latestToDo?.name ?? "Title", isDone: $viewModel.isDone, 
+            latestTask: $viewModel.latestToDo,
+            onButtonTapped: { buttonType in
+                try await viewModel.buttonTapped(buttonType)
+            },
+            isEdited: { isEdited in
+                viewModel.isEdited = isEdited
+            }
+        )
         .padding()
     }
 

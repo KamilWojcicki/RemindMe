@@ -39,7 +39,7 @@ final class ToDoManager: ToDoManagerInterface {
     
     func getLatestToDo() async throws -> ToDo? {
         var toDos: [ToDo] = []
-        toDos = try await readAllToDos()
+        toDos = try await readActiveToDos()
         
         var latestToDo: ToDo? = nil
         var latestExecutionTime: Date? = nil
@@ -52,5 +52,42 @@ final class ToDoManager: ToDoManagerInterface {
         }
         
         return latestToDo
+    }
+    
+    func archiveToDo(primaryKey: String) async throws {
+        let data: [String : Any] = [
+            ToDo.CodingKeys.id.rawValue : primaryKey,
+            ToDo.CodingKeys.isArchived.rawValue : true
+        ]
+        
+        try await updateToDo(data: data)
+    }
+    
+    func readActiveToDos() async throws -> [ToDo] {
+        var activeToDos: [ToDo] = []
+        var allToDos: [ToDo] = []
+        allToDos = try await readAllToDos()
+        
+        for toDo in allToDos {
+            if toDo.isArchived == false {
+                activeToDos.append(toDo)
+            }
+        }
+        
+        return activeToDos
+    }
+    
+    func readArchiveToDos() async throws -> [ToDo] {
+        var archiveToDos: [ToDo] = []
+        var allToDos: [ToDo] = []
+        allToDos = try await readAllToDos()
+        
+        for toDo in allToDos {
+            if toDo.isArchived {
+                archiveToDos.append(toDo)
+            }
+        }
+        
+        return archiveToDos
     }
 }

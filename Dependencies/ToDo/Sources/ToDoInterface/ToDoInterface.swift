@@ -43,14 +43,18 @@ public struct ToDo: LocalStorable {
     public let toDoDescription: String?
     public let executedTime: Date
     public let numbersOfReminders: Int?
+    public let isArchived: Bool
+    public let isDone: Bool
     
-    public init(id: String = UUID().uuidString, category: Categories, name: String, toDoDescription: String, executedTime: Date, numbersOfReminders: Int) {
+    public init(id: String = UUID().uuidString, category: Categories, name: String, toDoDescription: String, executedTime: Date, numbersOfReminders: Int, isArchived: Bool = false, isDone: Bool = false) {
         self.id = id
         self.category = category
         self.name = name
         self.toDoDescription = toDoDescription
         self.executedTime = executedTime
         self.numbersOfReminders = numbersOfReminders
+        self.isArchived = isArchived
+        self.isDone = isDone
     }
     
     public init(from dao: ToDoDAO) {
@@ -60,6 +64,8 @@ public struct ToDo: LocalStorable {
         self.toDoDescription = dao.toDoDescription
         self.executedTime = dao.executedTime
         self.numbersOfReminders = dao.numbersOfReminders
+        self.isArchived = dao.isArchived
+        self.isDone = dao.isDone
     }
     
     public enum CodingKeys: String, CodingKey {
@@ -69,6 +75,8 @@ public struct ToDo: LocalStorable {
         case toDoDescription
         case executedTime
         case numbersOfReminders
+        case isArchived
+        case isDone
     }
 }
 
@@ -80,6 +88,8 @@ public final class ToDoDAO: RealmSwift.Object, LocalDAOInterface {
     @Persisted public var toDoDescription: String?
     @Persisted public var executedTime: Date
     @Persisted public var numbersOfReminders: Int?
+    @Persisted public var isArchived: Bool
+    @Persisted public var isDone: Bool
     
     override public init() {
         super.init()
@@ -88,6 +98,8 @@ public final class ToDoDAO: RealmSwift.Object, LocalDAOInterface {
         self.toDoDescription = ""
         self.executedTime = Date()
         self.numbersOfReminders = 0
+        self.isArchived = false
+        self.isDone = false
     }
     
     public init(from todo: ToDo) {
@@ -98,6 +110,8 @@ public final class ToDoDAO: RealmSwift.Object, LocalDAOInterface {
         self.toDoDescription = todo.toDoDescription
         self.executedTime = todo.executedTime
         self.numbersOfReminders = todo.numbersOfReminders
+        self.isArchived = todo.isArchived
+        self.isDone = todo.isDone
     }
 }
 
@@ -109,4 +123,7 @@ public protocol ToDoManagerInterface {
     func deleteToDo(primaryKey: String) async throws
     func deleteAllToDos() async throws
     func getLatestToDo() async throws -> ToDo?
+    func archiveToDo(primaryKey: String) async throws
+    func readActiveToDos() async throws -> [ToDo]
+    func readArchiveToDos() async throws -> [ToDo]
 }

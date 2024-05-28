@@ -12,6 +12,8 @@ import Navigation
 import ToDoInterface
 import Utilities
 
+
+
 struct AddTaskView: View {
     @StateObject private var viewModel = AddTaskViewModel()
     @EnvironmentObject private var secViewModel: TabBarViewModel
@@ -33,31 +35,9 @@ struct AddTaskView: View {
                 .padding(.horizontal, 25)
                 
                 Spacer()
+                
                 GeometryReader { geometry in
-                    
-                    Rectangle()
-                        .fill(Colors.ghostWhite)
-                        .clipShape(.rect(topLeadingRadius: 40, topTrailingRadius: 40))
-                        .overlay {
-                            VStack {
-                                if let selectedCategory = secViewModel.toDoCategory {
-                                    buildCategoryView(for: selectedCategory)
-                                } else {
-                                    CategoriesView()
-                                }
-                                
-                                Spacer()
-                                
-                                ConfirmButton(title: "Create Task") {
-                                    //add task action
-                                }
-                                .frame(maxHeight: .infinity, alignment: .bottom)
-                                .padding(.vertical, 20)
-                            }
-                            .padding(20)
-                        }
-                        .frame(maxHeight: .infinity, alignment: .bottom)
-                        .shadow(color: Colors.night.opacity(0.5), radius: 10)
+                    buildOverlayContent
                 }
                 .ignoresSafeArea()
             }
@@ -80,18 +60,11 @@ struct AddTaskView: View {
         .environmentObject(TabBarViewModel())
 }
 
-extension AddTaskView {    
-    private var divider: some View {
-        Divider()
-            .frame(height: 1)
-            .background(Colors.ghostWhite.opacity(0.5))
-            .textInputAutocapitalization(.never)
-    }
-    
+extension AddTaskView {
     @ViewBuilder
     private var datePickerField: some View {
         Text("Date")
-            .withOpacityFont()
+            .withOpacityFont(foregroundColor: Colors.ghostWhite)
     
         Text(dateFormatter(dateFormat: .date).string(from: viewModel.selectDate))
             .foregroundStyle(Colors.ghostWhite)
@@ -108,22 +81,26 @@ extension AddTaskView {
             .frame(maxWidth: .infinity, alignment: .leading)
             .font(.size23Default)
         
-        divider
+        OpacityDivider()
     }
     
     @ViewBuilder
     private var titleTextField: some View {
         Text("Title")
-            .withOpacityFont()
+            .withOpacityFont(foregroundColor: Colors.ghostWhite)
         
         TextField(textFieldLogin: $viewModel.titleTextFieldText)
+            .textInputAutocapitalization(.never)
         
-        divider
+        OpacityDivider()
     }
     
     @ViewBuilder
     private var picker: some View {
         Colors.night.ignoresSafeArea().opacity(0.3)
+            .onTapGesture {
+                viewModel.showCategoryPickerView()
+            }
         CategoryPickerView(showPickerView: $viewModel.showCategories)
             .padding()
     }
@@ -153,24 +130,49 @@ extension AddTaskView {
         .padding(.bottom, 30)
         .frame(maxWidth: .infinity)
     }
-    
-    @ViewBuilder
-    private func buildCategoryView(for category: Categories) -> some View {
-        VStack {
-            switch category {
-            case .birthday:
-                CategoriesView(startTimeTitle: "Starting Party", endTimeTitle: "Ending Party", description: "List of guests")
-            case .shoppingList:
-                CategoriesView(startTimeTitle: "Shopping Time", endTimeTitle: nil, description: "List of products")
-            case .holidayEvent:
-                CategoriesView(startTimeTitle: "Starting Holiday", endTimeTitle: "Ending Holiday", description: "Holiday Description")
-            case .medicalCheck:
-                CategoriesView(startTimeTitle: "Starting visit", endTimeTitle: nil, description: "Visit Description")
-            case .trip:
-                CategoriesView(startTimeTitle: "Starting Trip", endTimeTitle: "Ending Trip", description: "Plan of a Trip")
-            case .otherEvent:
-                CategoriesView(startTimeTitle: "Starting Event", endTimeTitle: "Ending Event", description: "Event Description")
-            }
+
+    private func parameters(for category: Categories) -> (String, String?, String) {
+        switch category {
+        case .birthday:
+            return ("Starting Party", "Ending Party", "List of guests")
+        case .shoppingList:
+            return ("Shopping Time", nil, "List of products")
+        case .holidayEvent:
+            return ("Starting Holiday", "Ending Holiday", "Holiday Description")
+        case .medicalCheck:
+            return ("Starting visit", nil, "Visit Description")
+        case .trip:
+            return ("Starting Trip", "Ending Trip", "Plan of a Trip")
+        case .otherEvent:
+            return ("Starting Event", "Ending Event", "Event Description")
         }
+    }
+    
+    private var buildOverlayContent: some View {
+        Rectangle()
+            .fill(Colors.ghostWhite)
+            .clipShape(.rect(topLeadingRadius: 40, topTrailingRadius: 40))
+            .overlay {
+                VStack {
+                    if let selectedCategory = secViewModel.toDoCategory {
+                        let (startTimeTitle, endTimeTitle, description) = parameters(for: selectedCategory)
+                        CategoriesView(startTimeTitle: startTimeTitle, endTimeTitle: endTimeTitle, description: description, selectStartDate: $viewModel.selectStartTime, selectEndDate: $viewModel.selectEndTime, text: $viewModel.descriptionTextFieldText, numberOfNotifications: $viewModel.numberOfNotifications)
+                    } else {
+                        CategoriesView(selectStartDate: $viewModel.selectStartTime, selectEndDate: $viewModel.selectEndTime, text: $viewModel.descriptionTextFieldText, numberOfNotifications: $viewModel.numberOfNotifications)
+                    }
+                    
+                    Spacer()
+                    
+                    ConfirmButton(title: "Create Task") {
+                        viewModel.addTask(category: secViewModel.toDoCategory ?? .otherEvent)
+                        router.navigateBack()
+                    }
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .padding(.vertical, 20)
+                }
+                .padding(20)
+            }
+            .frame(maxHeight: .infinity, alignment: .bottom)
+            .shadow(color: Colors.night.opacity(0.5), radius: 10)
     }
 }
