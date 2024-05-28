@@ -17,10 +17,6 @@ enum Period: String, CaseIterable {
 }
 
 final class CategoriesViewModel: ObservableObject {
-    @Published var selectStartDate: Date = Date()
-    @Published var selectEndDate: Date = Date()
-    @Published var text: String = ""
     @Published var isOn: Bool = false
     @Published var period: Period = .onceADay
-    @Published var numberOfNotifications: Int = 1
 }
