@@ -130,24 +130,21 @@ extension AddTaskView {
         .padding(.bottom, 30)
         .frame(maxWidth: .infinity)
     }
-    
-    @ViewBuilder
-    private func buildCategoryView(for category: Categories) -> some View {
-        VStack {
-            switch category {
-            case .birthday:
-                CategoriesView(startTimeTitle: "Starting Party", endTimeTitle: "Ending Party", description: "List of guests")
-            case .shoppingList:
-                CategoriesView(startTimeTitle: "Shopping Time", endTimeTitle: nil, description: "List of products")
-            case .holidayEvent:
-                CategoriesView(startTimeTitle: "Starting Holiday", endTimeTitle: "Ending Holiday", description: "Holiday Description")
-            case .medicalCheck:
-                CategoriesView(startTimeTitle: "Starting visit", endTimeTitle: nil, description: "Visit Description")
-            case .trip:
-                CategoriesView(startTimeTitle: "Starting Trip", endTimeTitle: "Ending Trip", description: "Plan of a Trip")
-            case .otherEvent:
-                CategoriesView(startTimeTitle: "Starting Event", endTimeTitle: "Ending Event", description: "Event Description")
-            }
+
+    private func parameters(for category: Categories) -> (String, String?, String) {
+        switch category {
+        case .birthday:
+            return ("Starting Party", "Ending Party", "List of guests")
+        case .shoppingList:
+            return ("Shopping Time", nil, "List of products")
+        case .holidayEvent:
+            return ("Starting Holiday", "Ending Holiday", "Holiday Description")
+        case .medicalCheck:
+            return ("Starting visit", nil, "Visit Description")
+        case .trip:
+            return ("Starting Trip", "Ending Trip", "Plan of a Trip")
+        case .otherEvent:
+            return ("Starting Event", "Ending Event", "Event Description")
         }
     }
     
@@ -158,15 +155,17 @@ extension AddTaskView {
             .overlay {
                 VStack {
                     if let selectedCategory = secViewModel.toDoCategory {
-                        buildCategoryView(for: selectedCategory)
+                        let (startTimeTitle, endTimeTitle, description) = parameters(for: selectedCategory)
+                        CategoriesView(startTimeTitle: startTimeTitle, endTimeTitle: endTimeTitle, description: description, selectStartDate: $viewModel.selectStartTime, selectEndDate: $viewModel.selectEndTime, text: $viewModel.descriptionTextFieldText, numberOfNotifications: $viewModel.numberOfNotifications)
                     } else {
-                        CategoriesView()
+                        CategoriesView(selectStartDate: $viewModel.selectStartTime, selectEndDate: $viewModel.selectEndTime, text: $viewModel.descriptionTextFieldText, numberOfNotifications: $viewModel.numberOfNotifications)
                     }
                     
                     Spacer()
                     
                     ConfirmButton(title: "Create Task") {
-                        //add task action
+                        viewModel.addTask(category: secViewModel.toDoCategory ?? .otherEvent)
+                        router.navigateBack()
                     }
                     .frame(maxHeight: .infinity, alignment: .bottom)
                     .padding(.vertical, 20)
