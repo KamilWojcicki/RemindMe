@@ -5,9 +5,11 @@
 //  Created by Kamil Wójcicki on 13/05/2024.
 //
 
+import Components
 import Design
 import Navigation
 import SwiftUI
+import ToDoInterface
 
 struct TasksView: View {
     
@@ -15,10 +17,15 @@ struct TasksView: View {
     @EnvironmentObject private var router: Router<Routes>
     
     var body: some View {
-        if viewModel.tasks.isEmpty {
-            buildViewWithoutTasks
-        } else {
-            buildTaskView
+        ZStack {
+            if viewModel.tasks.isEmpty {
+                buildViewWithoutTasks
+            } else {
+                buildTaskView
+            }
+        }
+        .task {
+            await viewModel.getAllTasks()
         }
     }
 }
@@ -47,11 +54,21 @@ extension TasksView {
         .frame(maxWidth: 250)
     }
     
-    //TODO: Create buildTaskView when tasks is not empty
     private var buildTaskView: some View {
         VStack {
-            
+            ScrollView {
+                ForEach(viewModel.tasks, id: \.id) { task in
+                    TaskTile(category: task.category.rawValue, title: task.name, isDone: .constant(false), latestTask: .constant(ToDo(category: .birthday, name: "", toDoDescription: "", executedTime: Date(), numbersOfReminders: 1))) { test in
+                            print(task)
+                    } isEdited: { test in
+                        print(test)
+                    }
+                    .padding(.vertical, 10)
+                }
+                .padding(.vertical, 20)
+            }
+            .withFadeOut(topFadeLength: 30, bottomFadeLength: 100)
         }
-        
+        .padding()
     }
 }
