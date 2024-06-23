@@ -6,3 +6,8 @@
 //
 
 import Foundation
+import SwiftUI
+
+final class RootViewModel: ObservableObject {
+    @AppStorage("isFirstAppear") var isFirstAppear: Bool = true
+}
