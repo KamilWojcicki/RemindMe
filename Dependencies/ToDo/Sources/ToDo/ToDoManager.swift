@@ -5,13 +5,23 @@
 //  Created by Kamil Wójcicki on 18/04/2024.
 //
 
+import Combine
 import DependencyInjection
 import Foundation
 import LocalDatabaseInterface
+import SwiftUI
 import ToDoInterface
 
 final class ToDoManager: ToDoManagerInterface {
     @Inject private var localDatabaseManager: LocalDatabaseManagerInterface
+    
+    let updatedCategory = PassthroughSubject<ToDoInterface.Category?, Never>()
+    
+    private var category: ToDoInterface.Category? {
+        didSet {
+            updatedCategory.send(category)
+        }
+    }
     
     func createToDo(todo: ToDo) async throws {
         try await localDatabaseManager.create(todo)
@@ -38,20 +48,8 @@ final class ToDoManager: ToDoManagerInterface {
     }
     
     func getLatestToDo() async throws -> ToDo? {
-        var toDos: [ToDo] = []
-        toDos = try await readActiveToDos()
-        
-        var latestToDo: ToDo? = nil
-        var latestExecutionTime: Date? = nil
-        
-        for toDo in toDos {
-            if latestExecutionTime == nil || toDo.executedTime > latestExecutionTime ?? Date() {
-                latestExecutionTime = toDo.executedTime
-                latestToDo = toDo
-            }
-        }
-        
-        return latestToDo
+        let toDos = try await readActiveToDos()
+        return toDos.max(by: { $0.executedDate < $1.executedDate })
     }
     
     func archiveToDo(primaryKey: String) async throws {
@@ -64,30 +62,37 @@ final class ToDoManager: ToDoManagerInterface {
     }
     
     func readActiveToDos() async throws -> [ToDo] {
-        var activeToDos: [ToDo] = []
-        var allToDos: [ToDo] = []
-        allToDos = try await readAllToDos()
-        
-        for toDo in allToDos {
-            if toDo.isArchived == false {
-                activeToDos.append(toDo)
-            }
-        }
-        
-        return activeToDos
+        let allToDos = try await readAllToDos()
+        return allToDos.filter { !$0.isArchived }
     }
     
     func readArchiveToDos() async throws -> [ToDo] {
-        var archiveToDos: [ToDo] = []
-        var allToDos: [ToDo] = []
-        allToDos = try await readAllToDos()
-        
-        for toDo in allToDos {
-            if toDo.isArchived {
-                archiveToDos.append(toDo)
+        let allToDos = try await readAllToDos()
+        return allToDos.filter { $0.isArchived }
+    }
+}
+
+//CATEGORY
+extension ToDoManager {
+    func updateCategory(newCategory: ToDoInterface.Category?) {
+        self.category = newCategory
+    }
+}
+
+//DELETE TODO IF DATE IS EXPIRED
+extension ToDoManager {
+    func archiveExpiredToDos() async throws {
+        var toDos = try await readActiveToDos()
+        let currentDate = Date()
+
+        for toDo in toDos {
+            guard let startExecutedTime = toDo.startExecutedTime else { return }
+            if startExecutedTime < currentDate {
+                try await archiveToDo(primaryKey: toDo.id)
+                withAnimation {
+                    toDos.removeAll { $0.id == toDo.id }
+                }
             }
         }
-        
-        return archiveToDos
     }
 }

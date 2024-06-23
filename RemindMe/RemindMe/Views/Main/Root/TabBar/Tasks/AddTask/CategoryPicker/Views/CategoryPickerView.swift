@@ -13,12 +13,13 @@ import ToDoInterface
 struct CategoryPickerView: View {
     
     @EnvironmentObject private var router: Router<Routes>
-    @EnvironmentObject private var viewModel: TabBarViewModel
     @Binding var showPickerView: Bool
+    @Binding var category: ToDoInterface.Category?
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
     
-    init(showPickerView: Binding<Bool>) {
+    init(showPickerView: Binding<Bool>, category: Binding<ToDoInterface.Category?>) {
         self._showPickerView = showPickerView
+        self._category = category
     }
     
     var body: some View {
@@ -38,7 +39,7 @@ struct CategoryPickerView: View {
 }
 
 #Preview {
-    CategoryPickerView(showPickerView: .constant(true))
+    CategoryPickerView(showPickerView: .constant(true), category: .constant(.trip))
 }
 
 extension CategoryPickerView {
@@ -50,10 +51,10 @@ extension CategoryPickerView {
     }
     
     private var categoriesButtons: some View {
-        ForEach(Categories.allCases, id: \.self) { category in            
+        ForEach(ToDoInterface.Category.allCases, id: \.self) { category in            
             Button {
-                viewModel.toDoCategory = category
-                showPickerView.toggle()
+                self.category = category
+                
             } label: {
                 VStack(alignment: .leading, spacing: 10) {
                     Image(systemName: category.image)

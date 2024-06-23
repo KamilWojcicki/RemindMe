@@ -44,7 +44,7 @@ extension TasksView {
                 .foregroundStyle(Colors.ghostWhite.opacity(0.5))
                 .multilineTextAlignment(.center)
             Button {
-                router.navigate(to: .addTask)
+                router.navigate(to: .addTask())
             } label: {
                 Image(systemName: Symbols.plusCircle)
                     .font(.system(size: 100))
@@ -58,12 +58,7 @@ extension TasksView {
         VStack {
             ScrollView {
                 ForEach(viewModel.tasks, id: \.id) { task in
-                    TaskTile(category: task.category.rawValue, title: task.name, isDone: .constant(false), latestTask: .constant(ToDo(category: .birthday, name: "", toDoDescription: "", executedTime: Date(), numbersOfReminders: 1))) { test in
-                            print(task)
-                    } isEdited: { test in
-                        print(test)
-                    }
-                    .padding(.vertical, 10)
+                    Text(task.name)
                 }
                 .padding(.vertical, 20)
             }

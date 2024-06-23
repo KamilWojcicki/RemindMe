@@ -9,10 +9,9 @@ import Design
 import Navigation
 import SwiftUI
 
-//MARK: Create TabBarView
 public struct TabBarView: View {
     @StateObject private var viewModel = TabBarViewModel()
-    @StateObject private var router: Router<Routes> = .init()
+    @StateObject private var router = Router<Routes>()
     @Namespace private var namespace
     
     public init() {
@@ -26,38 +25,31 @@ public struct TabBarView: View {
             self.viewModel.selectedTab = $0
         }
         
-        RouterView(stack: $router.stack) {
+        NavigationStack(path: $router.stack) {
             ZStack(alignment: .bottom) {
+                Colors.ghostWhite.ignoresSafeArea()
                 
-                Colors.background().ignoresSafeArea()
-                
-                SwiftUI.TabView(selection: selectedTab) {
-                    ForEach(viewModel.tabs, id: \.title) { tab in
-                        tab.rootView
-                            
-                            
+                VStack {
+                    SwiftUI.TabView(selection: selectedTab) {
+                        ForEach(viewModel.tabs, id: \.title) { tab in
+                            tab.rootView
+                                .clipShape(.rect(bottomLeadingRadius: 40, bottomTrailingRadius: 40))
+                        }
                     }
-                }
-                .ignoresSafeArea()
-                
-                buildTabBarView
-                    .padding(.vertical, 8)
-                    .background(
-                        Colors.ghostWhite
-                    )
-                    .cornerRadius(40)
-                    .shadow(
-                        color: Colors.night.opacity(0.3),
-                        radius: 10
-                    )
-                    .padding(.horizontal)
+                    .ignoresSafeArea()
                     
+                    buildTabBarView
+                }
             }
+            .navigationDestination(for: Routes.self) { path in
+                switch path {
+                case .addTask(let task): AddTaskView(toDoToEdit: task, category: viewModel.category)
+                }
+            }
+            .navigationBarBackButtonHidden(true)
+            .tabViewStyle(.page(indexDisplayMode: .never))
         }
-        .environmentObject(viewModel)
         .environmentObject(router)
-        .navigationBarBackButtonHidden(true)
-        .tabViewStyle(.page(indexDisplayMode: .never))
     }
 }
 
@@ -69,25 +61,19 @@ extension TabBarView {
                 
                 Spacer()
 
-                HStack {
-                    Spacer()
-                    
+                VStack(spacing: 7) {
                     Image(systemName: isSelectedTab ? tab.activeImage : tab.image)
                         .resizable()
                         .renderingMode(.template)
-                        
                         .frame(width: 20, height: 20)
-                    if isSelectedTab {
-                        Text(tab.title)
-                            .font(.system(size: 16))
-                    }
-                    
-                    Spacer()
+                        
+                    Text(tab.title)
+                        .font(.system(size: 14))
                 }
-                .frame(width: isSelectedTab ? nil : 60, height: 60)
-                .background(isSelectedTab ? Colors.blue.opacity(0.85) : .clear)
-                .cornerRadius(40)
-                .foregroundColor(isSelectedTab ? Colors.ghostWhite : Colors.night.opacity(0.5))
+                .foregroundStyle(isSelectedTab ? Colors.blue : Colors.night.opacity(0.7))
+                .padding(.horizontal)
+                .padding(.top)
+                .contentShape(Rectangle())
                 .onTapGesture {
                     viewModel.tapped(tab: tab.title)
                 }

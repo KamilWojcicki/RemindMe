@@ -5,12 +5,13 @@
 //  Created by Kamil Wójcicki on 18/04/2024.
 //
 
+import Combine
 import Design
 import Foundation
 import LocalDatabaseInterface
 import RealmSwift
 
-public enum Categories: String, CaseIterable, Codable, PersistableEnum {
+public enum Category: String, CaseIterable, Codable, PersistableEnum {
     case birthday = "Birthday"
     case shoppingList = "Shopping List"
     case holidayEvent = "Holiday Event"
@@ -38,20 +39,24 @@ public enum Categories: String, CaseIterable, Codable, PersistableEnum {
 
 public struct ToDo: LocalStorable {
     public let id: String
-    public let category: Categories
+    public let category: Category
     public let name: String
     public let toDoDescription: String?
-    public let executedTime: Date
+    public let executedDate: Date
+    public let startExecutedTime: Date?
+    public let endExecutedTime: Date?
     public let numbersOfReminders: Int?
     public let isArchived: Bool
     public let isDone: Bool
     
-    public init(id: String = UUID().uuidString, category: Categories, name: String, toDoDescription: String, executedTime: Date, numbersOfReminders: Int, isArchived: Bool = false, isDone: Bool = false) {
+    public init(id: String = UUID().uuidString, category: Category, name: String, toDoDescription: String, executedDate: Date, startExecutedTime: Date?, endExecutedTime: Date?, numbersOfReminders: Int, isArchived: Bool = false, isDone: Bool = false) {
         self.id = id
         self.category = category
         self.name = name
         self.toDoDescription = toDoDescription
-        self.executedTime = executedTime
+        self.executedDate = executedDate
+        self.startExecutedTime = startExecutedTime
+        self.endExecutedTime = endExecutedTime
         self.numbersOfReminders = numbersOfReminders
         self.isArchived = isArchived
         self.isDone = isDone
@@ -62,7 +67,9 @@ public struct ToDo: LocalStorable {
         self.category = dao.category
         self.name = dao.name
         self.toDoDescription = dao.toDoDescription
-        self.executedTime = dao.executedTime
+        self.executedDate = dao.executedDate
+        self.startExecutedTime = dao.startExecutedTime
+        self.endExecutedTime = dao.endExecutedTime
         self.numbersOfReminders = dao.numbersOfReminders
         self.isArchived = dao.isArchived
         self.isDone = dao.isDone
@@ -73,7 +80,9 @@ public struct ToDo: LocalStorable {
         case category
         case name
         case toDoDescription
-        case executedTime
+        case executedDate
+        case startExecutedTime
+        case endExecutedTime
         case numbersOfReminders
         case isArchived
         case isDone
@@ -84,9 +93,11 @@ public final class ToDoDAO: RealmSwift.Object, LocalDAOInterface {
     
     @Persisted(primaryKey: true) public var id: String
     @Persisted public var name: String
-    @Persisted public var category: Categories
+    @Persisted public var category: Category
     @Persisted public var toDoDescription: String?
-    @Persisted public var executedTime: Date
+    @Persisted public var executedDate: Date
+    @Persisted public var startExecutedTime: Date?
+    @Persisted public var endExecutedTime: Date?
     @Persisted public var numbersOfReminders: Int?
     @Persisted public var isArchived: Bool
     @Persisted public var isDone: Bool
@@ -94,9 +105,11 @@ public final class ToDoDAO: RealmSwift.Object, LocalDAOInterface {
     override public init() {
         super.init()
         self.name = ""
-        self.category = Categories.otherEvent
+        self.category = Category.otherEvent
         self.toDoDescription = ""
-        self.executedTime = Date()
+        self.executedDate = Date()
+        self.startExecutedTime = Date()
+        self.endExecutedTime = Date()
         self.numbersOfReminders = 0
         self.isArchived = false
         self.isDone = false
@@ -108,7 +121,9 @@ public final class ToDoDAO: RealmSwift.Object, LocalDAOInterface {
         self.category = todo.category
         self.name = todo.name
         self.toDoDescription = todo.toDoDescription
-        self.executedTime = todo.executedTime
+        self.executedDate = todo.executedDate
+        self.startExecutedTime = todo.startExecutedTime
+        self.endExecutedTime = todo.endExecutedTime
         self.numbersOfReminders = todo.numbersOfReminders
         self.isArchived = todo.isArchived
         self.isDone = todo.isDone
@@ -116,6 +131,8 @@ public final class ToDoDAO: RealmSwift.Object, LocalDAOInterface {
 }
 
 public protocol ToDoManagerInterface {
+    var updatedCategory: PassthroughSubject<ToDoInterface.Category?, Never> { get }
+    
     func createToDo(todo: ToDo) async throws
     func readToDo(primaryKey: String) async throws -> ToDo
     func readAllToDos() async throws -> [ToDo]
@@ -126,4 +143,8 @@ public protocol ToDoManagerInterface {
     func archiveToDo(primaryKey: String) async throws
     func readActiveToDos() async throws -> [ToDo]
     func readArchiveToDos() async throws -> [ToDo]
+    //category
+    func updateCategory(newCategory: ToDoInterface.Category?)
+    //delete if expired
+    func archiveExpiredToDos() async throws
 }

@@ -18,11 +18,13 @@ final class HomeViewModel: ObservableObject {
     @Published var latestToDo: ToDo? = nil
     @Inject private var toDoManager: ToDoManagerInterface
     
-    func updateToDoCategory(to category: Categories, using secViewModel: TabBarViewModel) {
-            secViewModel.toDoCategory = category
-        }
+    private var timer: Timer?
     
-    public func buttonTapped(_ type: ActionButton.ButtonType) async throws {
+    func updateToDoCategory(to category: ToDoInterface.Category) {
+        toDoManager.updateCategory(newCategory: category)
+    }
+    
+    func buttonTapped(_ type: ActionButton.ButtonType) async throws {
         switch type {
         case .done:
             try await markAsDone()
@@ -35,12 +37,32 @@ final class HomeViewModel: ObservableObject {
         }
     }
     
-    func getLatestTask() async {
-        do {
-            self.latestToDo = try await toDoManager.getLatestToDo()
-        } catch {
-            print(error.localizedDescription)
+    func getLatestTask() {
+        Task {
+            do {
+                self.latestToDo = try await toDoManager.getLatestToDo()
+            } catch {
+                print(error.localizedDescription)
+            }
         }
+    }
+    
+    func archiveExpiredToDo() {
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            Task {
+                do {
+                    try await self.toDoManager.archiveExpiredToDos()
+                    await self.getLatestTask()
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    func stopTimer() {
+        timer?.invalidate()
+        timer = nil
     }
     
     private func markAsDone() async throws {
@@ -52,37 +74,38 @@ final class HomeViewModel: ObservableObject {
             ToDo.CodingKeys.isDone.rawValue : true
         ]
         
-        try await toDoManager.updateToDo(data: data)
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+            if self?.isDone == true {
                 Task {
+                    try await self?.toDoManager.updateToDo(data: data)
                     try await self?.addToArchive()
                     withAnimation(.interactiveSpring) {
                         self?.isDone = false
                     }
-                    
                 }
             }
+        }
         
         withAnimation(.interactiveSpring) {
             isDone.toggle()
         }
     }
-
+    
     private func editTask() async throws {
-//        showEditTask.toggle()
-    }
-
-    private func deleteTask() async throws {
-        try await toDoManager.deleteToDo(primaryKey: latestToDo?.id ?? "")
-        await getLatestTask()
+        isEdited.toggle()
     }
     
-    func addToArchive() async throws {
-        
+    private func deleteTask() async throws {
+        guard let latestToDo = latestToDo else { return }
+        try await toDoManager.deleteToDo(primaryKey: latestToDo.id)
+        getLatestTask()
+    }
+    
+    private func addToArchive() async throws {
         guard let latestToDo = latestToDo else { return }
         try await toDoManager.archiveToDo(primaryKey: latestToDo.id)
         
-        await getLatestTask()
+        getLatestTask()
     }
 }
+

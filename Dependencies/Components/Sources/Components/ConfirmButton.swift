@@ -19,18 +19,20 @@ public struct ConfirmButton: View {
     }
     
     public var body: some View {
-        Rectangle()
-            .fill(Colors.blue)
-            .frame(height: 70)
-            .clipShape(.rect(cornerRadius: 40))
-            .overlay {
-                Text(title)
-                    .foregroundStyle(Colors.ghostWhite)
-                    .font(.title2)
-            }
-            .onTapGesture {
-                action()
-            }
+        Button {
+            action()
+        } label: {
+            Rectangle()
+                .fill(Colors.blue)
+                .frame(height: 70)
+                .clipShape(.rect(cornerRadius: 40))
+                .overlay {
+                    Text(title)
+                        .foregroundStyle(Colors.ghostWhite)
+                        .font(.title2)
+                }
+        }
+
     }
 }
 

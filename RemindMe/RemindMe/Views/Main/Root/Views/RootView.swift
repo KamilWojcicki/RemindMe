@@ -8,17 +8,15 @@
 import Design
 import SwiftUI
 
-public struct RootView: View {
-    @AppStorage("isFirstAppear") var isFirstAppear: Bool = true
+struct RootView: View {
+    @StateObject private var viewModel = RootViewModel()
     
-    public init() { }
-    
-    public var body: some View {
+    var body: some View {
         ZStack {
             Colors.background().ignoresSafeArea()
             
-            if isFirstAppear {
-                OnboardingScreen(changeView: $isFirstAppear)
+            if viewModel.isFirstAppear {
+                OnboardingScreen(changeView: $viewModel.isFirstAppear)
             } else {
                TabBarView()
                     .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))

@@ -9,5 +9,5 @@ import Foundation
 import ToDoInterface
 
 final class QuickTaskTileViewModel: ObservableObject {
-    @Published var quickTaskCategories: [Categories] = [.shoppingList, .birthday, .trip, .medicalCheck]
+    @Published var quickTaskCategories: [ToDoInterface.Category] = [.shoppingList, .birthday, .trip, .medicalCheck]
 }

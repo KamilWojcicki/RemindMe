@@ -14,28 +14,22 @@ import ToDoInterface
 
 public struct TaskTile: View {
     @EnvironmentObject private var router: Router<Routes>
-    @StateObject private var viewModel = TaskTileViewModel()
-    @Binding private var isDone: Bool
     @Binding private var latestTask: ToDo?
-    let category: String
-    let title: String
+    @Binding private var isDone: Bool
+    @Binding private var isEdited: Bool
+    
     var onButtonTapped: (ActionButton.ButtonType) async throws -> Void
-    var isEdited: ((Bool) -> Void)
     
     init(
-        category: String = "Category",
-        title: String = "Title",
-        isDone: Binding<Bool>,
         latestTask: Binding<ToDo?>,
-        onButtonTapped: @escaping (ActionButton.ButtonType) async throws -> Void,
-        isEdited: @escaping (Bool) -> Void
+        isDone: Binding<Bool>,
+        isEdited: Binding<Bool>,
+        onButtonTapped: @escaping (ActionButton.ButtonType) async throws -> Void
     ) {
-        self.category = category
-        self.title = title
-        self._isDone = isDone
         self._latestTask = latestTask
+        self._isDone = isDone
+        self._isEdited = isEdited
         self.onButtonTapped = onButtonTapped
-        self.isEdited = isEdited
     }
     
     public var body: some View {
@@ -46,9 +40,9 @@ public struct TaskTile: View {
             .overlay {
                 VStack(alignment: .leading) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(category)
+                        Text(latestTask?.category.rawValue ?? "Category")
                             .font(.caption).opacity(0.7)
-                        Text(title)
+                        Text(latestTask?.name ?? "Title")
                             .font(.title).bold()
                     }
                     
@@ -58,12 +52,12 @@ public struct TaskTile: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 .padding(20)
-                .foregroundStyle(Colors.ghostWhite)
+                .foregroundStyle(Colors.night)
                 .overlay {
                     if latestTask == nil {
                         VStack {
                             Button {
-                                router.navigate(to: .addTask)
+                                router.navigate(to: .addTask())
                             } label: {
                                 Image(systemName: Symbols.plusCircle)
                                     .font(.system(size: 100))
@@ -82,7 +76,22 @@ public struct TaskTile: View {
 #Preview {
     ZStack {
         Colors.background().ignoresSafeArea()
-        TaskTile(isDone: .constant(false), latestTask: .constant(ToDo(category: .birthday, name: "", toDoDescription: "", executedTime: Date(), numbersOfReminders: 1)), onButtonTapped: { _ in }) { _ in }
+        TaskTile(
+            latestTask: .constant(
+                ToDo(
+                    category: .birthday,
+                    name: "",
+                    toDoDescription: "",
+                    executedDate: Date(),
+                    startExecutedTime: nil,
+                    endExecutedTime: nil,
+                    numbersOfReminders: 1
+                )
+            ),
+            isDone: .constant(false),
+            isEdited: .constant(false),
+            onButtonTapped: { _ in }
+        )
     }
 }
 
@@ -94,11 +103,13 @@ extension TaskTile {
                     ActionButton(
                         button: button,
                         image: button == .done && isDone ? "\(button.image).fill" : button.image,
-                        foregroundColor: button == .done && isDone ? Colors.mantis : Colors.ghostWhite) {
+                        foregroundColor: button == .done && isDone ? Colors.mantis : Colors.night) {
                             Task {
                                 do {
                                     try await onButtonTapped(button)
-                                    isEdited(viewModel.showEditTask)
+                                    if isEdited {
+                                        router.navigate(to: .addTask(task: $latestTask))
+                                    }
                                 } catch {
                                     print(error)
                                 }
