@@ -12,12 +12,15 @@ import Navigation
 import ToDoInterface
 import Utilities
 
-
-
 struct AddTaskView: View {
-    @StateObject private var viewModel = AddTaskViewModel()
-    @EnvironmentObject private var secViewModel: TabBarViewModel
+    @StateObject private var viewModel: AddTaskViewModel
     @EnvironmentObject private var router: Router<Routes>
+    @Binding private var toDoToEdit: ToDo?
+    
+    init(toDoToEdit: Binding<ToDo?> = .constant(nil), category: ToDoInterface.Category?) {
+        self._toDoToEdit = toDoToEdit
+        self._viewModel = StateObject(wrappedValue: AddTaskViewModel(category: category))
+    }
     
     var body: some View {
         ZStack {
@@ -48,16 +51,17 @@ struct AddTaskView: View {
             }
         }
         .navigationBarBackButtonHidden()
-        .onAppear {
-            viewModel.showCategoryPickerWhenCategoryIsNil(using: secViewModel)
+        .task {
+            try? await viewModel.readToDoToEdit(id: toDoToEdit?.id ?? "")
+            viewModel.showCategoryPickerIfCategoryIsNil()
+            
         }
         .animation(.spring(duration: 0.6), value: viewModel.showCategories)
     }
 }
 
 #Preview {
-    AddTaskView()
-        .environmentObject(TabBarViewModel())
+    AddTaskView(category: .birthday)
 }
 
 extension AddTaskView {
@@ -101,14 +105,14 @@ extension AddTaskView {
             .onTapGesture {
                 viewModel.showCategoryPickerView()
             }
-        CategoryPickerView(showPickerView: $viewModel.showCategories)
+        CategoryPickerView(showPickerView: $viewModel.showCategories, category: $viewModel.category)
             .padding()
     }
     
     private var header: some View {
         HStack {
             Button {
-                secViewModel.toDoCategory = nil
+                viewModel.nilButtonIsTapped()
                 router.navigateBack()
                 
             } label: {
@@ -117,7 +121,7 @@ extension AddTaskView {
             
             Spacer()
             
-            Text("Create a Task")
+            Text(toDoToEdit == nil ? "Create a Task" : "Update a Task")
             
             Spacer()
             
@@ -131,7 +135,7 @@ extension AddTaskView {
         .frame(maxWidth: .infinity)
     }
 
-    private func parameters(for category: Categories) -> (String, String?, String) {
+    private func parameters(for category: ToDoInterface.Category) -> (String, String?, String) {
         switch category {
         case .birthday:
             return ("Starting Party", "Ending Party", "List of guests")
@@ -154,7 +158,7 @@ extension AddTaskView {
             .clipShape(.rect(topLeadingRadius: 40, topTrailingRadius: 40))
             .overlay {
                 VStack {
-                    if let selectedCategory = secViewModel.toDoCategory {
+                    if let selectedCategory = viewModel.category {
                         let (startTimeTitle, endTimeTitle, description) = parameters(for: selectedCategory)
                         CategoriesView(startTimeTitle: startTimeTitle, endTimeTitle: endTimeTitle, description: description, selectStartDate: $viewModel.selectStartTime, selectEndDate: $viewModel.selectEndTime, text: $viewModel.descriptionTextFieldText, numberOfNotifications: $viewModel.numberOfNotifications)
                     } else {
@@ -163,8 +167,14 @@ extension AddTaskView {
                     
                     Spacer()
                     
-                    ConfirmButton(title: "Create Task") {
-                        viewModel.addTask(category: secViewModel.toDoCategory ?? .otherEvent)
+                    ConfirmButton(title: toDoToEdit == nil ? "Create a Task" : "Update a Task") {
+                        switch toDoToEdit {
+                        case .none:
+                            viewModel.addTask()
+                        case .some:
+                            viewModel.updateTask()
+                        }
+                        
                         router.navigateBack()
                     }
                     .frame(maxHeight: .infinity, alignment: .bottom)
