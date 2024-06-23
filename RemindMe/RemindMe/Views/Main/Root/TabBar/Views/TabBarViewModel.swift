@@ -11,16 +11,32 @@ import Navigation
 import SwiftUI
 import ToDoInterface
 
-//MARK: Create TabBarViewModel
+enum Action {
+    case create
+    case edit
+}
+
 @MainActor
 final class TabBarViewModel: ObservableObject {
     @Published private(set) var tabs: [Tab] = [.home, .history, .tasks, .settings]
     @Published var selectedTab: String?
-    @Published var toDoCategory: Categories?
+    @Published var action: Action = .create
+    @Published private(set) var category: ToDoInterface.Category?
+    @Inject private var toDoManager: ToDoManagerInterface
     
     init() {
         self.selectedTab = "Home"
+        fetchCategory()
     }
+    
+    private func fetchCategory() {
+        toDoManager
+            .updatedCategory
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$category)
+    }
+    
+    
     
     func tapped(tab: String) {
         withAnimation {
