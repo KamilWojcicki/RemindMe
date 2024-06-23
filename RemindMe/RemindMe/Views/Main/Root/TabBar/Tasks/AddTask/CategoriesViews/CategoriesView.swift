@@ -17,15 +17,15 @@ private enum Field {
 struct CategoriesView: View {
     @StateObject private var viewModel = CategoriesViewModel()
     @FocusState private var isFocused: Field?
-    @Binding private var selectStartDate: Date
-    @Binding private var selectEndDate: Date
+    @Binding private var selectStartDate: Date?
+    @Binding private var selectEndDate: Date?
     @Binding private var text: String
-    @Binding private var numberOfNotifications: Int
+    @Binding private var numberOfNotifications: Int?
     private var startTimeTitle: String?
     private var endTimeTitle: String?
     private var description: String?
     
-    init(startTimeTitle: String? = "Start Time", endTimeTitle: String? = nil, description: String? = "Description", selectStartDate: Binding<Date>, selectEndDate: Binding<Date>, text: Binding<String>, numberOfNotifications: Binding<Int>) {
+    init(startTimeTitle: String? = "Start Time", endTimeTitle: String? = nil, description: String? = "Description", selectStartDate: Binding<Date?>, selectEndDate: Binding<Date?>, text: Binding<String>, numberOfNotifications: Binding<Int?>) {
         self.startTimeTitle = startTimeTitle
         self.endTimeTitle = endTimeTitle
         self.description = description
@@ -60,20 +60,28 @@ extension CategoriesView {
             VStack(alignment: .leading, spacing: 13) {
                 Text(startTimeTitle ?? "Start Time")
                     .withOpacityFont()
+                    Text(dateFormatter(dateFormat: .time).string(from: selectStartDate ?? Date()))
+                        .foregroundStyle(Colors.night)
+                        .overlay {
+                            DatePicker(
+                                "",
+                                selection: Binding<Date>(
+                                    get: {
+                                        self.selectStartDate ?? Date()
+                                    },
+                                    set: {
+                                        self.selectStartDate = $0
+                                    }
+                                ),
+                                in: Date()...,
+                                displayedComponents: .hourAndMinute
+                            )
+                            .blendMode(.destinationOut)
+                            .labelsHidden()
+                        }
+                        .font(.size23Default)
                 
-                Text(dateFormatter(dateFormat: .time).string(from: selectStartDate))
-                    .foregroundStyle(Colors.night)
-                    .overlay {
-                        DatePicker(
-                            "",
-                            selection: $selectStartDate,
-                            in: Date()...,
-                            displayedComponents: .hourAndMinute
-                        )
-                        .blendMode(.destinationOut)
-                        .labelsHidden()
-                    }
-                    .font(.size23Default)
+                
             }
             
             if let endTimeTitle = endTimeTitle {
@@ -81,12 +89,19 @@ extension CategoriesView {
                     Text(endTimeTitle)
                         .withOpacityFont()
                     
-                    Text(dateFormatter(dateFormat: .time).string(from: selectEndDate))
+                    Text(dateFormatter(dateFormat: .time).string(from: selectEndDate ?? Date()))
                         .foregroundStyle(Colors.night)
                         .overlay {
                             DatePicker(
                                 "",
-                                selection: $selectEndDate,
+                                selection: Binding<Date>(
+                                    get: {
+                                        self.selectEndDate ?? Date()
+                                    },
+                                    set: {
+                                        self.selectEndDate = $0
+                                    }
+                                ),
                                 in: Date()...,
                                 displayedComponents: .hourAndMinute
                             )
@@ -139,7 +154,7 @@ extension CategoriesView {
                 }
             }
         } label: {
-            Text(numberOfNotifications.description)
+            Text(numberOfNotifications?.description ?? "")
                 .font(.size23Default)
         }
         .tint(Colors.night)
