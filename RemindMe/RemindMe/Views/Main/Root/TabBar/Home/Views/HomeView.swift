@@ -11,9 +11,8 @@ import Navigation
 import SwiftUI
 
 struct HomeView: View {
-    @EnvironmentObject private var router: Router<Routes>
     @StateObject private var viewModel = HomeViewModel()
-    @EnvironmentObject private var secViewModel: TabBarViewModel
+    @EnvironmentObject private var router: Router<Routes>
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
     
     var body: some View {
@@ -28,7 +27,12 @@ struct HomeView: View {
             }
         }
         .task {
-            await viewModel.getLatestTask()
+            viewModel.getLatestTask()
+            viewModel.isEdited = false
+            viewModel.archiveExpiredToDo()
+        }
+        .onDisappear {
+            viewModel.stopTimer()
         }
     }
 }
@@ -50,62 +54,15 @@ extension HomeView {
             Text("Kamil Wójcicki 👋")
                 .font(.title3)
         }
-        .foregroundStyle(Colors.ghostWhite)
+        .foregroundStyle(Colors.night)
         .padding()
         
         TaskTile(
-            category: viewModel.latestToDo?.category.rawValue ?? "Category",
-            title: viewModel.latestToDo?.name ?? "Title", isDone: $viewModel.isDone, 
             latestTask: $viewModel.latestToDo,
-            onButtonTapped: { buttonType in
-                try await viewModel.buttonTapped(buttonType)
-            },
-            isEdited: { isEdited in
-                viewModel.isEdited = isEdited
-            }
-        )
-        .padding()
-    }
-
-    private var buildOverlayContent: some View {
-        VStack(alignment: .leading) {
-            LazyVGrid(columns: columns,
-                      spacing: 10,
-                      content: {
-                QuickTaskTile(
-                    icon: Symbols.checklist,
-                    title: "Shopping List",
-                    description: "Create a shopping list"
-                ) {
-                    viewModel.updateToDoCategory(to: .shoppingList, using: secViewModel)
-                    router.navigate(to: .addTask)
-                }
-                QuickTaskTile(
-                    icon: Symbols.giftFill,
-                    title: "Birthday",
-                    description: "Add a birthday reminder"
-                ) {
-                    viewModel.updateToDoCategory(to: .birthday, using: secViewModel)
-                    router.navigate(to: .addTask)
-                }
-                QuickTaskTile(
-                    icon: Symbols.carFill,
-                    title: "Trip",
-                    description: "Add a trip reminder"
-                ) {
-                    viewModel.updateToDoCategory(to: .trip, using: secViewModel)
-                    router.navigate(to: .addTask)
-                }
-                QuickTaskTile(
-                    icon: Symbols.crossCircleFill,
-                    title: "Medical Check",
-                    description: "Add a medical check reminder"
-                ) {
-                    viewModel.updateToDoCategory(to: .medicalCheck, using: secViewModel)
-                    router.navigate(to: .addTask)
-                }
-            })
-            .frame(maxHeight: .infinity, alignment: .top)
+            isDone: $viewModel.isDone,
+            isEdited: $viewModel.isEdited
+        ) { buttonType in
+            try await viewModel.buttonTapped(buttonType)
         }
         .padding()
     }
@@ -119,6 +76,49 @@ extension HomeView {
             .overlay {
                 buildOverlayContent
             }
+    }
+    
+    private var buildOverlayContent: some View {
+        VStack(alignment: .leading) {
+            LazyVGrid(columns: columns,
+                      spacing: 10,
+                      content: {
+                QuickTaskTile(
+                    icon: Symbols.checklist,
+                    title: "Shopping List",
+                    description: "Create a shopping list"
+                ) {
+                    viewModel.updateToDoCategory(to: .shoppingList)
+                    router.navigate(to: .addTask())
+                }
+                QuickTaskTile(
+                    icon: Symbols.giftFill,
+                    title: "Birthday",
+                    description: "Add a birthday reminder"
+                ) {
+                    viewModel.updateToDoCategory(to: .birthday)
+                    router.navigate(to: .addTask())
+                }
+                QuickTaskTile(
+                    icon: Symbols.carFill,
+                    title: "Trip",
+                    description: "Add a trip reminder"
+                ) {
+                    viewModel.updateToDoCategory(to: .trip)
+                    router.navigate(to: .addTask())
+                }
+                QuickTaskTile(
+                    icon: Symbols.crossCircleFill,
+                    title: "Medical Check",
+                    description: "Add a medical check reminder"
+                ) {
+                    viewModel.updateToDoCategory(to: .medicalCheck)
+                    router.navigate(to: .addTask())
+                }
+            })
+            .frame(maxHeight: .infinity, alignment: .top)
+        }
+        .padding()
     }
 }
 
