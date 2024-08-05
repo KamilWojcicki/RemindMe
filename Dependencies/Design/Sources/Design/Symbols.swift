@@ -9,6 +9,7 @@ import Foundation
 
 public struct Symbols {
     public static let checkmarkSeal = "checkmark.seal"
+    public static let checkmarkSealFill = "checkmark.seal.fill"
     public static let pencilAndListClipboard = "pencil.and.list.clipboard"
     public static let minusCircle = "minus.circle"
     public static let docBadgeClock = "doc.badge.clock"
@@ -22,4 +23,7 @@ public struct Symbols {
     public static let line3Horizontal = "line.3.horizontal"
     public static let airplaneCircleFill = "airplane.circle.fill"
     public static let starFill = "star.fill"
+    public static let squareGrid = "square.grid.2x2"
+    public static let ellipsis = "ellipsis"
+    public static let circle = "circle"
 }
