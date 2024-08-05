@@ -32,8 +32,15 @@ public struct TabBarView: View {
                 VStack {
                     SwiftUI.TabView(selection: selectedTab) {
                         ForEach(viewModel.tabs, id: \.title) { tab in
-                            tab.rootView
-                                .clipShape(.rect(bottomLeadingRadius: 40, bottomTrailingRadius: 40))
+                            ZStack {
+                                Colors.ghostWhite
+                                Colors.background()
+                                    .clipShape(.rect(bottomLeadingRadius: 45, bottomTrailingRadius: 45))
+                                    .ignoresSafeArea()
+                                    
+                                tab.rootView
+                                    .clipShape(.rect(bottomLeadingRadius: 45, bottomTrailingRadius: 45))
+                            }
                         }
                     }
                     .ignoresSafeArea()
@@ -47,7 +54,6 @@ public struct TabBarView: View {
                 }
             }
             .navigationBarBackButtonHidden(true)
-            .tabViewStyle(.page(indexDisplayMode: .never))
         }
         .environmentObject(router)
     }

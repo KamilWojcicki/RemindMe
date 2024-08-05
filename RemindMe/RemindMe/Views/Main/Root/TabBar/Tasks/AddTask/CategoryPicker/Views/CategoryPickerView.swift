@@ -57,7 +57,7 @@ extension CategoryPickerView {
                 
             } label: {
                 VStack(alignment: .leading, spacing: 10) {
-                    Image(systemName: category.image)
+//                    Image(systemName: category.image)
                     
                     Text(category.rawValue.capitalized)
                 }

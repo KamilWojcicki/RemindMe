@@ -137,6 +137,8 @@ extension AddTaskView {
 
     private func parameters(for category: ToDoInterface.Category) -> (String, String?, String) {
         switch category {
+        case .all:
+            return ("Starting Party", "Ending Party", "List of guests")
         case .birthday:
             return ("Starting Party", "Ending Party", "List of guests")
         case .shoppingList:

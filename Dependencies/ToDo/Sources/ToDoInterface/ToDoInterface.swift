@@ -10,8 +10,21 @@ import Design
 import Foundation
 import LocalDatabaseInterface
 import RealmSwift
+import SwiftUI
+import Utilities
+
+public struct CategoryInfo {
+    public let count: Int
+    public let color: Color
+    
+    public init(count: Int, color: Color) {
+        self.count = count
+        self.color = color
+    }
+}
 
 public enum Category: String, CaseIterable, Codable, PersistableEnum {
+    case all
     case birthday = "Birthday"
     case shoppingList = "Shopping List"
     case holidayEvent = "Holiday Event"
@@ -19,22 +32,22 @@ public enum Category: String, CaseIterable, Codable, PersistableEnum {
     case trip = "Trip"
     case otherEvent = "Other Event"
     
-    public var image: String {
-        switch self {
-        case .birthday:
-            Symbols.giftFill
-        case .shoppingList:
-            Symbols.checklist
-        case .holidayEvent:
-            Symbols.airplaneCircleFill
-        case .medicalCheck:
-            Symbols.crossCircleFill
-        case .trip:
-            Symbols.carFill
-        case .otherEvent:
-            Symbols.starFill
-        }
-    }
+//    public var image: String {
+//        switch self {
+//        case .birthday:
+//            Symbols.giftFill
+//        case .shoppingList:
+//            Symbols.checklist
+//        case .holidayEvent:
+//            Symbols.airplaneCircleFill
+//        case .medicalCheck:
+//            Symbols.crossCircleFill
+//        case .trip:
+//            Symbols.carFill
+//        case .otherEvent:
+//            Symbols.starFill
+//        }
+//    }
 }
 
 public struct ToDo: LocalStorable {
@@ -49,7 +62,18 @@ public struct ToDo: LocalStorable {
     public let isArchived: Bool
     public let isDone: Bool
     
-    public init(id: String = UUID().uuidString, category: Category, name: String, toDoDescription: String, executedDate: Date, startExecutedTime: Date?, endExecutedTime: Date?, numbersOfReminders: Int, isArchived: Bool = false, isDone: Bool = false) {
+    public init(
+        id: String = UUID().uuidString,
+        category: Category,
+        name: String,
+        toDoDescription: String,
+        executedDate: Date,
+        startExecutedTime: Date?,
+        endExecutedTime: Date?,
+        numbersOfReminders: Int,
+        isArchived: Bool = false,
+        isDone: Bool = false
+    ) {
         self.id = id
         self.category = category
         self.name = name
