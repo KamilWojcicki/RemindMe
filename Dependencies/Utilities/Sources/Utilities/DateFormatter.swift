@@ -10,6 +10,7 @@ import Foundation
 public enum DateFormat: String {
     case date = "MMM dd, yyyy"
     case time = "HH:mm"
+    case timeWithPeriods = "hh:mm a"
 }
 
 public func dateFormatter(dateFormat: DateFormat) -> DateFormatter {
