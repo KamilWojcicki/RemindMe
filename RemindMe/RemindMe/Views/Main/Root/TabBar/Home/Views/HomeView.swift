@@ -2,37 +2,30 @@
 //  HomeView.swift
 //  RemindMe
 //
-//  Created by Kamil Wójcicki on 13/05/2024.
+//  Created by Kamil Wójcicki on 23/06/2024.
 //
 
-import Components
 import Design
-import Navigation
+import Utilities
 import SwiftUI
+import ToDoInterface
 
 struct HomeView: View {
+    
     @StateObject private var viewModel = HomeViewModel()
-    @EnvironmentObject private var router: Router<Routes>
-    let columns = [GridItem(.flexible()), GridItem(.flexible())]
     
     var body: some View {
-        ZStack {
-            VStack(alignment: .leading) {
-                buildContent
-                GeometryReader { geometry in
-                    whiteSpace(height: geometry.size.height)
-                        .padding(.top, 30)
-                }
-                .ignoresSafeArea()
-            }
+        VStack(spacing: 10) {
+            header
+            
+            taskProgress
+            
+            tasks
         }
-        .task {
-            viewModel.getLatestTask()
-            viewModel.isEdited = false
-            viewModel.archiveExpiredToDo()
-        }
-        .onDisappear {
-            viewModel.stopTimer()
+        .vSpacing(.top)
+        .padding(.horizontal)
+        .onAppear {
+            viewModel.fetchWeek()
         }
     }
 }
@@ -42,83 +35,165 @@ struct HomeView: View {
         Colors.background().ignoresSafeArea()
         HomeView()
     }
+    
 }
 
 extension HomeView {
-    @ViewBuilder
-    private var buildContent: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Good Morning!")
-                .font(.subheadline)
-                .opacity(0.7)
-            Text("Kamil Wójcicki 👋")
-                .font(.title3)
-        }
-        .foregroundStyle(Colors.night)
-        .padding()
-        
-        TaskTile(
-            latestTask: $viewModel.latestToDo,
-            isDone: $viewModel.isDone,
-            isEdited: $viewModel.isEdited
-        ) { buttonType in
-            try await viewModel.buttonTapped(buttonType)
-        }
-        .padding()
-    }
-    
-    private func whiteSpace(height: CGFloat) -> some View {
-        Rectangle()
-            .fill(Colors.ghostWhite)
-            .clipShape(.rect(topLeadingRadius: 40, topTrailingRadius: 40))
-            .frame(maxHeight: .infinity, alignment: .bottom)
-            .shadow(color: Colors.night.opacity(0.4), radius: 10, y: -5)
-            .overlay {
-                buildOverlayContent
+    private var header: some View {
+        VStack {
+            Text("Today")
+                .foregroundStyle(Colors.ghostWhite)
+                .font(.size18DefaultBold)
+            
+            TabView(selection: $viewModel.currentWeekIndex) {
+                ForEach(viewModel.weekSlider.indices, id: \.self) { index in
+                    let week = viewModel.weekSlider[index]
+                    buildWeekView(week)
+                        .padding(.horizontal, 10)
+                        .tag(index)
+                }
             }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .frame(height: 85)
+            .padding(.horizontal, -16)
+        }
+        .onChange(of: viewModel.currentWeekIndex, initial: false) { oldValue, newValue in
+            if newValue == 0 || newValue == (viewModel.weekSlider.count - 1) {
+                viewModel.createWeek = true
+            }
+        }
     }
     
-    private var buildOverlayContent: some View {
-        VStack(alignment: .leading) {
-            LazyVGrid(columns: columns,
-                      spacing: 10,
-                      content: {
-                QuickTaskTile(
-                    icon: Symbols.checklist,
-                    title: "Shopping List",
-                    description: "Create a shopping list"
-                ) {
-                    viewModel.updateToDoCategory(to: .shoppingList)
-                    router.navigate(to: .addTask())
+    @ViewBuilder
+    private func buildWeekView(_ week: [Date.WeekDay]) -> some View {
+        HStack(spacing: 0) {
+            ForEach(week) { day in
+                VStack(spacing: 8) {
+                    Text(day.date.customDayAbbreviation())
+                        .font(.caption)
+                        .textScale(.secondary)
+                    
+                    Circle()
+                        .fill(Colors.ghostWhite.opacity(isSameDate(day.date, viewModel.currentDate) ? 1 : 0.17))
+                        .overlay {
+                            Text(day.date.format("dd"))
+                                .font(.footnote)
+                        }
                 }
-                QuickTaskTile(
-                    icon: Symbols.giftFill,
-                    title: "Birthday",
-                    description: "Add a birthday reminder"
-                ) {
-                    viewModel.updateToDoCategory(to: .birthday)
-                    router.navigate(to: .addTask())
+                .foregroundStyle(isSameDate(day.date, viewModel.currentDate) ? Colors.night : Colors.ghostWhite.opacity(0.8))
+                .padding(5)
+                .frame(width: 40, height: 65)
+                .background(content: {
+                    if day.date.isToday {
+                        Circle()
+                            .fill(Colors.blue)
+                            .frame(width: 5, height: 5)
+                            .vSpacing(.bottom)
+                            .offset(y: 10)
+                    }
+                })
+                .background(
+                    isSameDate(day.date, viewModel.currentDate) ? Colors.vistaBlue : Colors.night.opacity(0.9), in: .rect(cornerRadius: 20)
+                )
+                .hSpacing(.center)
+                .contentShape(Circle())
+                .onTapGesture {
+                    viewModel.changeDayButtonPressed(day.date)
                 }
-                QuickTaskTile(
-                    icon: Symbols.carFill,
-                    title: "Trip",
-                    description: "Add a trip reminder"
-                ) {
-                    viewModel.updateToDoCategory(to: .trip)
-                    router.navigate(to: .addTask())
-                }
-                QuickTaskTile(
-                    icon: Symbols.crossCircleFill,
-                    title: "Medical Check",
-                    description: "Add a medical check reminder"
-                ) {
-                    viewModel.updateToDoCategory(to: .medicalCheck)
-                    router.navigate(to: .addTask())
-                }
-            })
-            .frame(maxHeight: .infinity, alignment: .top)
+            }
         }
-        .padding()
+        .background {
+            GeometryReader {
+                let minX = $0.frame(in: .global).minX
+                
+                Color.clear
+                    .preference(key: OffsetKey.self, value: minX)
+                    .onPreferenceChange(OffsetKey.self) { value in
+                        viewModel.onPreferenceChangeOffsetAction(value)
+                    }
+            }
+        }
+    }
+    
+    private var taskProgress: some View {
+        TaskProgressChartView(taskDonePercentage: $viewModel.doneTaskPercentage, categorizedCounts: $viewModel.categorizedCounts) {
+            
+        }
+    }
+    
+    private var tasks: some View {
+        VStack(alignment: .leading) {
+            HStack(spacing: 10) {
+                Image(systemName: Symbols.squareGrid)
+                Text("Tasks")
+                    .font(.size18Default)
+            }
+            .foregroundStyle(Colors.ghostWhite)
+            .padding(.horizontal)
+            
+            ScrollView(.horizontal) {
+                HStack(spacing: 0) {
+                    ForEach(ToDoInterface.Category.allCases, id: \.self) { category in
+                        buildCategoryCellView(categoryTitle: category.rawValue, taskCount: viewModel.categoryCounts[category] ?? 0, isSelected: viewModel.selectedCategory == category)
+                            .padding(.leading, 15)
+                            .padding(.trailing, category == .otherEvent ? 15 : 0)
+                            .onTapGesture {
+                                withAnimation(.snappy) {
+                                    viewModel.selectedCategory = category
+                                }
+                            }
+                    }
+                }
+            }
+            .scrollIndicators(.never)
+            
+            ScrollView(.vertical) {
+                VStack {
+                    ForEach(viewModel.filteredTasks) { task in
+                        TaskInfoCellView(
+                            image: .checkmark,
+                            executeTime: task.startExecutedTime ?? Date(),
+                            taskTitle: task.name,
+                            isDone: Binding(
+                                get: {
+                                    task.isDone
+                                },
+                                set: {
+                                    viewModel.updateTask(task: task, isOn: $0)
+                                }
+                            )
+                        )
+                        .padding(.horizontal)
+                        .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
+                    }
+                }
+                .offset(y: 10.0)
+            }
+            .scrollIndicators(.never)
+            .withFadeOut(topFadeLength: 10, bottomFadeLength: 20)
+        }
+        .padding(.top, 10)
+        .padding(.horizontal, -15)
+    }
+    
+    @ViewBuilder
+    private func buildCategoryCellView(categoryTitle: String, taskCount: Int, isSelected: Bool = false) -> some View {
+        HStack {
+            Text(categoryTitle.capitalized)
+            
+            RoundedRectangle(cornerRadius: 40)
+                .fill(isSelected ? Colors.blue.opacity(0.8) : Colors.ghostWhite)
+                .overlay(alignment: .center) {
+                    Text(String(taskCount))
+                        .foregroundStyle(isSelected ? Colors.ghostWhite : Colors.night)
+                }
+                .frame(width: 30, height: 20)
+        }
+        .padding(6)
+        .padding(.horizontal, 4)
+        .font(.size15Default)
+        .foregroundStyle(Colors.ghostWhite)
+        .background(isSelected ? Colors.color2 : Colors.ghostWhite.opacity(0.2))
+        .clipShape(.rect(cornerRadius: 40))
     }
 }
-
