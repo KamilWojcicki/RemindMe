@@ -13,6 +13,7 @@ import ToDoInterface
 struct HomeView: View {
     
     @StateObject private var viewModel = HomeViewModel()
+    @Environment(\.scenePhase) private var scenePhase
     
     var body: some View {
         VStack(spacing: 10) {
@@ -27,6 +28,11 @@ struct HomeView: View {
         .onAppear {
             viewModel.fetchWeek()
         }
+        .onChange(of: scenePhase) { currentPhase, _ in
+            if currentPhase == .background {
+                viewModel.fetchWeek()
+            }
+        }
     }
 }
 
@@ -35,7 +41,6 @@ struct HomeView: View {
         Colors.background().ignoresSafeArea()
         HomeView()
     }
-    
 }
 
 extension HomeView {
