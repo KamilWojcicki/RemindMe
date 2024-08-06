@@ -58,7 +58,7 @@ struct TaskInfoCellView: View {
         .hSpacing(.leading)
         .padding()
         .background(Colors.ghostWhite)
-        .clipShape(.rect(cornerRadius: 30))
+        .clipShape(.rect(cornerRadius: 25))
     }
 }
 

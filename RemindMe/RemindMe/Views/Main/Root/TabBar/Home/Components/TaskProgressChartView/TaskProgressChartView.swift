@@ -24,7 +24,7 @@ struct TaskProgressChartView: View {
     var body: some View {
         Rectangle()
             .fill(Colors.ghostWhite).opacity(0.2)
-            .clipShape(.rect(cornerRadius: 30))
+            .clipShape(.rect(cornerRadius: 25))
             .frame(height: 200)
             .overlay {
                 GeometryReader { reader in

@@ -127,6 +127,7 @@ extension HomeView {
                 Image(systemName: Symbols.squareGrid)
                 Text("Tasks")
                     .font(.size18Default)
+                    .padding(.vertical, 20)
             }
             .foregroundStyle(Colors.ghostWhite)
             .padding(.horizontal)
@@ -194,6 +195,6 @@ extension HomeView {
         .font(.size15Default)
         .foregroundStyle(Colors.ghostWhite)
         .background(isSelected ? Colors.color2 : Colors.ghostWhite.opacity(0.2))
-        .clipShape(.rect(cornerRadius: 40))
+        .clipShape(.rect(cornerRadius: 25))
     }
 }
