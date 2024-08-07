@@ -39,7 +39,7 @@ public struct TabBarView: View {
                                     .ignoresSafeArea()
                                     
                                 tab.rootView
-                                    .clipShape(.rect(bottomLeadingRadius: 45, bottomTrailingRadius: 45))
+//                                    .clipShape(.rect(bottomLeadingRadius: 45, bottomTrailingRadius: 45))
                             }
                         }
                     }
