@@ -5,16 +5,42 @@
 //  Created by Kamil Wójcicki on 23/06/2024.
 //
 
+import CoreInterface
 import DependencyInjection
 import Design
 import SwiftUI
 import Utilities
 import ToDoInterface
 
-
+enum HomeError: Error, LocalizedError {
+    case error1
+    case error2
+    
+    var errorDescription: String? {
+        switch self {
+        case .error1:
+            "dupa jasia"
+        case .error2:
+            "zupa jasia"
+        }
+    }
+}
 
 @MainActor
-final class HomeViewModel: ObservableObject {
+final class HomeViewModel: ViewModelInterface {
+    enum State: Equatable {
+        case idle
+        case loading
+        case loaded
+        case error(String)
+    }
+    
+    enum Event {
+        case getWeek
+        case getTasks
+    }
+    
+    @Published private(set) var state: State = .idle
     @Published var currentDate: Date = .init()
     @Published var weekSlider: [[Date.WeekDay]] = []
     @Published var currentWeekIndex: Int = 1
@@ -23,7 +49,7 @@ final class HomeViewModel: ObservableObject {
     @Published var tasks: [ToDo] = []
     @Published var task: ToDo?
     @Published var selectedCategory: ToDoInterface.Category = .all
-    @Published var doneTaskPercentage: Int = 30
+    @Published var doneTaskPercentage: Int = 0
     @Published var categorizedCounts: [String: CategoryInfo] = ["Done your tasks": .init(count: 1, color: Colors.color)]
     @Inject private var toDoManager: ToDoManagerInterface
     
@@ -35,22 +61,27 @@ final class HomeViewModel: ObservableObject {
         }
     }
     
-    var categoryCounts: [ToDoInterface.Category: Int] {
-            var counts: [ToDoInterface.Category: Int] = [:]
-            
+    var tasksByCategoryCounts: [ToDoInterface.Category: Int] {
+        var counts: [ToDoInterface.Category: Int] = [:]
+        
         for category in ToDoInterface.Category.allCases {
             if category == .all {
-                    counts[category] = tasks.count
-                } else {
-                    counts[category] = tasks.filter { $0.category == category }.count
-                }
+                counts[category] = tasks.count
+            } else {
+                counts[category] = tasks.filter { $0.category == category }.count
             }
-            
-            return counts
         }
+        
+        return counts
+    }
     
-    init() {
-        fetchTasks()
+    func trigger(_ event: Event) {
+        switch event {
+        case .getWeek:
+            fetchWeek()
+        case .getTasks:
+            fetchTasks()
+        }
     }
     
     func fetchWeek() {
@@ -99,19 +130,22 @@ final class HomeViewModel: ObservableObject {
     }
     
     private func fetchTasks() {
+        guard state == .idle else { return }
+        
+        state = .loading
+        
         Task {
             do {
                 self.tasks = try await toDoManager.readAllToDos()
                 
                 calculateDoneTaskPercentage()
                 
-                guard tasks.filter({ $0.isDone }).isEmpty else {
-                    self.categorizedCounts = numberOfCompletedTasksPerCategory()
-                    return
-                }
+                filterDoneTasks()
+                
+                state = .loaded
                 
             } catch {
-                print(error.localizedDescription)
+                state = .error(error.localizedDescription)
             }
         }
     }
@@ -126,8 +160,14 @@ final class HomeViewModel: ObservableObject {
                 ]
                 
                 try await toDoManager.updateToDo(data: data)
+
+                if let index = self.tasks.firstIndex(where: { $0.id == task.id }) {
+                    self.tasks[index].isDone = isOn
+                }
                 
-                fetchTasks()
+                calculateDoneTaskPercentage()
+                
+                filterDoneTasks()
                 
                 print("todo state is updated")
             } catch {
@@ -136,12 +176,21 @@ final class HomeViewModel: ObservableObject {
         }
     }
     
+    private func filterDoneTasks() {
+        guard tasks.filter({ $0.isDone }).isEmpty else {
+            self.categorizedCounts = numberOfCompletedTasksPerCategory()
+            state = .loaded
+            print("filtered task")
+            return
+        }
+    }
+    
     private func calculateDoneTaskPercentage() {
        let allToDo = tasks.count
        let doneToDo = tasks.filter({ $0.isDone }).count
        
        guard allToDo > 0 else {
-           self.doneTaskPercentage = 69
+           self.doneTaskPercentage = 0
            return
        }
 

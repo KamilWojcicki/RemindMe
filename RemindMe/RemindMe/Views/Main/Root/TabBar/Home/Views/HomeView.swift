@@ -16,21 +16,26 @@ struct HomeView: View {
     @Environment(\.scenePhase) private var scenePhase
     
     var body: some View {
-        VStack(spacing: 10) {
-            header
-            
-            taskProgress
-            
-            tasks
+        ZStack {
+            switch viewModel.state {
+            case .idle:
+                EmptyView()
+            case .loading:
+                ProgressView()
+            case .loaded:
+                buildHomeView
+            case .error(let error):
+                Label(error.description, systemImage: "xmark.circle")
+                    .background(Color.red)
+            }
         }
-        .vSpacing(.top)
-        .padding(.horizontal)
         .onAppear {
-            viewModel.fetchWeek()
+            viewModel.trigger(.getWeek)
+            viewModel.trigger(.getTasks)
         }
         .onChange(of: scenePhase) { currentPhase, _ in
             if currentPhase == .background {
-                viewModel.fetchWeek()
+                viewModel.trigger(.getWeek)
             }
         }
     }
@@ -44,6 +49,18 @@ struct HomeView: View {
 }
 
 extension HomeView {
+    private var buildHomeView: some View {
+        VStack(spacing: 10) {
+            header
+            
+            taskProgress
+            
+            tasks
+        }
+        .vSpacing(.top)
+        .padding(.horizontal)
+    }
+    
     private var header: some View {
         VStack {
             Text("Today")
@@ -140,7 +157,7 @@ extension HomeView {
             ScrollView(.horizontal) {
                 HStack(spacing: 0) {
                     ForEach(ToDoInterface.Category.allCases, id: \.self) { category in
-                        buildCategoryCellView(categoryTitle: category.rawValue, taskCount: viewModel.categoryCounts[category] ?? 0, isSelected: viewModel.selectedCategory == category)
+                        buildCategoryCellView(categoryTitle: category.rawValue, taskCount: viewModel.tasksByCategoryCounts[category] ?? 0, isSelected: viewModel.selectedCategory == category)
                             .padding(.leading, 15)
                             .padding(.trailing, category == .otherEvent ? 15 : 0)
                             .onTapGesture {
