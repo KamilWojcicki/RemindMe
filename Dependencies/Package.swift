@@ -17,6 +17,7 @@ let package = Package(
     dependencies: [
         .package(path: "Animation"),
         .package(path: "Components"),
+        .package(path: "Core"),
         .package(path: "DependencyInjection"),
         .package(path: "Design"),
         .package(path: "Localizations"),
@@ -35,6 +36,10 @@ let package = Package(
                 .product(
                     name: "Components",
                     package: "Components"
+                ),
+                .product(
+                    name: "Core",
+                    package: "Core"
                 ),
                 .product(
                     name: "DependencyInjection",

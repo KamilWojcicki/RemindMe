@@ -60,7 +60,7 @@ public struct ToDo: LocalStorable {
     public let endExecutedTime: Date?
     public let numbersOfReminders: Int?
     public let isArchived: Bool
-    public let isDone: Bool
+    public var isDone: Bool
     
     public init(
         id: String = UUID().uuidString,
