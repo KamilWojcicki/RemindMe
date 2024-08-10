@@ -54,7 +54,7 @@ final class AddTaskViewModel: ObservableObject {
         Task {
             do {
                 guard let category = category else { return }
-                let newToDo = ToDo(category: category, name: titleTextFieldText, toDoDescription: descriptionTextFieldText, executedDate: selectDate, startExecutedTime: selectStartTime, endExecutedTime: selectEndTime, numbersOfReminders: numberOfNotifications ?? 1)
+                let newToDo = ToDo(category: category, name: titleTextFieldText, toDoDescription: descriptionTextFieldText, image: Data(), executedDate: selectDate, startExecutedTime: selectStartTime, endExecutedTime: selectEndTime, numbersOfReminders: numberOfNotifications ?? 1)
                 try await toDoManager.createToDo(todo: newToDo)
             } catch {
                 print(error.localizedDescription)

@@ -82,7 +82,7 @@ public struct TaskTile: View {
                     category: .birthday,
                     name: "",
                     toDoDescription: "",
-                    executedDate: Date(),
+                    image: Data(), executedDate: Date(),
                     startExecutedTime: nil,
                     endExecutedTime: nil,
                     numbersOfReminders: 1
