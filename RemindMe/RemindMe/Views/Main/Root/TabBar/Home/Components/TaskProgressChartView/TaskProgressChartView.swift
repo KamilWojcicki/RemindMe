@@ -12,10 +12,10 @@ import ToDoInterface
 
 struct TaskProgressChartView: View {
     let action: () -> Void
-    @Binding var taskDonePercentage: Int
+    @Binding var taskDonePercentage: Double
     @Binding var categorizedCounts: [String: CategoryInfo]
     
-    init(taskDonePercentage: Binding<Int>, categorizedCounts: Binding<[String: CategoryInfo]>, action: @escaping () -> Void) {
+    init(taskDonePercentage: Binding<Double>, categorizedCounts: Binding<[String: CategoryInfo]>, action: @escaping () -> Void) {
         self._taskDonePercentage = taskDonePercentage
         self._categorizedCounts = categorizedCounts
         self.action = action
@@ -84,12 +84,12 @@ extension TaskProgressChartView {
             }
             .chartLegend(.hidden)
             .overlay {
-                Text("\(taskDonePercentage)%")
+                Text(String(format: "%.0f%%", taskDonePercentage))
                     .font(.size23Default)
             }
             
             Button {
-                //action
+                #warning("action to change filter not implemented")
             } label: {
                 Image(systemName: Symbols.ellipsis)
                     .imageScale(.large)
