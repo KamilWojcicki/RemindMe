@@ -55,18 +55,20 @@ public struct ToDo: LocalStorable {
     public let category: Category
     public let name: String
     public let toDoDescription: String?
+    public let image: Data?
     public let executedDate: Date
     public let startExecutedTime: Date?
     public let endExecutedTime: Date?
     public let numbersOfReminders: Int?
     public let isArchived: Bool
-    public var isDone: Bool
+    public let isDone: Bool
     
     public init(
         id: String = UUID().uuidString,
         category: Category,
         name: String,
         toDoDescription: String,
+        image: Data,
         executedDate: Date,
         startExecutedTime: Date?,
         endExecutedTime: Date?,
@@ -78,6 +80,7 @@ public struct ToDo: LocalStorable {
         self.category = category
         self.name = name
         self.toDoDescription = toDoDescription
+        self.image = image
         self.executedDate = executedDate
         self.startExecutedTime = startExecutedTime
         self.endExecutedTime = endExecutedTime
@@ -86,11 +89,26 @@ public struct ToDo: LocalStorable {
         self.isDone = isDone
     }
     
+    public init(task: ToDo, isDone: Bool) {
+        self.id = task.id
+        self.category = task.category
+        self.name = task.name
+        self.toDoDescription = task.toDoDescription
+        self.image = task.image
+        self.executedDate = task.executedDate
+        self.startExecutedTime = task.startExecutedTime
+        self.endExecutedTime = task.endExecutedTime
+        self.numbersOfReminders = task.numbersOfReminders
+        self.isArchived = task.isArchived
+        self.isDone = isDone
+    }
+    
     public init(from dao: ToDoDAO) {
         self.id = dao.id
         self.category = dao.category
         self.name = dao.name
         self.toDoDescription = dao.toDoDescription
+        self.image = dao.image
         self.executedDate = dao.executedDate
         self.startExecutedTime = dao.startExecutedTime
         self.endExecutedTime = dao.endExecutedTime
@@ -104,6 +122,7 @@ public struct ToDo: LocalStorable {
         case category
         case name
         case toDoDescription
+        case image
         case executedDate
         case startExecutedTime
         case endExecutedTime
@@ -119,6 +138,7 @@ public final class ToDoDAO: RealmSwift.Object, LocalDAOInterface {
     @Persisted public var name: String
     @Persisted public var category: Category
     @Persisted public var toDoDescription: String?
+    @Persisted public var image: Data?
     @Persisted public var executedDate: Date
     @Persisted public var startExecutedTime: Date?
     @Persisted public var endExecutedTime: Date?
@@ -131,6 +151,7 @@ public final class ToDoDAO: RealmSwift.Object, LocalDAOInterface {
         self.name = ""
         self.category = Category.otherEvent
         self.toDoDescription = ""
+        self.image = Data()
         self.executedDate = Date()
         self.startExecutedTime = Date()
         self.endExecutedTime = Date()
@@ -145,6 +166,7 @@ public final class ToDoDAO: RealmSwift.Object, LocalDAOInterface {
         self.category = todo.category
         self.name = todo.name
         self.toDoDescription = todo.toDoDescription
+        self.image = todo.image
         self.executedDate = todo.executedDate
         self.startExecutedTime = todo.startExecutedTime
         self.endExecutedTime = todo.endExecutedTime
