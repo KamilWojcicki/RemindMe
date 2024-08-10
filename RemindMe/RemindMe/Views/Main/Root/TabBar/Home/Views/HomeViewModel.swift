@@ -12,6 +12,12 @@ import SwiftUI
 import Utilities
 import ToDoInterface
 
+let toDoMocks: [ToDo] = [
+    .init(category: .birthday, name: "test", toDoDescription: "", image: Data(), executedDate: .now, startExecutedTime: nil, endExecutedTime: nil, numbersOfReminders: 1),
+    .init(category: .holidayEvent, name: "test2", toDoDescription: "", image: Data(), executedDate: .now, startExecutedTime: nil, endExecutedTime: nil, numbersOfReminders: 1),
+    .init(category: .birthday, name: "test3", toDoDescription: "", image: Data(), executedDate: .now, startExecutedTime: nil, endExecutedTime: nil, numbersOfReminders: 1)
+]
+
 enum HomeError: Error, LocalizedError {
     case error1
     case error2
@@ -49,16 +55,12 @@ final class HomeViewModel: ViewModelInterface {
     @Published var tasks: [ToDo] = []
     @Published var task: ToDo?
     @Published var selectedCategory: ToDoInterface.Category = .all
-    @Published var doneTaskPercentage: Int = 0
+    @Published var doneTaskPercentage: Double = 0.0
     @Published var categorizedCounts: [String: CategoryInfo] = ["Done your tasks": .init(count: 1, color: Colors.color)]
     @Inject private var toDoManager: ToDoManagerInterface
     
     var filteredTasks: [ToDo] {
-        if selectedCategory == .all {
-            return tasks
-        } else {
-            return tasks.filter { $0.category == selectedCategory }
-        }
+        selectedCategory == .all ? tasks : tasks.filter { $0.category == selectedCategory }
     }
     
     var tasksByCategoryCounts: [ToDoInterface.Category: Int] {
@@ -71,8 +73,11 @@ final class HomeViewModel: ViewModelInterface {
                 counts[category] = tasks.filter { $0.category == category }.count
             }
         }
-        
         return counts
+    }
+    
+    init() {
+        trigger(.getTasks)
     }
     
     func trigger(_ event: Event) {
@@ -136,7 +141,8 @@ final class HomeViewModel: ViewModelInterface {
         
         Task {
             do {
-                self.tasks = try await toDoManager.readAllToDos()
+//                self.tasks = try await toDoManager.readAllToDos()
+                self.tasks = toDoMocks
                 
                 calculateDoneTaskPercentage()
                 
@@ -150,24 +156,24 @@ final class HomeViewModel: ViewModelInterface {
         }
     }
     
-    func updateTask(task: ToDo, isOn: Bool) {
+    func updateTask(task: ToDo) {
         Task {
             do {
                 
                 let data: [String : Any] = [
                     ToDo.CodingKeys.id.rawValue : task.id,
-                    ToDo.CodingKeys.isDone.rawValue : isOn
+                    ToDo.CodingKeys.isDone.rawValue : !task.isDone
                 ]
-                
+
                 try await toDoManager.updateToDo(data: data)
 
                 if let index = self.tasks.firstIndex(where: { $0.id == task.id }) {
-                    self.tasks[index].isDone = isOn
+                    self.tasks[index] = ToDo(task: task, isDone: !task.isDone)
                 }
                 
-                calculateDoneTaskPercentage()
-                
                 filterDoneTasks()
+                
+                calculateDoneTaskPercentage()
                 
                 print("todo state is updated")
             } catch {
@@ -186,16 +192,16 @@ final class HomeViewModel: ViewModelInterface {
     }
     
     private func calculateDoneTaskPercentage() {
-       let allToDo = tasks.count
-       let doneToDo = tasks.filter({ $0.isDone }).count
-       
-       guard allToDo > 0 else {
-           self.doneTaskPercentage = 0
-           return
-       }
-
-       self.doneTaskPercentage = Int(Double(doneToDo) / Double(allToDo) * 100)
-   }
+        let allToDo = tasks.count
+        let doneToDo = tasks.filter({ $0.isDone }).count
+        
+        guard allToDo > 0 && doneToDo > 0 else {
+            self.doneTaskPercentage = 0
+            return
+        }
+        
+        self.doneTaskPercentage = Double(doneToDo) / Double(allToDo) * 100
+    }
     
     private func numberOfCompletedTasksPerCategory() -> [String: CategoryInfo] {
         var counts = [String: Int]()

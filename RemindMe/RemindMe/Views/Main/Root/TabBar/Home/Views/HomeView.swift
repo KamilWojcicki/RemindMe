@@ -31,7 +31,6 @@ struct HomeView: View {
         }
         .onAppear {
             viewModel.trigger(.getWeek)
-            viewModel.trigger(.getTasks)
         }
         .onChange(of: scenePhase) { currentPhase, _ in
             if currentPhase == .background {
@@ -173,21 +172,15 @@ extension HomeView {
             ScrollView(.vertical) {
                 VStack {
                     ForEach(viewModel.filteredTasks) { task in
+
                         TaskInfoCellView(
-                            image: .checkmark,
-                            executeTime: task.startExecutedTime ?? Date(),
-                            taskTitle: task.name,
-                            isDone: Binding(
-                                get: {
-                                    task.isDone
-                                },
-                                set: {
-                                    viewModel.updateTask(task: task, isOn: $0)
-                                }
-                            )
+                            task: task,
+                            action: {
+                                viewModel.updateTask(task: task)
+                            }
                         )
                         .padding(.horizontal)
-                        .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
+                        .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .leading)))
                     }
                 }
                 .offset(y: 10.0)
