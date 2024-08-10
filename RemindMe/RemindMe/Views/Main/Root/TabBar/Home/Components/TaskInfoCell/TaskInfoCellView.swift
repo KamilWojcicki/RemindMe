@@ -7,54 +7,58 @@
 
 import Design
 import SwiftUI
+import ToDoInterface
 import Utilities
 
 struct TaskInfoCellView: View {
-    let image: UIImage
-    let executeTime: Date
-    let taskTitle: String
-    @Binding var isDone: Bool
-    
-    init(image: UIImage, executeTime: Date, taskTitle: String, isDone: Binding<Bool>) {
-        self.image = image
-        self.executeTime = executeTime
-        self.taskTitle = taskTitle
-        self._isDone = isDone
+    let task: ToDo
+    var action: () -> Void
+
+    init(
+        task: ToDo,
+        action: @escaping () -> Void
+    ) {
+        self.task = task
+        self.action = action
     }
     
     var body: some View {
         HStack {
-            Image(uiImage: image)
-                .resizable()
-                .frame(width: 30, height: 30)
-                .foregroundStyle(Colors.ghostWhite)
-                .padding(8)
-                .background(Colors.vistaBlue, in: .circle)
+            if let image = task.image, let uiImage = UIImage(data: image) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .frame(width: 30, height: 30)
+                    .foregroundStyle(Colors.ghostWhite)
+                    .padding(8)
+                    .background(Colors.vistaBlue, in: .circle)
+            }
             
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     Image(systemName: "stopwatch.fill")
-                    Text(dateFormatter(dateFormat: .timeWithPeriods).string(from: executeTime))
+                    Text(dateFormatter(dateFormat: .timeWithPeriods).string(from: task.startExecutedTime ?? .now))
                 }
                 .foregroundStyle(Colors.night.opacity(0.5))
                 .font(.size15Default)
                 
-                Text(taskTitle)
+                Text(task.name)
+                    .foregroundStyle(Colors.night)
                     .font(.size22Default)
             }
             
             Button {
                 withAnimation(.default) {
-                    isDone.toggle() 
+                    action()
                 }
             } label: {
-                Image(systemName: isDone ? Symbols.checkmarkSealFill : Symbols.circle)
+                Image(systemName: task.isDone ? Symbols.checkmarkSealFill : Symbols.circle)
                     .resizable()
                     .frame(width: 30, height: 30)
                     .hSpacing(.trailing)
-                    .foregroundStyle(isDone ? Colors.mantis : Colors.night.opacity(0.5))
+                    .foregroundStyle(task.isDone ? Colors.mantis : Colors.night.opacity(0.5))
             }
         }
+        .frame(minWidth: 320, maxHeight: 50)
         .hSpacing(.leading)
         .padding()
         .background(Colors.ghostWhite)
@@ -64,9 +68,16 @@ struct TaskInfoCellView: View {
 
 #Preview {
     TaskInfoCellView(
-        image: .checkmark,
-        executeTime: Date(),
-        taskTitle: "Test",
-        isDone: .constant(false)
-    )
+        task: ToDo(
+            category: .birthday,
+            name: "Test",
+            toDoDescription: "",
+            image: Data(),
+            executedDate: .now,
+            startExecutedTime: nil,
+            endExecutedTime: nil,
+            numbersOfReminders: 0
+        )) {
+            
+        }
 }
