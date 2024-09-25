@@ -25,7 +25,7 @@ public struct ConfirmButton: View {
             Rectangle()
                 .fill(Colors.blue)
                 .frame(height: 70)
-                .clipShape(.rect(cornerRadius: 40))
+                .clipShape(.rect(cornerRadius: 15))
                 .overlay {
                     Text(title)
                         .foregroundStyle(Colors.ghostWhite)

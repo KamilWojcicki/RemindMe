@@ -57,9 +57,9 @@ public struct TaskTile: View {
                     if latestTask == nil {
                         VStack {
                             Button {
-                                router.navigate(to: .addTask())
+                                router.navigate(to: .addTask)
                             } label: {
-                                Image(systemName: Symbols.plusCircle)
+                                Symbols.plusCircle
                                     .font(.system(size: 100))
                                     .foregroundStyle(Colors.ghostWhite.opacity(0.8))
                             }
@@ -82,7 +82,7 @@ public struct TaskTile: View {
                     category: .birthday,
                     name: "",
                     toDoDescription: "",
-                    executedDate: Date(),
+                    image: Data(), executedDate: Date(),
                     startExecutedTime: nil,
                     endExecutedTime: nil,
                     numbersOfReminders: 1
@@ -102,13 +102,13 @@ extension TaskTile {
                 if button != .history || isDone {
                     ActionButton(
                         button: button,
-                        image: button == .done && isDone ? "\(button.image).fill" : button.image,
+                        image: button == .done && isDone ? button.image : button.image,
                         foregroundColor: button == .done && isDone ? Colors.mantis : Colors.night) {
                             Task {
                                 do {
                                     try await onButtonTapped(button)
                                     if isEdited {
-                                        router.navigate(to: .addTask(task: $latestTask))
+                                        router.navigate(to: .addTask)
                                     }
                                 } catch {
                                     print(error)

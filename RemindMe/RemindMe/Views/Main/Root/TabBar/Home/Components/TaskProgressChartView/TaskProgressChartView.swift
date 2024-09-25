@@ -12,10 +12,10 @@ import ToDoInterface
 
 struct TaskProgressChartView: View {
     let action: () -> Void
-    @Binding var taskDonePercentage: Int
+    @Binding var taskDonePercentage: Double
     @Binding var categorizedCounts: [String: CategoryInfo]
     
-    init(taskDonePercentage: Binding<Int>, categorizedCounts: Binding<[String: CategoryInfo]>, action: @escaping () -> Void) {
+    init(taskDonePercentage: Binding<Double>, categorizedCounts: Binding<[String: CategoryInfo]>, action: @escaping () -> Void) {
         self._taskDonePercentage = taskDonePercentage
         self._categorizedCounts = categorizedCounts
         self.action = action
@@ -24,7 +24,7 @@ struct TaskProgressChartView: View {
     var body: some View {
         Rectangle()
             .fill(Colors.ghostWhite).opacity(0.2)
-            .clipShape(.rect(cornerRadius: 30))
+            .clipShape(.rect(cornerRadius: 25))
             .frame(height: 200)
             .overlay {
                 GeometryReader { reader in
@@ -84,14 +84,14 @@ extension TaskProgressChartView {
             }
             .chartLegend(.hidden)
             .overlay {
-                Text("\(taskDonePercentage)%")
+                Text(String(format: "%.0f%%", taskDonePercentage))
                     .font(.size23Default)
             }
             
             Button {
-                //action
+                action()
             } label: {
-                Image(systemName: Symbols.ellipsis)
+                Symbols.ellipsis
                     .imageScale(.large)
                     .foregroundStyle(Colors.ghostWhite)
             }

@@ -5,6 +5,7 @@
 //  Created by Kamil Wójcicki on 15/05/2024.
 //
 
+import Design
 import SwiftUI
 import NavigationInterface
 
@@ -23,10 +24,29 @@ struct ModalModifier<Value: View>: ViewModifier {
                         isPresented: $isPresented,
                         onDismiss: onDismiss
                     ) {
-                        destinationView
-                            .presentationDetents([presentationDetent])
+                        VStack(spacing: 0) {
+                            VStack(spacing: 20) {
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(Colors.night.opacity(0.5))
+                                    .frame(width: 30, height: 3)
+                            
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(Colors.night.opacity(0.1))
+                                    .frame(height: 2)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.horizontal, -16)
+                            }
+                                destinationView
+                                    .presentationDetents([presentationDetent])
+                                    .presentationCornerRadius(35)
+                        }
+                        
+                        .frame(maxHeight: .infinity, alignment: .top)
+                        .padding(.top)
+                        .ignoresSafeArea(edges: .bottom)
                     }
                     .blur(radius: isPresented ? 2 : 0)
+                    
             }
             .if(type == .fullScreenCover) { view in
                 view
@@ -40,13 +60,38 @@ struct ModalModifier<Value: View>: ViewModifier {
     }
 }
 
+
 extension View {
-    public func withModal<Value: View>(_ type: ModalType, destinationView: Value, isPresented: Binding<Bool>, presentationDetent: PresentationDetent, onDismiss: (() -> Void)? = nil) -> some View {
+    public func withModal<Value: View>(_ type: ModalType, destinationView: Value, isPresented: Binding<Bool>, presentationDetent: PresentationDetent = .large, onDismiss: (() -> Void)? = nil) -> some View {
         modifier(ModalModifier(isPresented: isPresented, type: type, destinationView: destinationView, presentationDetent: presentationDetent, onDismiss: onDismiss))
     }
 }
 
 #Preview {
     Text("Hello, world!")
-        .modifier(ModalModifier(isPresented: .constant(true), type: .sheet, destinationView: Text("test"), presentationDetent: .medium, onDismiss: { print("test") } ))
+        .modifier(ModalModifier(isPresented: .constant(true), type: .sheet, destinationView: PrevievView(), presentationDetent: .medium, onDismiss: { print("test") } ))
+}
+
+
+struct PrevievView: View {
+    var body: some View {
+        ScrollView(.vertical) {
+            VStack {
+                Rectangle()
+                    .frame(width: 100, height: 200)
+                Rectangle()
+                    .frame(width: 100, height: 200)
+                Rectangle()
+                    .frame(width: 100, height: 200)
+                Rectangle()
+                    .frame(width: 100, height: 200)
+                Rectangle()
+                    .frame(width: 100, height: 200)
+                Rectangle()
+                    .frame(width: 100, height: 200)
+            }
+            .padding(.top)
+        }
+        
+    }
 }

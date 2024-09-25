@@ -11,7 +11,7 @@ import SwiftUI
 import ToDoInterface
 
 @MainActor
-final class AddTaskViewModel: ObservableObject {
+final class AddTaskViewModel1: ObservableObject {
     @Inject private var toDoManager: ToDoManagerInterface
     @Published var selectDate: Date = Date()
     @Published var titleTextFieldText: String = ""
@@ -54,7 +54,7 @@ final class AddTaskViewModel: ObservableObject {
         Task {
             do {
                 guard let category = category else { return }
-                let newToDo = ToDo(category: category, name: titleTextFieldText, toDoDescription: descriptionTextFieldText, executedDate: selectDate, startExecutedTime: selectStartTime, endExecutedTime: selectEndTime, numbersOfReminders: numberOfNotifications ?? 1)
+                let newToDo = ToDo(category: category, name: titleTextFieldText, toDoDescription: descriptionTextFieldText, image: Data(), executedDate: selectDate, startExecutedTime: selectStartTime, endExecutedTime: selectEndTime, numbersOfReminders: numberOfNotifications ?? 1)
                 try await toDoManager.createToDo(todo: newToDo)
             } catch {
                 print(error.localizedDescription)
