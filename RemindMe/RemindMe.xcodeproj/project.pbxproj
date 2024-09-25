@@ -18,11 +18,6 @@
 		E765B4522BACD2DB00C15A9D /* RemindMeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765B4512BACD2DB00C15A9D /* RemindMeTests.swift */; };
 		E765B45C2BACD2DB00C15A9D /* RemindMeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765B45B2BACD2DB00C15A9D /* RemindMeUITests.swift */; };
 		E765B45E2BACD2DB00C15A9D /* RemindMeUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765B45D2BACD2DB00C15A9D /* RemindMeUITestsLaunchTests.swift */; };
-		E769B8122BF7580200DFFE92 /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E769B80F2BF7580200DFFE92 /* AddTaskView.swift */; };
-		E769B8142BF8CAB500DFFE92 /* AddTaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E769B8132BF8CAB500DFFE92 /* AddTaskViewModel.swift */; };
-		E769B8272BF9026900DFFE92 /* CategoryPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E769B8262BF9026900DFFE92 /* CategoryPickerView.swift */; };
-		E78E1BBF2BFE0E2000FAB19D /* CategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78E1BBE2BFE0E2000FAB19D /* CategoriesView.swift */; };
-		E78E1BC12BFE0E5D00FAB19D /* CategoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78E1BC02BFE0E5D00FAB19D /* CategoriesViewModel.swift */; };
 		E7C1054C2BF204390010B67A /* LanguageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C1054B2BF204390010B67A /* LanguageButton.swift */; };
 		E7C105502BF204840010B67A /* OnboardingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C1054F2BF204840010B67A /* OnboardingScreen.swift */; };
 		E7C105522BF204940010B67A /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C105512BF204940010B67A /* OnboardingViewModel.swift */; };
@@ -49,6 +44,8 @@
 		E7D2674B2C2887890070C7BC /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D2674A2C2887890070C7BC /* HomeViewModel.swift */; };
 		E7D2674E2C2B13330070C7BC /* TaskProgressChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D2674D2C2B13330070C7BC /* TaskProgressChartView.swift */; };
 		E7D267532C30608A0070C7BC /* TaskInfoCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D267522C30608A0070C7BC /* TaskInfoCellView.swift */; };
+		E7D267562C67D2470070C7BC /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D267552C67D2470070C7BC /* AddTaskView.swift */; };
+		E7D267582C70DD530070C7BC /* AddTaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D267572C70DD530070C7BC /* AddTaskViewModel.swift */; };
 		E7D3DBBF2BC08DF00025371B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = E7D3DBBE2BC08DF00025371B /* Dependencies */; };
 /* End PBXBuildFile section */
 
@@ -85,11 +82,6 @@
 		E765B4572BACD2DB00C15A9D /* RemindMeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RemindMeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E765B45B2BACD2DB00C15A9D /* RemindMeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindMeUITests.swift; sourceTree = "<group>"; };
 		E765B45D2BACD2DB00C15A9D /* RemindMeUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindMeUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		E769B80F2BF7580200DFFE92 /* AddTaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
-		E769B8132BF8CAB500DFFE92 /* AddTaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskViewModel.swift; sourceTree = "<group>"; };
-		E769B8262BF9026900DFFE92 /* CategoryPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPickerView.swift; sourceTree = "<group>"; };
-		E78E1BBE2BFE0E2000FAB19D /* CategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesView.swift; sourceTree = "<group>"; };
-		E78E1BC02BFE0E5D00FAB19D /* CategoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewModel.swift; sourceTree = "<group>"; };
 		E7C1054B2BF204390010B67A /* LanguageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageButton.swift; sourceTree = "<group>"; };
 		E7C1054F2BF204840010B67A /* OnboardingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScreen.swift; sourceTree = "<group>"; };
 		E7C105512BF204940010B67A /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
@@ -116,6 +108,8 @@
 		E7D2674A2C2887890070C7BC /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		E7D2674D2C2B13330070C7BC /* TaskProgressChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskProgressChartView.swift; sourceTree = "<group>"; };
 		E7D267522C30608A0070C7BC /* TaskInfoCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskInfoCellView.swift; sourceTree = "<group>"; };
+		E7D267552C67D2470070C7BC /* AddTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
+		E7D267572C70DD530070C7BC /* AddTaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -236,50 +230,6 @@
 			path = RemindMeUITests;
 			sourceTree = "<group>";
 		};
-		E769B8102BF7580200DFFE92 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				E769B80F2BF7580200DFFE92 /* AddTaskView.swift */,
-				E769B8132BF8CAB500DFFE92 /* AddTaskViewModel.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		E769B8112BF7580200DFFE92 /* AddTask */ = {
-			isa = PBXGroup;
-			children = (
-				E769B8242BF9024700DFFE92 /* CategoryPicker */,
-				E769B8152BF8FED400DFFE92 /* CategoriesViews */,
-				E769B8102BF7580200DFFE92 /* Views */,
-			);
-			path = AddTask;
-			sourceTree = "<group>";
-		};
-		E769B8152BF8FED400DFFE92 /* CategoriesViews */ = {
-			isa = PBXGroup;
-			children = (
-				E78E1BBE2BFE0E2000FAB19D /* CategoriesView.swift */,
-				E78E1BC02BFE0E5D00FAB19D /* CategoriesViewModel.swift */,
-			);
-			path = CategoriesViews;
-			sourceTree = "<group>";
-		};
-		E769B8242BF9024700DFFE92 /* CategoryPicker */ = {
-			isa = PBXGroup;
-			children = (
-				E769B8252BF9025100DFFE92 /* Views */,
-			);
-			path = CategoryPicker;
-			sourceTree = "<group>";
-		};
-		E769B8252BF9025100DFFE92 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				E769B8262BF9026900DFFE92 /* CategoryPickerView.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 		E7C105452BF203F50010B67A /* Root */ = {
 			isa = PBXGroup;
 			children = (
@@ -376,6 +326,7 @@
 		E7C105592BF206FC0010B67A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				E7D267542C67D2310070C7BC /* AddTask */,
 				E7D267482C28877D0070C7BC /* HomeView.swift */,
 				E7D2674A2C2887890070C7BC /* HomeViewModel.swift */,
 			);
@@ -423,7 +374,6 @@
 		E7C1056B2BF20A140010B67A /* Tasks */ = {
 			isa = PBXGroup;
 			children = (
-				E769B8112BF7580200DFFE92 /* AddTask */,
 				E7C1056C2BF20A280010B67A /* Views */,
 				E7C105862BF210940010B67A /* TasksTab.swift */,
 			);
@@ -482,6 +432,15 @@
 				E7D267522C30608A0070C7BC /* TaskInfoCellView.swift */,
 			);
 			path = TaskInfoCell;
+			sourceTree = "<group>";
+		};
+		E7D267542C67D2310070C7BC /* AddTask */ = {
+			isa = PBXGroup;
+			children = (
+				E7D267552C67D2470070C7BC /* AddTaskView.swift */,
+				E7D267572C70DD530070C7BC /* AddTaskViewModel.swift */,
+			);
+			path = AddTask;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -625,6 +584,7 @@
 				E7C105832BF20FB90010B67A /* HomeTab.swift in Sources */,
 				E7C1057A2BF20BF40010B67A /* TabBarViewModel.swift in Sources */,
 				E73F3D492BF3959B00E27F7D /* QuickTaskTile.swift in Sources */,
+				E7D267582C70DD530070C7BC /* AddTaskViewModel.swift in Sources */,
 				E7C105892BF210CF0010B67A /* SettingsTab.swift in Sources */,
 				E7C1056F2BF20A400010B67A /* TasksViewModel.swift in Sources */,
 				E703F2FD2BC0A6720042FBA5 /* Assembly.swift in Sources */,
@@ -634,21 +594,17 @@
 				E76572B92BC43D3900334597 /* AssemblyShared.swift in Sources */,
 				E7D267432C19C3500070C7BC /* Router.swift in Sources */,
 				E7C105602BF2074A0010B67A /* TaskTileViewModel.swift in Sources */,
-				E769B8142BF8CAB500DFFE92 /* AddTaskViewModel.swift in Sources */,
 				E7D2674B2C2887890070C7BC /* HomeViewModel.swift in Sources */,
 				E7C105872BF210940010B67A /* TasksTab.swift in Sources */,
 				E7C105682BF209E10010B67A /* HistoryView.swift in Sources */,
 				E7D267532C30608A0070C7BC /* TaskInfoCellView.swift in Sources */,
 				E7D267452C1B946F0070C7BC /* RootViewModel.swift in Sources */,
 				E7C105712BF20A4B0010B67A /* TasksView.swift in Sources */,
-				E769B8272BF9026900DFFE92 /* CategoryPickerView.swift in Sources */,
+				E7D267562C67D2470070C7BC /* AddTaskView.swift in Sources */,
 				E7D267492C28877D0070C7BC /* HomeView.swift in Sources */,
-				E78E1BC12BFE0E5D00FAB19D /* CategoriesViewModel.swift in Sources */,
 				E7C105542BF2050B0010B67A /* OnboardingModel.swift in Sources */,
-				E769B8122BF7580200DFFE92 /* AddTaskView.swift in Sources */,
 				E7C105572BF2055F0010B67A /* RootView.swift in Sources */,
 				E7C1055E2BF207400010B67A /* TaskTile.swift in Sources */,
-				E78E1BBF2BFE0E2000FAB19D /* CategoriesView.swift in Sources */,
 				E7C105852BF20FE60010B67A /* HistoryTab.swift in Sources */,
 				E7C1056A2BF209FC0010B67A /* HistoryViewModel.swift in Sources */,
 				E7C1057C2BF20BFC0010B67A /* TabBarView.swift in Sources */,
