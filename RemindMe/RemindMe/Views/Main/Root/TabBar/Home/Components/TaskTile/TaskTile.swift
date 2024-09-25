@@ -59,7 +59,7 @@ public struct TaskTile: View {
                             Button {
                                 router.navigate(to: .addTask())
                             } label: {
-                                Image(systemName: Symbols.plusCircle)
+                                Symbols.plusCircle
                                     .font(.system(size: 100))
                                     .foregroundStyle(Colors.ghostWhite.opacity(0.8))
                             }
@@ -102,7 +102,7 @@ extension TaskTile {
                 if button != .history || isDone {
                     ActionButton(
                         button: button,
-                        image: button == .done && isDone ? "\(button.image).fill" : button.image,
+                        image: button == .done && isDone ? button.image : button.image,
                         foregroundColor: button == .done && isDone ? Colors.mantis : Colors.night) {
                             Task {
                                 do {

@@ -51,7 +51,9 @@ struct TaskInfoCellView: View {
                     action()
                 }
             } label: {
-                Image(systemName: task.isDone ? Symbols.checkmarkSealFill : Symbols.circle)
+                let image = task.isDone ? Symbols.checkmarkSealFill : Symbols.circle
+                
+                image
                     .resizable()
                     .frame(width: 30, height: 30)
                     .hSpacing(.trailing)

@@ -89,9 +89,9 @@ extension TaskProgressChartView {
             }
             
             Button {
-                #warning("action to change filter not implemented")
+                action()
             } label: {
-                Image(systemName: Symbols.ellipsis)
+                Symbols.ellipsis
                     .imageScale(.large)
                     .foregroundStyle(Colors.ghostWhite)
             }
