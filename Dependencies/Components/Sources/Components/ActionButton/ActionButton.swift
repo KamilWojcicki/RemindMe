@@ -15,7 +15,7 @@ public struct ActionButton: View {
         case delete = "Delete"
         case history = "History"
         
-        public var image: String {
+        public var image: Image {
             switch self {
             case .done:
                 Symbols.checkmarkSeal
@@ -30,11 +30,11 @@ public struct ActionButton: View {
     }
     
     private let button: ButtonType
-    private let image: String
+    private let image: Image
     private let foregroundColor: Color
     private let action: () -> Void
     
-    public init(button: ButtonType, image: String, foregroundColor: Color, action: @escaping () -> Void) {
+    public init(button: ButtonType, image: Image, foregroundColor: Color, action: @escaping () -> Void) {
         self.button = button
         self.image = image
         self.foregroundColor = foregroundColor
@@ -46,7 +46,7 @@ public struct ActionButton: View {
             action()
         } label: {
             VStack(spacing: 5) {
-                Image(systemName: image)
+               image
                 
                 Text(button.rawValue)
                     .font(.footnote)
@@ -60,7 +60,7 @@ public struct ActionButton: View {
     ZStack {
         Colors.background().ignoresSafeArea()
         
-        ActionButton(button: .done, image: "", foregroundColor: .red) {
+        ActionButton(button: .done, image: .init(systemName: ""), foregroundColor: .red) {
             
         }
     }

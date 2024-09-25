@@ -11,7 +11,7 @@ import SwiftUI
 import ToDoInterface
 
 @MainActor
-final class AddTaskViewModel: ObservableObject {
+final class AddTaskViewModel1: ObservableObject {
     @Inject private var toDoManager: ToDoManagerInterface
     @Published var selectDate: Date = Date()
     @Published var titleTextFieldText: String = ""

@@ -12,7 +12,7 @@ import Navigation
 import ToDoInterface
 import Utilities
 
-struct AddTaskView: View {
+struct AddTaskView1: View {
     @StateObject private var viewModel: AddTaskViewModel
     @EnvironmentObject private var router: Router<Routes>
     @Binding private var toDoToEdit: ToDo?
@@ -61,10 +61,10 @@ struct AddTaskView: View {
 }
 
 #Preview {
-    AddTaskView(category: .birthday)
+    AddTaskView1(category: .birthday)
 }
 
-extension AddTaskView {
+extension AddTaskView1 {
     @ViewBuilder
     private var datePickerField: some View {
         Text("Date")
