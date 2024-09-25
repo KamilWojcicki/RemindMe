@@ -57,7 +57,7 @@ public struct TaskTile: View {
                     if latestTask == nil {
                         VStack {
                             Button {
-                                router.navigate(to: .addTask())
+                                router.navigate(to: .addTask)
                             } label: {
                                 Symbols.plusCircle
                                     .font(.system(size: 100))
@@ -108,7 +108,7 @@ extension TaskTile {
                                 do {
                                     try await onButtonTapped(button)
                                     if isEdited {
-                                        router.navigate(to: .addTask(task: $latestTask))
+                                        router.navigate(to: .addTask)
                                     }
                                 } catch {
                                     print(error)

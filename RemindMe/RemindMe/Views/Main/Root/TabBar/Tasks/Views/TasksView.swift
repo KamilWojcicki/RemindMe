@@ -44,9 +44,9 @@ extension TasksView {
                 .foregroundStyle(Colors.ghostWhite.opacity(0.5))
                 .multilineTextAlignment(.center)
             Button {
-                router.navigate(to: .addTask())
+                router.navigate(to: .addTask)
             } label: {
-                Image(systemName: Symbols.plusCircle)
+                Symbols.plusCircle
                     .font(.system(size: 100))
                     .foregroundStyle(Colors.ghostWhite.opacity(0.2))
             }

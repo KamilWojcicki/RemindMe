@@ -39,7 +39,6 @@ public struct TabBarView: View {
                                     .ignoresSafeArea()
                                     
                                 tab.rootView
-//                                    .clipShape(.rect(bottomLeadingRadius: 45, bottomTrailingRadius: 45))
                             }
                         }
                     }
@@ -50,7 +49,7 @@ public struct TabBarView: View {
             }
             .navigationDestination(for: Routes.self) { path in
                 switch path {
-                case .addTask(let task): AddTaskView(toDoToEdit: task, category: viewModel.category)
+                    case .addTask: AddTaskView()
                 }
             }
             .navigationBarBackButtonHidden(true)

@@ -10,21 +10,7 @@ import ToDoInterface
 import SwiftUI
 
 enum Routes: Hashable {
-    case addTask(task: Binding<ToDo?> = .constant(nil))
-    
-    static func == (lhs: Routes, rhs: Routes) -> Bool {
-        switch (lhs, rhs) {
-        case (.addTask, .addTask):
-            return true
-        }
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        switch self {
-        case .addTask:
-            hasher.combine("addTask")
-        }
-    }
+    case addTask
 }
 
 final class Router<Path: Hashable>: ObservableObject {
