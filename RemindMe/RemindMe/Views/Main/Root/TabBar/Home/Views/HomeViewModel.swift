@@ -37,31 +37,33 @@ final class HomeViewModel: ViewModelInterface {
     enum State: Equatable {
         case idle
         case loading
-        case loaded
+        case loaded([ToDo])
         case error(String)
     }
     
     enum Event {
         case getWeek
         case getTasks
+        case presentAddTaskViewButtonPressed
+        case changeDayButtonPressed(Date)
+        case onPreferenceChangeOffsetAction(CGFloat)
+        case updateTask(ToDo)
+        case onCreateWeekAction
+        case onChangeCategoryButtonPressed(ToDoInterface.Category)
     }
     
     @Published private(set) var state: State = .idle
-    @Published var currentDate: Date = .init()
-    @Published var weekSlider: [[Date.WeekDay]] = []
+    @Published private(set) var currentDate: Date = .init()
+    @Published private(set) var weekSlider: [[Date.WeekDay]] = []
+    @Published private(set) var createWeek: Bool = false
+    @Published private(set) var isDone: Bool = false
+    @Published private(set) var tasks: [ToDo] = []
+    @Published private(set) var selectedCategory: ToDoInterface.Category = .all
     @Published var currentWeekIndex: Int = 1
-    @Published var createWeek: Bool = false
-    @Published var isDone: Bool = false
-    @Published var tasks: [ToDo] = []
-    @Published var task: ToDo?
-    @Published var selectedCategory: ToDoInterface.Category = .all
     @Published var doneTaskPercentage: Double = 0.0
     @Published var categorizedCounts: [String: CategoryInfo] = ["Done your tasks": .init(count: 1, color: Colors.color)]
+    @Published var isAddTaskViewPresented: Bool = false
     @Inject private var toDoManager: ToDoManagerInterface
-    
-    var filteredTasks: [ToDo] {
-        selectedCategory == .all ? tasks : tasks.filter { $0.category == selectedCategory }
-    }
     
     var tasksByCategoryCounts: [ToDoInterface.Category: Int] {
         var counts: [ToDoInterface.Category: Int] = [:]
@@ -85,124 +87,31 @@ final class HomeViewModel: ViewModelInterface {
         case .getWeek:
             fetchWeek()
         case .getTasks:
-            fetchTasks()
+            fetchFilteredTasks()
+        case .presentAddTaskViewButtonPressed:
+            presentAddTaskViewButtonPressed()
+        case .changeDayButtonPressed(let day):
+            changeDayButtonPressed(day)
+        case .onPreferenceChangeOffsetAction(let value):
+            onPreferenceChangeOffsetAction(value)
+        case .updateTask(let task):
+            updateTask(task: task)
+        case .onCreateWeekAction:
+            onCreateWeekAction()
+        case .onChangeCategoryButtonPressed(let category):
+            onChangeCategoryButtonPressed(category: category)
         }
     }
-    
-    func fetchWeek() {
-        if weekSlider.isEmpty {
-            let currentWeek = Date().fetchWeek()
-            
-            if let firstDate = currentWeek.first?.date {
-                weekSlider.append(firstDate.createPreviousWeek())
-            }
-            
-            weekSlider.append(currentWeek)
-            
-            if let lastDate = currentWeek.last?.date {
-                weekSlider.append(lastDate.createNextWeek())
-            }
-        }
-    }
-    
-    func changeDayButtonPressed(_ day: Date) {
-        withAnimation(.snappy) {
-            currentDate = day
-        }
-    }
-    
-    func onPreferenceChangeOffsetAction(_ value: CGFloat) {
-        if value.rounded() == 10 && createWeek {
-            paginateWeek()
-            createWeek = false
-        } 
-    }
-    
-    func paginateWeek() {
-        if weekSlider.indices.contains(currentWeekIndex) {
-            if let firstDate = weekSlider[currentWeekIndex].first?.date, currentWeekIndex == 0 {
-                weekSlider.insert(firstDate.createPreviousWeek(), at: 0)
-                weekSlider.removeLast()
-                currentWeekIndex = 1
-            }
-            
-            if let lastDate = weekSlider[currentWeekIndex].last?.date, currentWeekIndex == (weekSlider.count - 1) {
-                weekSlider.append(lastDate.createNextWeek())
-                weekSlider.removeFirst()
-                currentWeekIndex = weekSlider.count - 2
-            }
-        }
-    }
-    
-    private func fetchTasks() {
-        guard state == .idle else { return }
-        
-        state = .loading
-        
-        Task {
-            do {
-//                self.tasks = try await toDoManager.readAllToDos()
-                self.tasks = toDoMocks
-                
-                calculateDoneTaskPercentage()
-                
-                filterDoneTasks()
-                
-                state = .loaded
-                
-            } catch {
-                state = .error(error.localizedDescription)
-            }
-        }
-    }
-    
-    func updateTask(task: ToDo) {
-        Task {
-            do {
-                
-                let data: [String : Any] = [
-                    ToDo.CodingKeys.id.rawValue : task.id,
-                    ToDo.CodingKeys.isDone.rawValue : !task.isDone
-                ]
 
-                try await toDoManager.updateToDo(data: data)
+    private func presentAddTaskViewButtonPressed() {
+        isAddTaskViewPresented.toggle()
+    }
 
-                if let index = self.tasks.firstIndex(where: { $0.id == task.id }) {
-                    self.tasks[index] = ToDo(task: task, isDone: !task.isDone)
-                }
-                
-                filterDoneTasks()
-                
-                calculateDoneTaskPercentage()
-                
-                print("todo state is updated")
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
+    private func onChangeCategoryButtonPressed(category: ToDoInterface.Category) {
+        selectedCategory = category
+        filterTaskByCategory()
     }
-    
-    private func filterDoneTasks() {
-        guard tasks.filter({ $0.isDone }).isEmpty else {
-            self.categorizedCounts = numberOfCompletedTasksPerCategory()
-            state = .loaded
-            print("filtered task")
-            return
-        }
-    }
-    
-    private func calculateDoneTaskPercentage() {
-        let allToDo = tasks.count
-        let doneToDo = tasks.filter({ $0.isDone }).count
-        
-        guard allToDo > 0 && doneToDo > 0 else {
-            self.doneTaskPercentage = 0
-            return
-        }
-        
-        self.doneTaskPercentage = Double(doneToDo) / Double(allToDo) * 100
-    }
-    
+
     private func numberOfCompletedTasksPerCategory() -> [String: CategoryInfo] {
         var counts = [String: Int]()
         
@@ -234,5 +143,147 @@ final class HomeViewModel: ViewModelInterface {
             }
         }
         return categorizedCounts
+    }
+}
+
+//MARK: Functions to service dates
+extension HomeViewModel {
+    private func fetchWeek() {
+        if weekSlider.isEmpty {
+            let currentWeek = Date().fetchWeek()
+            
+            if let firstDate = currentWeek.first?.date {
+                weekSlider.append(firstDate.createPreviousWeek())
+            }
+            
+            weekSlider.append(currentWeek)
+            
+            if let lastDate = currentWeek.last?.date {
+                weekSlider.append(lastDate.createNextWeek())
+            }
+        }
+    }
+    
+    private func changeDayButtonPressed(_ day: Date) {
+        withAnimation(.snappy) {
+            currentDate = day
+        }
+    }
+    
+    private func onPreferenceChangeOffsetAction(_ value: CGFloat) {
+        if value.rounded() == 10 && createWeek {
+            paginateWeek()
+            createWeek = false
+        }
+    }
+    
+    private func paginateWeek() {
+        if weekSlider.indices.contains(currentWeekIndex) {
+            if let firstDate = weekSlider[currentWeekIndex].first?.date, currentWeekIndex == 0 {
+                weekSlider.insert(firstDate.createPreviousWeek(), at: 0)
+                weekSlider.removeLast()
+                currentWeekIndex = 1
+            }
+            
+            if let lastDate = weekSlider[currentWeekIndex].last?.date, currentWeekIndex == (weekSlider.count - 1) {
+                weekSlider.append(lastDate.createNextWeek())
+                weekSlider.removeFirst()
+                currentWeekIndex = weekSlider.count - 2
+            }
+        }
+    }
+    
+    private func onCreateWeekAction() {
+        createWeek = true
+    }
+}
+
+//MARK: Functions to service task
+extension HomeViewModel {
+    @discardableResult
+    private func filterTaskByCategory() -> [ToDo] {
+        if selectedCategory == .all {
+            state = .loaded(self.tasks)
+            print("All tasks:\n", tasks)
+            return tasks
+        } else {
+            let filteredTasks = tasks.filter { $0.category == selectedCategory }
+            print("Filtered tasks:\n",filteredTasks)
+            state = .loaded(filteredTasks)
+            return filteredTasks
+        }
+    }
+    
+    private func fetchFilteredTasks() {
+        guard state == .idle else { return }
+        
+        state = .loading
+        
+        Task {
+            do {
+//                self.tasks = try await toDoManager.readAllToDos()
+                self.tasks = toDoMocks
+                
+                calculateDoneTaskPercentage()
+                
+                filterDoneTasks()
+                
+                state = .loaded(filterTaskByCategory())
+                
+            } catch {
+                state = .error(error.localizedDescription)
+            }
+        }
+    }
+    
+    private func updateTask(task: ToDo) {
+        Task {
+            do {
+                
+                let data: [String : Any] = [
+                    ToDo.CodingKeys.id.rawValue : task.id,
+                    ToDo.CodingKeys.isDone.rawValue : !task.isDone
+                ]
+
+                try await toDoManager.updateToDo(data: data)
+
+                if let index = self.tasks.firstIndex(where: { $0.id == task.id }) {
+                    self.tasks[index] = ToDo(task: task, isDone: !task.isDone)
+                }
+                
+                filterDoneTasks()
+                
+                calculateDoneTaskPercentage()
+                
+                print("todo state is updated")
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+}
+
+//MARK: Functions to service filtering
+extension HomeViewModel {
+    private func filterDoneTasks() {
+        guard tasks.filter({ $0.isDone }).isEmpty else {
+            self.categorizedCounts = numberOfCompletedTasksPerCategory()
+            state = .loaded(filterTaskByCategory())
+            return
+        }
+        self.categorizedCounts = ["Done your tasks": .init(count: 1, color: Colors.color)]
+        state = .loaded(filterTaskByCategory())
+    }
+    
+    private func calculateDoneTaskPercentage() {
+        let allToDo = tasks.count
+        let doneToDo = tasks.filter({ $0.isDone }).count
+        
+        guard allToDo > 0 && doneToDo > 0 else {
+            self.doneTaskPercentage = 0
+            return
+        }
+        
+        self.doneTaskPercentage = Double(doneToDo) / Double(allToDo) * 100
     }
 }
