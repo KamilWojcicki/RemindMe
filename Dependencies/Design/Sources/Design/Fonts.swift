@@ -13,6 +13,10 @@ extension Font {
         return .system(size: 15).weight(.regular)
     }
     
+    public static var size15DefaultBold: Font {
+        return .system(size: 15, weight: .bold, design: .default)
+    }
+    
     public static var size23DefaultBold: Font {
         return .system(size: 23, weight: .bold, design: .default)
     }
