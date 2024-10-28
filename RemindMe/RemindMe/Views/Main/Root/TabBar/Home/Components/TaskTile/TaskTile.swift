@@ -40,7 +40,7 @@ public struct TaskTile: View {
             .overlay {
                 VStack(alignment: .leading) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(latestTask?.category.rawValue ?? "Category")
+                        Text(latestTask?.tag.rawValue ?? "Category")
                             .font(.caption).opacity(0.7)
                         Text(latestTask?.name ?? "Title")
                             .font(.title).bold()
@@ -78,15 +78,7 @@ public struct TaskTile: View {
         Colors.background().ignoresSafeArea()
         TaskTile(
             latestTask: .constant(
-                ToDo(
-                    category: .birthday,
-                    name: "",
-                    toDoDescription: "",
-                    image: Data(), executedDate: Date(),
-                    startExecutedTime: nil,
-                    endExecutedTime: nil,
-                    numbersOfReminders: 1
-                )
+                toDoMocks.first!
             ),
             isDone: .constant(false),
             isEdited: .constant(false),

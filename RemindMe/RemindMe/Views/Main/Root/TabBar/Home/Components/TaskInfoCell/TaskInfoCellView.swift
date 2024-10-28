@@ -24,19 +24,19 @@ struct TaskInfoCellView: View {
     
     var body: some View {
         HStack {
-            if let image = task.image, let uiImage = UIImage(data: image) {
+            if let image = task.symbol.symbol, let uiImage = UIImage(data: image) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .frame(width: 30, height: 30)
                     .foregroundStyle(Colors.ghostWhite)
                     .padding(8)
-                    .background(Colors.vistaBlue, in: .circle)
+                    .background(task.symbol.circleColor, in: .circle)
             }
             
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     Image(systemName: "stopwatch.fill")
-                    Text(dateFormatter(dateFormat: .timeWithPeriods).string(from: task.startExecutedTime ?? .now))
+                    Text(dateFormatter(dateFormat: .timeWithPeriods).string(from: task.executedTime))
                 }
                 .foregroundStyle(Colors.night.opacity(0.5))
                 .font(.size15Default)
@@ -69,17 +69,21 @@ struct TaskInfoCellView: View {
 }
 
 #Preview {
-    TaskInfoCellView(
-        task: ToDo(
-            category: .birthday,
-            name: "Test",
-            toDoDescription: "",
-            image: Data(),
-            executedDate: .now,
-            startExecutedTime: nil,
-            endExecutedTime: nil,
-            numbersOfReminders: 0
-        )) {
-            
-        }
+//    TaskInfoCellView(
+//        task: ToDo(
+//            tag: .birthday,
+//            name: "Test",
+//            toDoDescription: "",
+//            image: Data(),
+//            executedDate: .now,
+//            startExecutedTime: nil,
+//            endExecutedTime: nil,
+//            numbersOfReminders: 0
+//        )) {
+//            
+//        }
+    
+    TaskInfoCellView(task: toDoMocks.first!) {
+        
+    }
 }
