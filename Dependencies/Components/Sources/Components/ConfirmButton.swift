@@ -10,11 +10,31 @@ import SwiftUI
 
 public struct ConfirmButton: View {
     
-    private var title: LocalizedStringKey
-    private var action: () -> Void
+    public enum `ButtonRole`: Hashable {
+        
+        case cancel
+        case confirm
+        case destructive
+    }
     
-    public init(title: LocalizedStringKey, action: @escaping () -> Void) {
+    private let title: LocalizedStringKey
+    private let role: ButtonRole
+    private let action: () -> Void
+    
+    private var fillColor: Color {
+        switch role {
+        case .cancel:
+            Colors.color
+        case .confirm:
+            Colors.blue
+        case .destructive:
+            Colors.imperialRed
+        }
+    }
+    
+    public init(title: LocalizedStringKey, role: ButtonRole, action: @escaping () -> Void) {
         self.title = title
+        self.role = role
         self.action = action
     }
     
@@ -23,7 +43,7 @@ public struct ConfirmButton: View {
             action()
         } label: {
             Rectangle()
-                .fill(Colors.blue)
+                .fill(fillColor)
                 .frame(height: 70)
                 .clipShape(.rect(cornerRadius: 15))
                 .overlay {
@@ -32,10 +52,9 @@ public struct ConfirmButton: View {
                         .font(.title2)
                 }
         }
-
     }
 }
 
 #Preview {
-    ConfirmButton(title: "test", action: {})
+    ConfirmButton(title: "test", role: .cancel, action: {})
 }
