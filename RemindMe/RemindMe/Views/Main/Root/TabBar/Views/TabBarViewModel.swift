@@ -11,17 +11,11 @@ import Navigation
 import SwiftUI
 import ToDoInterface
 
-enum Action {
-    case create
-    case edit
-}
-
 @MainActor
 final class TabBarViewModel: ObservableObject {
     @Published private(set) var tabs: [Tab] = [.home, .history, .tasks, .settings]
     @Published var selectedTab: String?
-    @Published var action: Action = .create
-    @Published private(set) var category: ToDoInterface.Category?
+    @Published private(set) var category: ToDoInterface.Tag?
     @Inject private var toDoManager: ToDoManagerInterface
     
     init() {
@@ -35,8 +29,6 @@ final class TabBarViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .assign(to: &$category)
     }
-    
-    
     
     func tapped(tab: String) {
         withAnimation {
