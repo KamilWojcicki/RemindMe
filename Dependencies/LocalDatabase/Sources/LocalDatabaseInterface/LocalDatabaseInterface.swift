@@ -13,7 +13,8 @@ public protocol LocalDAOInterface: Identifiable, Object {
     init(from: LocalModel)
 }
 
-public protocol LocalStorable: Identifiable, Codable, Equatable, Hashable {
+//LocalStorable: Identifiable, Codable, Equatable, Hashable
+public protocol LocalStorable: Identifiable, Equatable, Hashable {
     associatedtype LocalDAO: LocalDAOInterface
     init(from: LocalDAO)
 }

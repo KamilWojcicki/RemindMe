@@ -20,7 +20,8 @@ let package = Package(
     dependencies: [
         .package(path: "../DependencyInjection"),
         .package(path: "../Design"),
-        .package(path: "../LocalDatabase")
+        .package(path: "../LocalDatabase"),
+        .package(path: "../Utilities")
     ],
     targets: [
         .target(
@@ -43,6 +44,10 @@ let package = Package(
                 .product(
                     name: "Design",
                     package: "Design"
+                ),
+                .product(
+                    name: "Utilities",
+                    package: "Utilities"
                 )
             ]
         ),

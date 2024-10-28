@@ -6,19 +6,25 @@
 //
 
 import Design
+import PhotosUI
 import SwiftUI
 
+private enum LoadingImageState {
+    case none
+    case loading
+    case loaded
+}
+
 public struct PhotoAttacher: View {
-    private let action: () -> Void
-    private let deletePhotoAction: () -> Void
-    @State var isPhotoAttached: Bool = false
-    @State private var progress: Double = 1.0
+    @State private var isPhotoAttached: Bool = false
+    @State private var state: LoadingImageState = .none
+    @State private var progress: Double = 0.6
     @Binding private var defaultScrollAnchor: UnitPoint?
+    @Binding private var photoPickerSelection: PhotosPickerItem?
     
-    public init(defaultScrollAnchor: Binding<UnitPoint?>, action: @escaping () -> Void, deletePhotoAction: @escaping () -> Void) {
+    public init(defaultScrollAnchor: Binding<UnitPoint?>, photoPickerSelection: Binding<PhotosPickerItem?>) {
         self._defaultScrollAnchor = defaultScrollAnchor
-        self.action = action
-        self.deletePhotoAction = deletePhotoAction
+        self._photoPickerSelection = photoPickerSelection
     }
     
     public var body: some View {
@@ -29,41 +35,37 @@ public struct PhotoAttacher: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
-            RoundedRectangle(cornerRadius: 25)
-                .fill(Colors.vistaBlue.opacity(0.05))
-                .strokeBorder(style: StrokeStyle(lineWidth: 2, dash: [9]))
-                .foregroundStyle(Colors.vistaBlue.opacity(0.5))
-                .overlay(alignment: .leading) {
-                    HStack(spacing: 20) {
-                        CircularIcon(icon: .trayIcon)
-                        #warning("the same stuf, image should be in a circle and it should be a static image.")
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Click here")
-                                .font(.size18DefaultBold)
-                            Text("Max photo size 20 MB")
-                                .font(.size15Default)
+            PhotosPicker(selection: $photoPickerSelection) {
+                RoundedRectangle(cornerRadius: 25)
+                    .fill(Colors.vistaBlue.opacity(0.05))
+                    .strokeBorder(style: StrokeStyle(lineWidth: 2, dash: [9]))
+                    .foregroundStyle(Colors.vistaBlue.opacity(0.5))
+                    .overlay(alignment: .leading) {
+                        HStack(spacing: 20) {
+                            CircularIcon(icon: .trayIcon)
+                            
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Click here")
+                                    .font(.size18DefaultBold)
+                                Text("Max photo size 20 MB")
+                                    .font(.size15Default)
+                            }
+                            .tint(Colors.night)
                         }
+                        .padding()
                     }
-                    .padding()
-                }
-                .frame(maxHeight: 80)
-                .onTapGesture {
-                    action()
-                    defaultScrollAnchor = .bottom
-                    withAnimation {
-                        isPhotoAttached.toggle()
-                    }
-                }
+            }
+            .onChange(of: photoPickerSelection) { _ in
+               onChangeOfPhotoPickerSelection()
+            }
             
             if isPhotoAttached {
                 buildUploadedPhotosView()
-
-            }                
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .frame(height: isPhotoAttached ? 200 : 120, alignment: .top)
+        .frame(height: isPhotoAttached ? 235 : 120, alignment: .top)
         .padding()
-        
         .background(Colors.ghostWhite)
         .clipShape(.rect(cornerRadius: 15))
         .shadow(radius: 10)
@@ -71,11 +73,7 @@ public struct PhotoAttacher: View {
 }
 
 #Preview {
-    PhotoAttacher(defaultScrollAnchor: .constant(.top)) {
-        
-    } deletePhotoAction: {
-        
-    }
+    PhotoAttacher(defaultScrollAnchor: .constant(.top), photoPickerSelection: .constant(.none))
 }
 
 extension PhotoAttacher {
@@ -84,28 +82,38 @@ extension PhotoAttacher {
             Text("Uploaded photos")
             
             HStack {
-                Image(systemName: "photo.badge.plus")
+                CircularIcon(icon: .photoIcon)
                 
-                if progress != 1.0 {
-                    VStack(alignment: .leading) {
-                        Text("Uploading...")
-                            .font(.size15Default)
-                        
-                        ProgressView(value: progress)
-                        
+                HStack {
+                    Text(state == .loading ? "Uploading..." : "Uploaded")
+                        .font(.size15Default)
+                    
+                    Spacer()
+                    
+                    switch state {
+                    case .loading:
+                        SwiftUI.ProgressView()
+                    case .loaded:
+                        Symbols.checkmarkSealFill
+                            .foregroundStyle(Colors.mantis)
+                    case .none:
+                        EmptyView()
                     }
-                    .padding(.horizontal, 10)
                 }
+                .padding(.horizontal, 10)
                 
                 Spacer()
                 
                 Button {
-                    deletePhotoAction()
-                    withAnimation {
-                        isPhotoAttached.toggle()
+                    photoPickerSelection = .none
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        withAnimation {
+                            isPhotoAttached = false
+                        }
                     }
                 } label: {
-                    Image(systemName: "xmark.circle")
+                    Symbols.xmarkCircle
                         .tint(Colors.night)
                 }
             }
@@ -113,5 +121,22 @@ extension PhotoAttacher {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.top, 20)
+    }
+}
+
+extension PhotoAttacher {
+    @discardableResult
+    private func onChangeOfPhotoPickerSelection() {
+        defaultScrollAnchor = .bottom
+        
+        withAnimation {
+            isPhotoAttached = true
+        }
+        
+        state = .loading
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.state = .loaded
+        }
     }
 }

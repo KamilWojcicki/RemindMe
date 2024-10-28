@@ -13,9 +13,9 @@ import Utilities
 import ToDoInterface
 
 let toDoMocks: [ToDo] = [
-    .init(category: .birthday, name: "test", toDoDescription: "", image: Data(), executedDate: .now, startExecutedTime: nil, endExecutedTime: nil, numbersOfReminders: 1),
-    .init(category: .holidayEvent, name: "test2", toDoDescription: "", image: Data(), executedDate: .now, startExecutedTime: nil, endExecutedTime: nil, numbersOfReminders: 1),
-    .init(category: .birthday, name: "test3", toDoDescription: "", image: Data(), executedDate: .now, startExecutedTime: nil, endExecutedTime: nil, numbersOfReminders: 1)
+    .init(name: "test1", symbol: .clipboardIcon,  image: Data(), executedDate: .today, executedTime: .now, remindTime: .noReminder, reminderRepetition: .daily, tag: .all),
+    .init(name: "test2", symbol: .clipboardIcon,  image: Data(), executedDate: .today, executedTime: .now, remindTime: .noReminder, reminderRepetition: .daily, tag: .medicalCheck),
+    .init(name: "test3", symbol: .clipboardIcon, image: Data(), executedDate: .today, executedTime: .now, remindTime: .noReminder, reminderRepetition: .daily, tag: .birthday)
 ]
 
 enum HomeError: Error, LocalizedError {
@@ -49,7 +49,7 @@ final class HomeViewModel: ViewModelInterface {
         case onPreferenceChangeOffsetAction(CGFloat)
         case updateTask(ToDo)
         case onCreateWeekAction
-        case onChangeCategoryButtonPressed(ToDoInterface.Category)
+        case onChangeCategoryButtonPressed(ToDoInterface.Tag)
     }
     
     @Published private(set) var state: State = .idle
@@ -58,21 +58,21 @@ final class HomeViewModel: ViewModelInterface {
     @Published private(set) var createWeek: Bool = false
     @Published private(set) var isDone: Bool = false
     @Published private(set) var tasks: [ToDo] = []
-    @Published private(set) var selectedCategory: ToDoInterface.Category = .all
+    @Published private(set) var selectedCategory: ToDoInterface.Tag = .all
     @Published var currentWeekIndex: Int = 1
     @Published var doneTaskPercentage: Double = 0.0
     @Published var categorizedCounts: [String: CategoryInfo] = ["Done your tasks": .init(count: 1, color: Colors.color)]
     @Published var isAddTaskViewPresented: Bool = false
     @Inject private var toDoManager: ToDoManagerInterface
     
-    var tasksByCategoryCounts: [ToDoInterface.Category: Int] {
-        var counts: [ToDoInterface.Category: Int] = [:]
+    var tasksByCategoryCounts: [ToDoInterface.Tag: Int] {
+        var counts: [ToDoInterface.Tag: Int] = [:]
         
-        for category in ToDoInterface.Category.allCases {
+        for category in ToDoInterface.Tag.allCases {
             if category == .all {
                 counts[category] = tasks.count
             } else {
-                counts[category] = tasks.filter { $0.category == category }.count
+                counts[category] = tasks.filter { $0.tag == category }.count
             }
         }
         return counts
@@ -80,6 +80,8 @@ final class HomeViewModel: ViewModelInterface {
     
     init() {
         trigger(.getTasks)
+        
+        print(toDoMocks)
     }
     
     func trigger(_ event: Event) {
@@ -104,10 +106,12 @@ final class HomeViewModel: ViewModelInterface {
     }
 
     private func presentAddTaskViewButtonPressed() {
-        isAddTaskViewPresented.toggle()
+        withAnimation {
+            isAddTaskViewPresented.toggle()
+        }
     }
 
-    private func onChangeCategoryButtonPressed(category: ToDoInterface.Category) {
+    private func onChangeCategoryButtonPressed(category: ToDoInterface.Tag) {
         selectedCategory = category
         filterTaskByCategory()
     }
@@ -117,10 +121,10 @@ final class HomeViewModel: ViewModelInterface {
         
         for task in tasks {
             if task.isDone {
-                if let count = counts[task.category.rawValue] {
-                    counts[task.category.rawValue] = count + 1
+                if let count = counts[task.tag.rawValue] {
+                    counts[task.tag.rawValue] = count + 1
                 } else {
-                    counts[task.category.rawValue] = 1
+                    counts[task.tag.rawValue] = 1
                 }
             }
         }
@@ -207,7 +211,7 @@ extension HomeViewModel {
             print("All tasks:\n", tasks)
             return tasks
         } else {
-            let filteredTasks = tasks.filter { $0.category == selectedCategory }
+            let filteredTasks = tasks.filter { $0.tag == selectedCategory }
             print("Filtered tasks:\n",filteredTasks)
             state = .loaded(filteredTasks)
             return filteredTasks
@@ -221,8 +225,8 @@ extension HomeViewModel {
         
         Task {
             do {
-//                self.tasks = try await toDoManager.readAllToDos()
-                self.tasks = toDoMocks
+                self.tasks = try await toDoManager.readAllToDos()
+//                self.tasks = toDoMocks
                 
                 calculateDoneTaskPercentage()
                 

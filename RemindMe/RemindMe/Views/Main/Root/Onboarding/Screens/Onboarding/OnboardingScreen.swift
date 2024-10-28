@@ -21,32 +21,27 @@ public struct OnboardingScreen: View {
         self._changeView = changeView
     }
     public var body: some View {
-        VStack {
-            skipButton
-            
-            LottieView(animationConfiguration: .onboarding, loopMode: .loop)
-            
-            GeometryReader { geometry in
-                Rectangle()
-                    .fill(Colors.ghostWhite)
-                    .clipShape(.rect(cornerRadius: 40))
-                    .frame(maxHeight: .infinity, alignment: .bottom)
-                    .shadow(color: Colors.night.opacity(0.4), radius: 10, y: -5)
-                    .overlay {
-                        VStack {
-                            pageView
-                            
-                            onboardingButton
-                        }
+        ZStack(alignment: .bottom) {
+            VStack {
+                skipButton
+                
+                LottieView(animationConfiguration: .onboarding, loopMode: .loop)
+                
+                BottomSheet(isPresented: $viewModel.animateRectangle) {
+                    VStack {
+                        pageView
+                        
+                        onboardingButton
                     }
-                    
-                    .offset(y: viewModel.animateRectangle ? geometry.size.height * 0.0 : geometry.size.height * 1)
+                }
+                .transition(.move(edge: .bottom))
             }
-            .ignoresSafeArea()
-            .animation(.spring(duration: 0.6), value: viewModel.animateRectangle)
-            .onAppear {
+        }
+        .onAppear {
+            withAnimation {
                 viewModel.animateRectangle = true
             }
+            
         }
     }
 }
@@ -64,7 +59,7 @@ extension OnboardingScreen {
     private var pageView: some View {
         TabView(selection: $viewModel.pageIndex) {
             ForEach(viewModel.pages) { page in
-                VStack(spacing: 20) {
+                VStack(spacing: 30) {
                     Text(page.name)
                         .font(.title)
                         .bold()
@@ -81,8 +76,7 @@ extension OnboardingScreen {
                     }
                 }
                 .frame(height: 200, alignment: .top)
-                .padding(.top, 60)
-                .padding()
+                .padding(.horizontal)
                 .tag(page.tag)
                 .multilineTextAlignment(.center)
             }
@@ -92,14 +86,14 @@ extension OnboardingScreen {
     }
     
     private var onboardingButton: some View {
-        ConfirmButton(title: viewModel.pageIndex == viewModel.pages.count - 1 ? "onboarding_get_started_button".localized : "onboarding_next_button".localized) {
+        ConfirmButton(title: viewModel.pageIndex == viewModel.pages.count - 1 ? "onboarding_get_started_button".localized : "onboarding_next_button".localized, role: .confirm) {
             viewModel.buttonPressed {
                 withAnimation(.spring) {
                     changeView.toggle()
                 }
             }
         }
-        .padding()
+        .padding(.horizontal)
         .padding(.bottom, 40)
     }
     

@@ -5,14 +5,33 @@
 //  Created by Kamil Wójcicki on 15/05/2024.
 //
 
+import Components
+import Design
 import SwiftUI
 
 public struct AlertViewModifier: ViewModifier {
-    public enum `ButtonRole`: Hashable {
+//    public enum `ButtonRole`: Hashable {
+//        var identifier: String {
+//            return UUID().uuidString
+//        }
+//        public static func == (lhs: AlertViewModifier.ButtonRole, rhs: AlertViewModifier.ButtonRole) -> Bool {
+//            return lhs.identifier == rhs.identifier
+//        }
+//
+//        public func hash(into hasher: inout Hasher) {
+//            return hasher.combine(identifier)
+//        }
+//
+//        case cancel(title: LocalizedStringKey, action: () -> ())
+//        case destructive(title: LocalizedStringKey, action: () -> ())
+//        case submit(title: LocalizedStringKey, action: () -> ())
+//    }
+    
+    public enum SelectedButton: Hashable {
         var identifier: String {
             return UUID().uuidString
         }
-        public static func == (lhs: AlertViewModifier.ButtonRole, rhs: AlertViewModifier.ButtonRole) -> Bool {
+        public static func == (lhs: SelectedButton, rhs: SelectedButton) -> Bool {
             return lhs.identifier == rhs.identifier
         }
 
@@ -20,55 +39,76 @@ public struct AlertViewModifier: ViewModifier {
             return hasher.combine(identifier)
         }
 
-        case cancel(title: String, action: () -> ())
-        case destructive(title: String, action: () -> ())
-        case submit(title: String, action: () -> ())
+        case cancel(title: LocalizedStringKey, action: () -> ())
+        case destructive(title: LocalizedStringKey, action: () -> ())
+        case submit(title: LocalizedStringKey, action: () -> ())
     }
 
     @State private var textFieldText: String = ""
     @Binding private var errorToggle: Bool
     private let errorTitle: String
     private let message: String
-    private let buttons: [`ButtonRole`]
-    private var isTextfieldShown: Bool = false
+    private let buttons: [SelectedButton]
 
-    public init(buttons: [`ButtonRole`], errorTitle: String, errorToggle: Binding<Bool>, message: String, isTextfieldShown: Bool) {
-        self.isTextfieldShown = isTextfieldShown
-        self.buttons = buttons
+    public init(errorTitle: String, message: String, errorToggle: Binding<Bool>, buttons: [SelectedButton]) {
         self.errorTitle = errorTitle
-        self._errorToggle = errorToggle
         self.message = message
+        self._errorToggle = errorToggle
+        self.buttons = buttons
     }
-
+    
     public func body(content: Content) -> some View {
-        content
-            .alert(errorTitle, isPresented: $errorToggle) {
-                if isTextfieldShown {
-                    TextField("write some text", text: $textFieldText)
-                }
-                buildMultipleButtons(with: buttons)
-            } message: {
-                Text(message)
+        ZStack {
+            content
+            
+            if errorToggle {
+                Colors.night.opacity(0.4).ignoresSafeArea()
+                
+                buildAlertView
+                
             }
+        }
+    }
+    
+    private var buildAlertView: some View {
+        VStack(spacing: 10) {
+            Text(errorTitle)
+                .font(.size18DefaultBold)
+            Text(message)
+                .font(.size15Default)
+                .multilineTextAlignment(.center)
+            
+            buildMultipleButtons(with: buttons)
+                .padding(.top, 20)
+        }
+        .frame(width: 250)
+        .padding(30)
+        .background(Colors.ghostWhite)
+        .clipShape(.rect(cornerRadius: 20))
     }
 
     @ViewBuilder
-    private func buildMultipleButtons(with buttons: [`ButtonRole`]) -> some View {
+    private func buildMultipleButtons(with buttons: [SelectedButton]) -> some View {
         ForEach(buttons, id: \.self) { button in
             switch button {
             case .cancel(let title, let action):
-                Button(title, role: .cancel, action: action)
+                ConfirmButton(title: title, role: .cancel, action: action)
             case .destructive(let title, let action):
-                Button(title, role: .destructive, action: action)
+                ConfirmButton(title: title, role: .destructive, action: action)
             case .submit(let title, let action):
-                Button(title, role: .none, action: action)
+                ConfirmButton(title: title, role: .confirm, action: action)
             }
         }
     }
 }
 
 extension View {
-    public func withAlert(errorTitle: String, errorToggle: Binding<Bool>, message: String, buttons: [AlertViewModifier.ButtonRole], isTextfieldShown: Bool = false) -> some View {
-        modifier(AlertViewModifier(buttons: buttons, errorTitle: errorTitle, errorToggle: errorToggle, message: message, isTextfieldShown: isTextfieldShown))
+    public func withAlert(errorTitle: String, message: String, errorToggle: Binding<Bool>, buttons: [AlertViewModifier.SelectedButton]) -> some View {
+        modifier(AlertViewModifier(errorTitle: errorTitle, message: message, errorToggle: errorToggle, buttons: buttons))
     }
+}
+
+#Preview {
+    Text("Hello, world!")
+        .withAlert(errorTitle: "Error", message: "This is a sample error with some text to debug", errorToggle: .constant(true), buttons: [.submit(title: "Submit", action: {}), .cancel(title: "Cancel", action: {})])
 }

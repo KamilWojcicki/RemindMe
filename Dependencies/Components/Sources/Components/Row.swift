@@ -7,6 +7,7 @@
 
 import Design
 import SwiftUI
+import ToDoInterface
 
 public struct Row: View {
     public enum Variant {
@@ -35,7 +36,6 @@ public struct Row: View {
             .background(Colors.ghostWhite)
             .clipShape(.rect(cornerRadius: 15))
             .shadow(radius: 3)
-//            .padding(.horizontal)
             .onTapGesture {
                 action()
             }

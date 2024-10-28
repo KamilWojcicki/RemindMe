@@ -11,10 +11,12 @@ let package = Package(
     products: [
         .library(
             name: "Components",
-            targets: ["Components"]),
+            targets: ["Components"]
+        ),
     ],
     dependencies: [
-        .package(path: "../Design")
+        .package(path: "../Design"),
+        .package(path: "../ToDo")
     ],
     targets: [
         .target(
@@ -23,6 +25,10 @@ let package = Package(
                 .product(
                     name: "Design",
                     package: "Design"
+                ),
+                .product(
+                    name: "ToDo",
+                    package: "ToDo"
                 )
             ]
         ),

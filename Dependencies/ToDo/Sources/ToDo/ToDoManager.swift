@@ -15,9 +15,9 @@ import ToDoInterface
 final class ToDoManager: ToDoManagerInterface {
     @Inject private var localDatabaseManager: LocalDatabaseManagerInterface
     
-    let updatedCategory = PassthroughSubject<ToDoInterface.Category?, Never>()
+    let updatedCategory = PassthroughSubject<ToDoInterface.Tag?, Never>()
     
-    private var category: ToDoInterface.Category? {
+    private var category: ToDoInterface.Tag? {
         didSet {
             updatedCategory.send(category)
         }
@@ -74,7 +74,7 @@ final class ToDoManager: ToDoManagerInterface {
 
 //CATEGORY
 extension ToDoManager {
-    func updateCategory(newCategory: ToDoInterface.Category?) {
+    func updateCategory(newCategory: ToDoInterface.Tag?) {
         self.category = newCategory
     }
 }
@@ -86,8 +86,8 @@ extension ToDoManager {
         let currentDate = Date()
 
         for toDo in toDos {
-            guard let startExecutedTime = toDo.startExecutedTime else { return }
-            if startExecutedTime < currentDate {
+//            guard let startExecutedTime = toDo.executedTime else { return }
+            if toDo.executedTime < currentDate {
                 try await archiveToDo(primaryKey: toDo.id)
                 withAnimation {
                     toDos.removeAll { $0.id == toDo.id }

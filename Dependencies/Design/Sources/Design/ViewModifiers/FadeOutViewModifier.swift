@@ -37,8 +37,8 @@ struct FadeOutViewModifier: ViewModifier {
     }
 }
 
-extension View {
-    public func withFadeOut(topFadeLength: CGFloat = 50, bottomFadeLength: CGFloat = 50) -> some View {
+public extension View {
+    func withFadeOut(topFadeLength: CGFloat = 50, bottomFadeLength: CGFloat = 50) -> some View {
         modifier(FadeOutViewModifier(topFadeLength: topFadeLength, bottomFadeLength: bottomFadeLength))
     }
 }
