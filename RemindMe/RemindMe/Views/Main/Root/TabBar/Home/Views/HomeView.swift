@@ -5,6 +5,7 @@
 //  Created by Kamil Wójcicki on 23/06/2024.
 //
 
+import Components
 import Design
 import Utilities
 import Navigation
@@ -14,6 +15,7 @@ import ToDoInterface
 struct HomeView: View {
     
     @StateObject private var viewModel = HomeViewModel()
+    @EnvironmentObject private var router: Router<Routes>
     @Environment(\.scenePhase) private var scenePhase
     
     var body: some View {
@@ -22,8 +24,8 @@ struct HomeView: View {
             case .idle:
                 EmptyView()
             case .loading:
-                ProgressView()
-            case .loaded(let tasks):                
+                CustomProgressView(message: "Loading...")
+            case .loaded(let tasks):
                 buildHomeView(tasks: tasks)
             case .error(let error):
                 Label(error.description, systemImage: "xmark.circle")
@@ -45,21 +47,24 @@ struct HomeView: View {
 
 extension HomeView {
     private func buildHomeView(tasks: [ToDo]) -> some View {
-        VStack(spacing: 10) {
-            header
-            
-            taskProgress
-            
-            buildtasksView(tasks: tasks)
+        ZStack {
+            VStack(spacing: 10) {
+                header
+                
+                taskProgress
+                
+                buildtasksView(tasks: tasks)
+            }
+            .vSpacing(.top)
+            .padding(.horizontal)
+            .withModal(
+                .fullScreenCover,
+                destinationView: AddTaskView(),
+                isPresented: $viewModel.isAddTaskViewPresented,
+                presentationDetent: .large
+            )
         }
-        .vSpacing(.top)
-        .padding(.horizontal)
-        .withModal(
-            .sheet,
-            destinationView: AddTaskView(),
-            isPresented: $viewModel.isAddTaskViewPresented,
-            presentationDetent: .large
-        )
+        
     }
     
     private var header: some View {
@@ -162,13 +167,13 @@ extension HomeView {
             
             ScrollView(.horizontal) {
                 HStack(spacing: 0) {
-                    ForEach(ToDoInterface.Category.allCases, id: \.self) { category in
-                        buildCategoryCellView(categoryTitle: category.rawValue, taskCount: viewModel.tasksByCategoryCounts[category] ?? 0, isSelected: viewModel.selectedCategory == category)
+                    ForEach(ToDoInterface.Tag.allCases, id: \.self) { tag in
+                        buildCategoryCellView(categoryTitle: tag.rawValue, taskCount: viewModel.tasksByCategoryCounts[tag] ?? 0, isSelected: viewModel.selectedCategory == tag)
                             .padding(.leading, 15)
-                            .padding(.trailing, category == .otherEvent ? 15 : 0)
+                            .padding(.trailing, tag == .otherEvent ? 15 : 0)
                             .onTapGesture {
                                 withAnimation(.snappy) {
-                                    viewModel.trigger(.onChangeCategoryButtonPressed(category))
+                                    viewModel.trigger(.onChangeCategoryButtonPressed(tag))
                                 }
                             }
                     }
