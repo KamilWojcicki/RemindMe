@@ -21,8 +21,8 @@ struct FontViewModifier: ViewModifier {
     }
 }
 
-extension View {
-    public func withOpacityFont(foregroundColor: Color = Colors.night) -> some View {
+public extension View {
+    func withOpacityFont(foregroundColor: Color = Colors.night) -> some View {
         modifier(FontViewModifier(foregroundColor: foregroundColor))
     }
 }
