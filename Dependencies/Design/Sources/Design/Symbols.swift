@@ -34,4 +34,6 @@ public struct Symbols {
     public static let clockBadgeExclamationmarkFill = Image(systemName: "clock.badge.exclamationmark.fill")
     public static let clockArrowCirclepath = Image(systemName: "clock.arrow.circlepath")
     public static let tagFill = Image(systemName: "tag.fill")
+    public static let xmarkCircle = Image(systemName: "xmark.circle")
+    public static let chevronBackward = Image(systemName: "chevron.backward")
 }
