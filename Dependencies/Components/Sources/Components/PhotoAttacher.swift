@@ -55,8 +55,8 @@ public struct PhotoAttacher: View {
                         .padding()
                     }
             }
-            .onChange(of: photoPickerSelection) { _ in
-               onChangeOfPhotoPickerSelection()
+            .onChange(of: photoPickerSelection) { _, _ in
+                onChangeOfPhotoPickerSelection()
             }
             
             if isPhotoAttached {
