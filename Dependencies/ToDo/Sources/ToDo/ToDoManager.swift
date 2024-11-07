@@ -7,6 +7,7 @@
 
 import Combine
 import DependencyInjection
+import Design
 import Foundation
 import LocalDatabaseInterface
 import SwiftUI
@@ -15,28 +16,75 @@ import ToDoInterface
 final class ToDoManager: ToDoManagerInterface {
     @Inject private var localDatabaseManager: LocalDatabaseManagerInterface
     
-    let updatedCategory = PassthroughSubject<ToDoInterface.Tag?, Never>()
+    let updatedTask = PassthroughSubject<ToDo?, Never>()
+    let updatedTasks = PassthroughSubject<[ToDo], Never>()
+    let updatedDoneTaskPercentage = PassthroughSubject<Double, Never>()
+    let updatedCategorizedCounts = PassthroughSubject<[String: CategoryInfo], Never>()
     
-    private var category: ToDoInterface.Tag? {
+    private var task: ToDo? {
         didSet {
-            updatedCategory.send(category)
+            updatedTask.send(task)
+        }
+    }
+    
+    private var tasks: [ToDo] = [] {
+        didSet {
+            updatedTasks.send(tasks)
+        }
+    }
+    
+    private var doneTaskPercentage: Double = 0 {
+        didSet {
+            updatedDoneTaskPercentage.send(doneTaskPercentage)
+        }
+    }
+    
+    private var categorizedCounts: [String: CategoryInfo] = [:] {
+        didSet {
+            updatedCategorizedCounts.send(categorizedCounts)
         }
     }
     
     func createToDo(todo: ToDo) async throws {
-        try await localDatabaseManager.create(todo)
+        let newToDo = try await localDatabaseManager.create(todo)
+        
+        tasks.append(newToDo)
     }
     
     func readToDo(primaryKey: String) async throws -> ToDo {
-        try await localDatabaseManager.read(type: ToDo.self, primaryKey: primaryKey)
+        try await localDatabaseManager.read(primaryKey: primaryKey)
     }
     
     func readAllToDos() async throws -> [ToDo] {
-        try await localDatabaseManager.read()
+        self.tasks = try await localDatabaseManager.read()
+        
+        try await updateTaskStatistics()
+        
+        return tasks
     }
     
-    func updateToDo(data: [String : Any]) async throws {
-        try await localDatabaseManager.update(type: ToDo.self, withUpdates: data)
+    func updateToDo(todo: ToDo, data: [String : Any]) async throws {
+        let updatedTask = try await localDatabaseManager.update(type: todo, withUpdates: data)
+        
+        if let index = tasks.firstIndex(where: { $0.id == todo.id }) {
+                    tasks[index] = updatedTask
+                }
+//        self.task = updatedTask
+        
+        try await updateTaskStatistics()
+
+    }
+    
+    func updateSubToDo(task: ToDo, subToDo: SubToDo, data: [String : Any]) async throws {
+        let updatedSubToDo = try await localDatabaseManager.update(type: subToDo, withUpdates: data)
+        
+        var activeToDo = try await readToDo(primaryKey: task.id)
+        
+        if let index = activeToDo.subtasks.firstIndex(where: { $0.id == subToDo.id }) {
+                activeToDo.subtasks[index] = updatedSubToDo
+            }
+        
+        self.task = activeToDo
     }
     
     func deleteToDo(primaryKey: String) async throws {
@@ -52,47 +100,74 @@ final class ToDoManager: ToDoManagerInterface {
         return toDos.max(by: { $0.executedDate < $1.executedDate })
     }
     
-    func archiveToDo(primaryKey: String) async throws {
-        let data: [String : Any] = [
-            ToDo.CodingKeys.id.rawValue : primaryKey,
-            ToDo.CodingKeys.isArchived.rawValue : true
-        ]
+    func archiveToDo(toDo: ToDo) async throws {
+        let data: [String : Any] = [ ToDo.CodingKeys.isArchived.rawValue : true ]
         
-        try await updateToDo(data: data)
+        try await updateToDo(todo: toDo, data: data)
     }
     
-    func readActiveToDos() async throws -> [ToDo] {
-        let allToDos = try await readAllToDos()
-        return allToDos.filter { !$0.isArchived }
+    func readActiveToDos() async throws -> [ToDo] { tasks.filter { !$0.isArchived } }
+    
+    func readArchiveToDos() async throws -> [ToDo] { tasks.filter { $0.isArchived } }
+}
+
+//MARK: ToDo statistics
+extension ToDoManager {
+    private func updateTaskStatistics() async throws {
+            doneTaskPercentage = try await calculateDoneTaskPercentage(tasks: tasks)
+            categorizedCounts = filterDoneTasks()
+        }
+    
+    func calculateDoneTaskPercentage(tasks: [ToDo]) async throws -> Double {
+        
+        let allToDo = tasks.count
+        let doneToDo = tasks.filter({ $0.isDone }).count
+        
+        guard allToDo > 0 && doneToDo > 0 else {
+            return 0
+        }
+        
+        return Double(doneToDo) / Double(allToDo) * 100
     }
     
-    func readArchiveToDos() async throws -> [ToDo] {
-        let allToDos = try await readAllToDos()
-        return allToDos.filter { $0.isArchived }
+    func filterDoneTasks() -> [String: CategoryInfo] {
+        guard tasks.filter({ $0.isDone }).isEmpty else {
+            return numberOfCompletedTasksPerCategory()
+        }
+        
+        return ["Done your tasks": .init(count: 1, color: Colors.color)]
     }
-}
-
-//CATEGORY
-extension ToDoManager {
-    func updateCategory(newCategory: ToDoInterface.Tag?) {
-        self.category = newCategory
-    }
-}
-
-//DELETE TODO IF DATE IS EXPIRED
-extension ToDoManager {
-    func archiveExpiredToDos() async throws {
-        var toDos = try await readActiveToDos()
-        let currentDate = Date()
-
-        for toDo in toDos {
-//            guard let startExecutedTime = toDo.executedTime else { return }
-            if toDo.executedTime < currentDate {
-                try await archiveToDo(primaryKey: toDo.id)
-                withAnimation {
-                    toDos.removeAll { $0.id == toDo.id }
+    
+    private func numberOfCompletedTasksPerCategory() -> [String: CategoryInfo] {
+        var counts = [String: Int]()
+        
+        for task in tasks {
+            if task.isDone {
+                if let count = counts[task.tag.rawValue] {
+                    counts[task.tag.rawValue] = count + 1
+                } else {
+                    counts[task.tag.rawValue] = 1
                 }
             }
         }
+        
+        let sortedCounts = counts.sorted(by: { $0.key < $1.key })
+        
+        var categorizedCounts = [String: CategoryInfo]()
+        
+        let colors = [Colors.color, Colors.color1, Colors.color2]
+        
+        for (index, (category, count)) in sortedCounts.enumerated() {
+            if index < 2 {
+                categorizedCounts[category] = CategoryInfo(count: count, color: colors[index])
+            } else {
+                if let otherCount = categorizedCounts["Other"] {
+                    categorizedCounts["Other"] = CategoryInfo(count: otherCount.count + count, color: otherCount.color)
+                } else {
+                    categorizedCounts["Other"] = CategoryInfo(count: count, color: colors[index])
+                }
+            }
+        }
+        return categorizedCounts
     }
 }
