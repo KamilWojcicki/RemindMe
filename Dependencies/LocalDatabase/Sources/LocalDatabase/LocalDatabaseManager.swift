@@ -48,8 +48,9 @@ actor LocalDatabaseManager {
 
 extension LocalDatabaseManager: LocalDatabaseManagerInterface {
     
-    func create<Object: LocalStorable>(_ object: Object) async throws {
+    func create<Object: LocalStorable>(_ object: Object) async throws -> Object {
         try await ensureRealmIsOpen()
+        let primaryKey = String(describing: object.id)
         let objectDAO: Object.LocalDAO = DAOFactory.initializeDAO(from: object)
         
         do {
@@ -59,6 +60,8 @@ extension LocalDatabaseManager: LocalDatabaseManagerInterface {
         } catch {
             throw LocalDatabaseManagerError.unableToCreate
         }
+        
+        return try await read(primaryKey: primaryKey)
     }
     
     func create<Object: LocalStorable>(_ objects: [Object]) async throws {
@@ -74,7 +77,7 @@ extension LocalDatabaseManager: LocalDatabaseManagerInterface {
         }
     }
     
-    func read<Object: LocalStorable>(type: Object.Type, primaryKey: String) async throws -> Object {
+    func read<Object: LocalStorable>(primaryKey: String) async throws -> Object {
         try await ensureRealmIsOpen()
         
         guard let objectDAO = realm?.object(ofType: Object.LocalDAO.self, forPrimaryKey: primaryKey) else {
@@ -94,16 +97,21 @@ extension LocalDatabaseManager: LocalDatabaseManagerInterface {
         return objectsDAO.map { DAOFactory.initializeObject(from: $0) }
     }
     
-    func update<Object: LocalStorable>(type: Object.Type, withUpdates updates: [String : Any]) async throws {
+    func update<Object: LocalStorable>(type: Object, withUpdates updates: [String : Any]) async throws -> Object {
         try await ensureRealmIsOpen()
+        let primaryKey = String(describing: type.id)
+        let objectDAO = realm?.object(ofType: Object.LocalDAO.self, forPrimaryKey: primaryKey)
         
         do {
             try await realm?.asyncWrite {
-                realm?.create(Object.LocalDAO.self, value: updates, update: .modified)
+                objectDAO?.setValuesForKeys(updates)
+                
             }
         } catch {
             throw LocalDatabaseManagerError.unableToUpdate
         }
+        
+        return try await read(primaryKey: primaryKey)
     }
     
     func delete<Object: LocalStorable>(type: Object.Type, primaryKey: String) async throws {

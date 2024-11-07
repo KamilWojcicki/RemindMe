@@ -20,11 +20,11 @@ public protocol LocalStorable: Identifiable, Equatable, Hashable {
 }
 
 public protocol LocalDatabaseManagerInterface {
-    func create<Object: LocalStorable>(_ object: Object) async throws
+    func create<Object: LocalStorable>(_ object: Object) async throws -> Object
     func create<Object: LocalStorable>(_ objects: [Object]) async throws
-    func read<Object: LocalStorable>(type: Object.Type, primaryKey: String) async throws -> Object
+    func read<Object: LocalStorable>(primaryKey: String) async throws -> Object
     func read<Object: LocalStorable>() async throws -> [Object]
-    func update<Object: LocalStorable>(type: Object.Type, withUpdates updates: [String : Any]) async throws
+    func update<Object: LocalStorable>(type: Object, withUpdates updates: [String : Any]) async throws -> Object
     func delete<Object: LocalStorable>(type: Object.Type, primaryKey: String) async throws
     func deleteAllWithSpecificType<Object: LocalStorable>(type: Object.Type) async throws
     func deleteAll() async throws
