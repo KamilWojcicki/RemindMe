@@ -19,13 +19,15 @@
 		E765B45C2BACD2DB00C15A9D /* RemindMeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765B45B2BACD2DB00C15A9D /* RemindMeUITests.swift */; };
 		E765B45E2BACD2DB00C15A9D /* RemindMeUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765B45D2BACD2DB00C15A9D /* RemindMeUITestsLaunchTests.swift */; };
 		E7B3E88C2CD05124008EC997 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7B3E88B2CD05124008EC997 /* Launch Screen.storyboard */; };
+		E7B3E88F2CD0E6D6008EC997 /* TaskDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B3E88E2CD0E6D6008EC997 /* TaskDetailView.swift */; };
+		E7B3E8912CD26E24008EC997 /* TaskDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B3E8902CD26E24008EC997 /* TaskDetailViewModel.swift */; };
+		E7B3E8982CD67919008EC997 /* TaskInfoCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B3E8972CD67919008EC997 /* TaskInfoCellViewModel.swift */; };
 		E7C1054C2BF204390010B67A /* LanguageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C1054B2BF204390010B67A /* LanguageButton.swift */; };
 		E7C105502BF204840010B67A /* OnboardingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C1054F2BF204840010B67A /* OnboardingScreen.swift */; };
 		E7C105522BF204940010B67A /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C105512BF204940010B67A /* OnboardingViewModel.swift */; };
 		E7C105542BF2050B0010B67A /* OnboardingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C105532BF2050B0010B67A /* OnboardingModel.swift */; };
 		E7C105572BF2055F0010B67A /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C105562BF2055F0010B67A /* RootView.swift */; };
 		E7C1055E2BF207400010B67A /* TaskTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C1055D2BF207400010B67A /* TaskTile.swift */; };
-		E7C105602BF2074A0010B67A /* TaskTileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C1055F2BF2074A0010B67A /* TaskTileViewModel.swift */; };
 		E7C105682BF209E10010B67A /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C105672BF209E10010B67A /* HistoryView.swift */; };
 		E7C1056A2BF209FC0010B67A /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C105692BF209FC0010B67A /* HistoryViewModel.swift */; };
 		E7C1056F2BF20A400010B67A /* TasksViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C1056E2BF20A400010B67A /* TasksViewModel.swift */; };
@@ -84,13 +86,15 @@
 		E765B45B2BACD2DB00C15A9D /* RemindMeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindMeUITests.swift; sourceTree = "<group>"; };
 		E765B45D2BACD2DB00C15A9D /* RemindMeUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindMeUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		E7B3E88B2CD05124008EC997 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		E7B3E88E2CD0E6D6008EC997 /* TaskDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailView.swift; sourceTree = "<group>"; };
+		E7B3E8902CD26E24008EC997 /* TaskDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailViewModel.swift; sourceTree = "<group>"; };
+		E7B3E8972CD67919008EC997 /* TaskInfoCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskInfoCellViewModel.swift; sourceTree = "<group>"; };
 		E7C1054B2BF204390010B67A /* LanguageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageButton.swift; sourceTree = "<group>"; };
 		E7C1054F2BF204840010B67A /* OnboardingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScreen.swift; sourceTree = "<group>"; };
 		E7C105512BF204940010B67A /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		E7C105532BF2050B0010B67A /* OnboardingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingModel.swift; sourceTree = "<group>"; };
 		E7C105562BF2055F0010B67A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		E7C1055D2BF207400010B67A /* TaskTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTile.swift; sourceTree = "<group>"; };
-		E7C1055F2BF2074A0010B67A /* TaskTileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTileViewModel.swift; sourceTree = "<group>"; };
 		E7C105672BF209E10010B67A /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		E7C105692BF209FC0010B67A /* HistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewModel.swift; sourceTree = "<group>"; };
 		E7C1056E2BF20A400010B67A /* TasksViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksViewModel.swift; sourceTree = "<group>"; };
@@ -233,6 +237,15 @@
 			path = RemindMeUITests;
 			sourceTree = "<group>";
 		};
+		E7B3E88D2CD0E6AF008EC997 /* TaskDetail */ = {
+			isa = PBXGroup;
+			children = (
+				E7B3E88E2CD0E6D6008EC997 /* TaskDetailView.swift */,
+				E7B3E8902CD26E24008EC997 /* TaskDetailViewModel.swift */,
+			);
+			path = TaskDetail;
+			sourceTree = "<group>";
+		};
 		E7C105452BF203F50010B67A /* Root */ = {
 			isa = PBXGroup;
 			children = (
@@ -329,6 +342,7 @@
 		E7C105592BF206FC0010B67A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				E7B3E88D2CD0E6AF008EC997 /* TaskDetail */,
 				E7D267542C67D2310070C7BC /* AddTask */,
 				E7D267482C28877D0070C7BC /* HomeView.swift */,
 				E7D2674A2C2887890070C7BC /* HomeViewModel.swift */,
@@ -351,7 +365,6 @@
 			isa = PBXGroup;
 			children = (
 				E7C1055D2BF207400010B67A /* TaskTile.swift */,
-				E7C1055F2BF2074A0010B67A /* TaskTileViewModel.swift */,
 			);
 			path = TaskTile;
 			sourceTree = "<group>";
@@ -433,6 +446,7 @@
 			isa = PBXGroup;
 			children = (
 				E7D267522C30608A0070C7BC /* TaskInfoCellView.swift */,
+				E7B3E8972CD67919008EC997 /* TaskInfoCellViewModel.swift */,
 			);
 			path = TaskInfoCell;
 			sourceTree = "<group>";
@@ -597,14 +611,15 @@
 				E7C105772BF20A760010B67A /* SettingsViewModel.swift in Sources */,
 				E76572B92BC43D3900334597 /* AssemblyShared.swift in Sources */,
 				E7D267432C19C3500070C7BC /* Router.swift in Sources */,
-				E7C105602BF2074A0010B67A /* TaskTileViewModel.swift in Sources */,
 				E7D2674B2C2887890070C7BC /* HomeViewModel.swift in Sources */,
 				E7C105872BF210940010B67A /* TasksTab.swift in Sources */,
 				E7C105682BF209E10010B67A /* HistoryView.swift in Sources */,
 				E7D267532C30608A0070C7BC /* TaskInfoCellView.swift in Sources */,
 				E7D267452C1B946F0070C7BC /* RootViewModel.swift in Sources */,
+				E7B3E8912CD26E24008EC997 /* TaskDetailViewModel.swift in Sources */,
 				E7C105712BF20A4B0010B67A /* TasksView.swift in Sources */,
 				E7D267562C67D2470070C7BC /* AddTaskView.swift in Sources */,
+				E7B3E8982CD67919008EC997 /* TaskInfoCellViewModel.swift in Sources */,
 				E7D267492C28877D0070C7BC /* HomeView.swift in Sources */,
 				E7C105542BF2050B0010B67A /* OnboardingModel.swift in Sources */,
 				E7C105572BF2055F0010B67A /* RootView.swift in Sources */,
@@ -617,6 +632,7 @@
 				E7C105522BF204940010B67A /* OnboardingViewModel.swift in Sources */,
 				E7D2674E2C2B13330070C7BC /* TaskProgressChartView.swift in Sources */,
 				E765B4412BACD2DA00C15A9D /* RemindMeApp.swift in Sources */,
+				E7B3E88F2CD0E6D6008EC997 /* TaskDetailView.swift in Sources */,
 				E73F3D4C2BF4C87B00E27F7D /* QuickTaskTileViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
