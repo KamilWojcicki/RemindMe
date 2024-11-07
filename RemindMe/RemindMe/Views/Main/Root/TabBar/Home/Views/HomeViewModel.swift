@@ -13,9 +13,9 @@ import Utilities
 import ToDoInterface
 
 let toDoMocks: [ToDo] = [
-    .init(name: "test1", symbol: .clipboardIcon,  image: Data(), executedDate: .today, executedTime: .now, remindTime: .noReminder, reminderRepetition: .daily, tag: .all),
-    .init(name: "test2", symbol: .clipboardIcon,  image: Data(), executedDate: .today, executedTime: .now, remindTime: .noReminder, reminderRepetition: .daily, tag: .medicalCheck),
-    .init(name: "test3", symbol: .clipboardIcon, image: Data(), executedDate: .today, executedTime: .now, remindTime: .noReminder, reminderRepetition: .daily, tag: .birthday)
+    .init(name: "test1", symbol: .clipboardIcon,  image: nil, executedDate: .now, executedTime: .now, remindTime: .now, reminderRepetition: .daily, tag: .all, subtasks: [.init(title: "test", isCompleted: false), .init(title: "test2"), .init(title: "test3")]),
+    .init(name: "test2", symbol: .clipboardIcon,  image: Data(), executedDate: .now, executedTime: .now, remindTime: .now, reminderRepetition: .daily, tag: .medicalCheck, subtasks: []),
+    .init(name: "test3", symbol: .clipboardIcon, image: Data(), executedDate: .now, executedTime: .now, remindTime: .now, reminderRepetition: .daily, tag: .birthday, subtasks: [])
 ]
 
 enum HomeError: Error, LocalizedError {
@@ -33,23 +33,12 @@ enum HomeError: Error, LocalizedError {
 }
 
 @MainActor
-final class HomeViewModel: ViewModelInterface {
+final class HomeViewModel: ObservableObject {
     enum State: Equatable {
         case idle
         case loading
-        case loaded([ToDo])
+        case loaded
         case error(String)
-    }
-    
-    enum Event {
-        case getWeek
-        case getTasks
-        case presentAddTaskViewButtonPressed
-        case changeDayButtonPressed(Date)
-        case onPreferenceChangeOffsetAction(CGFloat)
-        case updateTask(ToDo)
-        case onCreateWeekAction
-        case onChangeCategoryButtonPressed(ToDoInterface.Tag)
     }
     
     @Published private(set) var state: State = .idle
@@ -58,16 +47,27 @@ final class HomeViewModel: ViewModelInterface {
     @Published private(set) var createWeek: Bool = false
     @Published private(set) var isDone: Bool = false
     @Published private(set) var tasks: [ToDo] = []
-    @Published private(set) var selectedCategory: ToDoInterface.Tag = .all
+    @Published var selectedCategory: ToDoInterface.Tag = .all
     @Published var currentWeekIndex: Int = 1
     @Published var doneTaskPercentage: Double = 0.0
     @Published var categorizedCounts: [String: CategoryInfo] = ["Done your tasks": .init(count: 1, color: Colors.color)]
     @Published var isAddTaskViewPresented: Bool = false
+    @Published var isDetailViewPresented: Bool = false
+    @Published var selectedTaskIndex: Int? = nil
     @Inject private var toDoManager: ToDoManagerInterface
+    
+    var selectedTask: ToDo? {
+        guard let index = selectedTaskIndex, index < tasks.count else { return nil }
+        return tasks[index]
+    }
+
+    var filteredTasks: [ToDo] {
+        tasks.filter { selectedCategory == .all  || $0.tag == selectedCategory }
+    }
     
     var tasksByCategoryCounts: [ToDoInterface.Tag: Int] {
         var counts: [ToDoInterface.Tag: Int] = [:]
-        
+
         for category in ToDoInterface.Tag.allCases {
             if category == .all {
                 counts[category] = tasks.count
@@ -79,80 +79,79 @@ final class HomeViewModel: ViewModelInterface {
     }
     
     init() {
-        trigger(.getTasks)
+        fetchUpdatedToDo()
         
-        print(toDoMocks)
+        fetchNewCreateTasks()
+        
+        calculateDoneTaskPercentage()
+        
+        calculateCategorizedCounts()
     }
     
-    func trigger(_ event: Event) {
-        switch event {
-        case .getWeek:
-            fetchWeek()
-        case .getTasks:
-            fetchFilteredTasks()
-        case .presentAddTaskViewButtonPressed:
-            presentAddTaskViewButtonPressed()
-        case .changeDayButtonPressed(let day):
-            changeDayButtonPressed(day)
-        case .onPreferenceChangeOffsetAction(let value):
-            onPreferenceChangeOffsetAction(value)
-        case .updateTask(let task):
-            updateTask(task: task)
-        case .onCreateWeekAction:
-            onCreateWeekAction()
-        case .onChangeCategoryButtonPressed(let category):
-            onChangeCategoryButtonPressed(category: category)
+    func presentDetailViewButtonPressed(index: Int) {
+        selectedTaskIndex = index
+        
+        withAnimation {
+            isDetailViewPresented.toggle()
         }
     }
 
-    private func presentAddTaskViewButtonPressed() {
+    func presentAddTaskViewButtonPressed() {
         withAnimation {
             isAddTaskViewPresented.toggle()
         }
     }
 
-    private func onChangeCategoryButtonPressed(category: ToDoInterface.Tag) {
-        selectedCategory = category
-        filterTaskByCategory()
+    func onChangeCategoryButtonPressed(category: ToDoInterface.Tag) {
+        withAnimation {
+            selectedCategory = category
+        }
     }
+}
 
-    private func numberOfCompletedTasksPerCategory() -> [String: CategoryInfo] {
-        var counts = [String: Int]()
-        
-        for task in tasks {
-            if task.isDone {
-                if let count = counts[task.tag.rawValue] {
-                    counts[task.tag.rawValue] = count + 1
-                } else {
-                    counts[task.tag.rawValue] = 1
+//MARK: Functions to service filtering
+extension HomeViewModel {
+    private func fetchUpdatedToDo() {
+        toDoManager
+            .updatedTask
+            .receive(on: DispatchQueue.main)
+            .map { updatedToDo in
+                var currentList = self.tasks
+                guard let updatedToDo = updatedToDo else { return currentList }
+                if let index = currentList.firstIndex(where: { $0.id == updatedToDo.id }) {
+                    currentList[index] = updatedToDo
                 }
+                
+                return currentList
             }
-        }
-        
-        let sortedCounts = counts.sorted(by: { $0.key < $1.key })
-        
-        var categorizedCounts = [String: CategoryInfo]()
-        
-        let colors = [Colors.color, Colors.color1, Colors.color2]
-        
-        for (index, (category, count)) in sortedCounts.enumerated() {
-            if index < 2 {
-                categorizedCounts[category] = CategoryInfo(count: count, color: colors[index])
-            } else {
-                if let otherCount = categorizedCounts["Other"] {
-                    categorizedCounts["Other"] = CategoryInfo(count: otherCount.count + count, color: otherCount.color)
-                } else {
-                    categorizedCounts["Other"] = CategoryInfo(count: count, color: colors[index])
-                }
-            }
-        }
-        return categorizedCounts
+            .assign(to: &$tasks)
+    }
+    
+    private func fetchNewCreateTasks() {
+        toDoManager
+            .updatedTasks
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$tasks)
+    }
+    
+    private func calculateDoneTaskPercentage() {
+        toDoManager
+            .updatedDoneTaskPercentage
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$doneTaskPercentage)
+    }
+    
+    private func calculateCategorizedCounts() {
+        toDoManager
+            .updatedCategorizedCounts
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$categorizedCounts)
     }
 }
 
 //MARK: Functions to service dates
 extension HomeViewModel {
-    private func fetchWeek() {
+    func fetchWeek() {
         if weekSlider.isEmpty {
             let currentWeek = Date().fetchWeek()
             
@@ -168,13 +167,13 @@ extension HomeViewModel {
         }
     }
     
-    private func changeDayButtonPressed(_ day: Date) {
+    func changeDayButtonPressed(_ day: Date) {
         withAnimation(.snappy) {
             currentDate = day
         }
     }
     
-    private func onPreferenceChangeOffsetAction(_ value: CGFloat) {
+    func onPreferenceChangeOffsetAction(_ value: CGFloat) {
         if value.rounded() == 10 && createWeek {
             paginateWeek()
             createWeek = false
@@ -197,97 +196,27 @@ extension HomeViewModel {
         }
     }
     
-    private func onCreateWeekAction() {
+    func onCreateWeekAction() {
         createWeek = true
     }
 }
 
 //MARK: Functions to service task
 extension HomeViewModel {
-    @discardableResult
-    private func filterTaskByCategory() -> [ToDo] {
-        if selectedCategory == .all {
-            state = .loaded(self.tasks)
-            print("All tasks:\n", tasks)
-            return tasks
-        } else {
-            let filteredTasks = tasks.filter { $0.tag == selectedCategory }
-            print("Filtered tasks:\n",filteredTasks)
-            state = .loaded(filteredTasks)
-            return filteredTasks
-        }
-    }
-    
-    private func fetchFilteredTasks() {
+    func fetchFilteredTasks() async throws {
         guard state == .idle else { return }
         
         state = .loading
-        
-        Task {
-            do {
-                self.tasks = try await toDoManager.readAllToDos()
+
+        do {
 //                self.tasks = toDoMocks
-                
-                calculateDoneTaskPercentage()
-                
-                filterDoneTasks()
-                
-                state = .loaded(filterTaskByCategory())
-                
-            } catch {
-                state = .error(error.localizedDescription)
-            }
-        }
-    }
-    
-    private func updateTask(task: ToDo) {
-        Task {
-            do {
-                
-                let data: [String : Any] = [
-                    ToDo.CodingKeys.id.rawValue : task.id,
-                    ToDo.CodingKeys.isDone.rawValue : !task.isDone
-                ]
-
-                try await toDoManager.updateToDo(data: data)
-
-                if let index = self.tasks.firstIndex(where: { $0.id == task.id }) {
-                    self.tasks[index] = ToDo(task: task, isDone: !task.isDone)
-                }
-                
-                filterDoneTasks()
-                
-                calculateDoneTaskPercentage()
-                
-                print("todo state is updated")
-            } catch {
-                print(error.localizedDescription)
-            }
+            self.tasks = try await toDoManager.readAllToDos()
+            
+            state = .loaded
+        } catch {
+            state = .error(error.localizedDescription)
         }
     }
 }
 
-//MARK: Functions to service filtering
-extension HomeViewModel {
-    private func filterDoneTasks() {
-        guard tasks.filter({ $0.isDone }).isEmpty else {
-            self.categorizedCounts = numberOfCompletedTasksPerCategory()
-            state = .loaded(filterTaskByCategory())
-            return
-        }
-        self.categorizedCounts = ["Done your tasks": .init(count: 1, color: Colors.color)]
-        state = .loaded(filterTaskByCategory())
-    }
-    
-    private func calculateDoneTaskPercentage() {
-        let allToDo = tasks.count
-        let doneToDo = tasks.filter({ $0.isDone }).count
-        
-        guard allToDo > 0 && doneToDo > 0 else {
-            self.doneTaskPercentage = 0
-            return
-        }
-        
-        self.doneTaskPercentage = Double(doneToDo) / Double(allToDo) * 100
-    }
-}
+

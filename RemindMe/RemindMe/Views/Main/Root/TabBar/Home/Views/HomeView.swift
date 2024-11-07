@@ -25,15 +25,18 @@ struct HomeView: View {
                 EmptyView()
             case .loading:
                 CustomProgressView(message: "Loading...")
-            case .loaded(let tasks):
-                buildHomeView(tasks: tasks)
+            case .loaded:
+                buildHomeView
             case .error(let error):
                 Label(error.description, systemImage: "xmark.circle")
                     .background(Color.red)
             }
         }
         .onAppear {
-            viewModel.trigger(.getWeek)
+            viewModel.fetchWeek()
+        }
+        .task {
+            try? await viewModel.fetchFilteredTasks()
         }
     }
 }
@@ -46,25 +49,29 @@ struct HomeView: View {
 }
 
 extension HomeView {
-    private func buildHomeView(tasks: [ToDo]) -> some View {
+    private var buildHomeView: some View {
         ZStack {
             VStack(spacing: 10) {
                 header
                 
                 taskProgress
                 
-                buildtasksView(tasks: tasks)
+                buildtasksView
             }
             .vSpacing(.top)
             .padding(.horizontal)
             .withModal(
                 .fullScreenCover,
                 destinationView: AddTaskView(),
-                isPresented: $viewModel.isAddTaskViewPresented,
-                presentationDetent: .large
+                isPresented: $viewModel.isAddTaskViewPresented
+            )
+            .withModal(
+                .sheet,
+                destinationView: TaskDetailView(task: viewModel.selectedTask),
+                isPresented: $viewModel.isDetailViewPresented,
+                presentationDetent: .fraction(0.99)
             )
         }
-        
     }
     
     private var header: some View {
@@ -87,7 +94,7 @@ extension HomeView {
         }
         .onChange(of: viewModel.currentWeekIndex, initial: false) { oldValue, newValue in
             if newValue == 0 || newValue == (viewModel.weekSlider.count - 1) {
-                viewModel.trigger(.onCreateWeekAction)
+                viewModel.onCreateWeekAction()
             }
         }
     }
@@ -126,7 +133,7 @@ extension HomeView {
                 .hSpacing(.center)
                 .contentShape(Circle())
                 .onTapGesture {
-                    viewModel.trigger(.changeDayButtonPressed(day.date))
+                    viewModel.changeDayButtonPressed(day.date)
                 }
             }
         }
@@ -137,7 +144,7 @@ extension HomeView {
                 Color.clear
                     .preference(key: OffsetKey.self, value: minX)
                     .onPreferenceChange(OffsetKey.self) { value in
-                        viewModel.trigger(.onPreferenceChangeOffsetAction(value))
+                        viewModel.onPreferenceChangeOffsetAction(value)
                     }
             }
         }
@@ -150,7 +157,7 @@ extension HomeView {
     }
     
     @ViewBuilder
-    private func buildtasksView(tasks: [ToDo]) -> some View {
+    private var buildtasksView: some View {
         VStack(alignment: .leading) {
             HStack(spacing: 10) {
                 Symbols.squareGrid
@@ -172,9 +179,7 @@ extension HomeView {
                             .padding(.leading, 15)
                             .padding(.trailing, tag == .otherEvent ? 15 : 0)
                             .onTapGesture {
-                                withAnimation(.snappy) {
-                                    viewModel.trigger(.onChangeCategoryButtonPressed(tag))
-                                }
+                                    viewModel.onChangeCategoryButtonPressed(category: tag)
                             }
                     }
                 }
@@ -183,16 +188,16 @@ extension HomeView {
             
             ScrollView(.vertical) {
                 VStack {
-                    ForEach(tasks) { task in
+                    ForEach(Array(viewModel.filteredTasks.enumerated()), id: \.element) { (index, task) in
 
                         TaskInfoCellView(
                             task: task,
-                            action: {
-                                viewModel.trigger(.updateTask(task))
+                            onDetailAction: {
+                                viewModel.presentDetailViewButtonPressed(index: index)
                             }
                         )
                         .padding(.horizontal)
-                        .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .leading)))
+                        .transition(.move(edge: .leading))
                     }
                 }
                 .offset(y: 10.0)
@@ -228,7 +233,7 @@ extension HomeView {
     
     private var addButtonView: some View {
         Button {
-            viewModel.trigger(.presentAddTaskViewButtonPressed)
+            viewModel.presentAddTaskViewButtonPressed()
         } label: {
             HStack(spacing: 0) {
                 Symbols.plus

@@ -14,6 +14,7 @@ public struct Row: View {
         case title(icon: Icon, instruction: String)
         case plainText(symbol: Image)
         case subtask(symbol: Image)
+        case subtaskWithCheckmark(subtask: SubToDo)
     }
     
     private let text: String
@@ -50,6 +51,8 @@ public struct Row: View {
             buildPlainText(symbol: symbol)
         case .subtask(let symbol):
             buildSubtask(symbol: symbol)
+        case .subtaskWithCheckmark(let subtask):
+            buildSubtaskWithCheckmark(subtask: subtask)
         }
     }
     
@@ -71,6 +74,25 @@ public struct Row: View {
             
             buildText(text)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+    
+    private func buildSubtaskWithCheckmark(subtask: SubToDo) -> some View {
+        HStack(spacing: 20) {
+            Button {
+                action()
+            } label: {
+                let image = subtask.isCompleted ? Symbols.checkmarkSealFill : Symbols.circle
+                
+                image
+                    .resizable()
+                    .frame(width: 25, height: 25)
+                    .foregroundStyle(subtask.isCompleted ? Colors.mantis : Colors.night.opacity(0.5))
+            }
+            
+            buildText(text)
+        }
+        .padding(.vertical, 5)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
     
@@ -102,5 +124,6 @@ public struct Row: View {
         Row(text: "Test", variant: .title(icon: .clipboardIcon, instruction: "This is the instruction")) { }
         Row(text: "Test", variant: .subtask(symbol: Symbols.airplaneCircleFill)) { }
         Row(text: "Test", variant: .plainText(symbol: Symbols.airplaneCircleFill)) { }
+        Row(text: "Test", variant: .subtaskWithCheckmark(subtask: .init(title: "test", isCompleted: true))) { }
     }
 }

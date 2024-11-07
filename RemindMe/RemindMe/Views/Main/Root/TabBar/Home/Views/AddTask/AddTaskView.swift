@@ -43,7 +43,7 @@ struct AddTaskView: View {
                 .submit(
                     title: "Ok",
                     action: {
-                        viewModel.trigger(.handleAlertToggle)
+                        viewModel.handleAlertToggle()
                     }
                 )
             ]
@@ -66,7 +66,7 @@ extension AddTaskView {
             case .date:
                 Picker(
                     variant: .time(
-                        selection: $viewModel.selectedDate,
+                        selection: $viewModel.taskDay,
                         dateComponents: .date
                     )
                 )
@@ -81,13 +81,9 @@ extension AddTaskView {
                 Picker(
                     variant: .time(
                         selection: Binding(
-                            get: {
-                                viewModel.remindTime.date ?? Date()
-                            },
-                            set: { newDate in
-                                viewModel.remindTime
-                                    .setDate(newDate)
-                            }),
+                            get: { viewModel.remindTime ?? Date() },
+                            set: { viewModel.remindTime = $0 }
+                        ),
                         dateComponents: .hourAndMinute
                     )
                 )
@@ -96,7 +92,7 @@ extension AddTaskView {
             case .tag:
                 Picker(variant: .tag(selectedTag: $viewModel.tag))
             case .subtask:
-                VStack { }
+                Picker(variant: .subtask(textFieldText: $viewModel.newSubtaskTitle))
             case .none:
                 EmptyView()
             }
@@ -120,9 +116,9 @@ extension AddTaskView {
                 
                 ConfirmButton(title: viewModel.isPickerSelected.wrappedValue ? "Confirm" : "Create Task", role: .confirm) {
                     if viewModel.isPickerSelected.wrappedValue {
-                        viewModel.trigger(.onShowOptionToggle)
+                        viewModel.onPickerSelected(picker: viewModel.selectedPicker)
                     } else {
-                        viewModel.trigger(.createToDo)
+                        viewModel.createToDo()
                         dismiss()
                     }
                 }
@@ -140,7 +136,6 @@ extension AddTaskView {
                     .padding()
                     .onTapGesture {
                         dismiss()
-                        print("dismiss")
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .tint(Colors.night)
@@ -154,8 +149,6 @@ extension AddTaskView {
             
             ReadableScrollView(content: {
                 VStack(spacing: 15) {
-                    
-                    
                     Row(
                         text: viewModel.newTaskTitle,
                         variant: .title(
@@ -163,34 +156,34 @@ extension AddTaskView {
                             instruction: "Tap to rename and change the image"
                         )
                     ) {
-                        viewModel.trigger(.handlePickerSelection(.title))
+                        viewModel.handlePickerSelection(.title)
                     }
                     
                     Row(
-                        text: "\(viewModel.taskDay.description)",
+                        text: "\(viewModel.selectedDate)",
                         variant: .plainText(
                             symbol: Symbols.calendar
                         )
                     ) {
-                        viewModel.trigger(.handlePickerSelection(.date))
+                        viewModel.handlePickerSelection(.date)
                     }
                     
                     Row(
-                        text: "Time: \(dateFormatter(dateFormat: .time).string(from: viewModel.taskTime))",
+                        text: viewModel.selectedTime,
                         variant: .plainText(
                             symbol: Symbols.stopwatchFill
                         )
                     ) {
-                        viewModel.trigger(.handlePickerSelection(.time))
+                        viewModel.handlePickerSelection(.time)
                     }
                     
                     Row(
-                        text: "\(viewModel.remindTime.description)",
+                        text: "\(viewModel.selectedReminder)",
                         variant: .plainText(
                             symbol: Symbols.clockBadgeExclamationmarkFill
                         )
                     ) {
-                        viewModel.trigger(.handlePickerSelection(.reminder))
+                        viewModel.handlePickerSelection(.reminder)
                     }
                     
                     Row(
@@ -199,7 +192,7 @@ extension AddTaskView {
                             symbol: Symbols.clockArrowCirclepath
                         )
                     ) {
-                        viewModel.trigger(.handlePickerSelection(.repetition))
+                        viewModel.handlePickerSelection(.repetition)
                     }
                     
                     Row(
@@ -208,7 +201,7 @@ extension AddTaskView {
                             symbol: Symbols.tagFill
                         )
                     ) {
-                        viewModel.trigger(.handlePickerSelection(.tag))
+                        viewModel.handlePickerSelection(.tag)
                     }
                     
                     Row(
@@ -217,22 +210,18 @@ extension AddTaskView {
                             symbol: Symbols.plus
                         )
                     ) {
-                        viewModel.trigger(.handleAlertToggle)
-                        #warning("This function is not implemented yet")
-                        //viewModel.trigger(.handlePickerSelection(.subtask))
+                        viewModel.handlePickerSelection(.subtask)
                     }
                     
                     PhotoAttacher(defaultScrollAnchor: $viewModel.defaultScrollAnchor, photoPickerSelection: $viewModel.taskImageSelection)
                 }
                 .padding()
             }, onScroll: { position in
-                viewModel.trigger(.onScrollDividerAction(position))
-                viewModel.trigger(.onScrolledHeaderAction(position))
+                viewModel.handleScrollActions(position: position)
             })
             .scrollIndicators(.hidden)
             .defaultScrollAnchor(viewModel.defaultScrollAnchor)
             .disabled(viewModel.isPickerSelected.wrappedValue)
         }
-        
     }
 }

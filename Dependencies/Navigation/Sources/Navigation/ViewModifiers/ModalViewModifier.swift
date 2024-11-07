@@ -24,29 +24,27 @@ struct ModalModifier<Value: View>: ViewModifier {
                         isPresented: $isPresented,
                         onDismiss: onDismiss
                     ) {
-                        VStack(spacing: 0) {
-                            VStack(spacing: 20) {
+                        ZStack {
+                            Colors.ghostWhite.ignoresSafeArea()
+                            VStack(spacing: 10) {
                                 RoundedRectangle(cornerRadius: 20)
                                     .fill(Colors.night.opacity(0.5))
                                     .frame(width: 30, height: 3)
-                            
-                                RoundedRectangle(cornerRadius: 20)
-                                    .fill(Colors.night.opacity(0.1))
-                                    .frame(height: 2)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.horizontal, -16)
-                            }
+                                
+                                
                                 destinationView
                                     .presentationDetents([presentationDetent])
                                     .presentationCornerRadius(35)
+                                
+                            }
+                            .frame(maxHeight: .infinity, alignment: .top)
+                            .padding(.top)
+                            .background(Colors.ghostWhite)
+                            .ignoresSafeArea(edges: .bottom)
                         }
-                        
-                        .frame(maxHeight: .infinity, alignment: .top)
-                        .padding(.top)
-                        .ignoresSafeArea(edges: .bottom)
                     }
                     .blur(radius: isPresented ? 2 : 0)
-                    
+
             }
             .if(type == .fullScreenCover) { view in
                 view

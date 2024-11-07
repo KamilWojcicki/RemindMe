@@ -16,21 +16,12 @@ import ToDoInterface
 import Utilities
 
 @MainActor
-final class AddTaskViewModel: ViewModelInterface {
+final class AddTaskViewModel: ObservableObject {
     enum State: Equatable {
         case idle
         case loading
         case loaded
         case error(String)
-    }
-    
-    enum Event {
-        case onScrollDividerAction(Double)
-        case onScrolledHeaderAction(Double)
-        case onShowOptionToggle
-        case handlePickerSelection(Picker)
-        case handleAlertToggle
-        case createToDo
     }
     
     @Published private(set) var state: State = .idle
@@ -46,11 +37,13 @@ final class AddTaskViewModel: ViewModelInterface {
     @Published var newTaskTitle: String = ""
     @Published var isScrolled: Bool = false
     @Published var newTaskSymbol: Icon = .clipboardIcon
-    @Published private(set) var taskDay: Day = .today
+    @Published var taskDay: Date = .now
     @Published var taskTime: Date = .now
-    @Published var remindTime: Reminder = .noReminder
+    @Published var remindTime: Date?
     @Published var repetition: Repetition = .noRepeat
     @Published var tag: Tag = .all
+    @Published var newSubtaskTitle: String = ""
+    @Published var subtasks: [SubToDo] = []
     @Published var defaultScrollAnchor: UnitPoint? = .top
     @Published var alertToggle: Bool = false
     @Inject private var toDoManager: ToDoManagerInterface
@@ -58,60 +51,36 @@ final class AddTaskViewModel: ViewModelInterface {
     var isPickerSelected: Binding<Bool> {
         Binding<Bool>(
             get: {
-                self.selectedPicker != nil },  // Return true if a picker is selected
+                self.selectedPicker != nil },
             set: {
                 if !$0 {
-                    self.selectedPicker = nil   // Set to nil if dismissed
+                    self.selectedPicker = nil
                 }
             }
         )
     }
     
-    var selectedDate: Date {
-        get {
-            switch taskDay {
-            case .today:
-                return Date()
-            case .otherDay(let date):
-                return date
-            }
-        }
-        set {
-            if Calendar.current.isDateInToday(newValue) {
-                taskDay = .today
-            } else {
-                taskDay = .otherDay(newValue)
-            }
-        }
-    }
+    var selectedDate: String { taskDay.isToday ? "Today" : dateFormatter(dateFormat: .dateWithDots).string(from: taskDay) }
+    
+    var selectedTime: String { "Time: \(dateFormatter(dateFormat: .time).string(from: taskTime))" }
+    
+    var selectedReminder: String { remindTime != nil ? dateFormatter(dateFormat: .timeWithPeriods).string(from: remindTime ?? Date()) : "No reminder" }
     
     init() {
         self.state = .loaded
     }
     
-    func trigger(_ event: Event) {
-        switch event {
-        case .onScrollDividerAction(let position):
-            onScrollDividerAction(position: position)
-        case .onScrolledHeaderAction(let position):
-            onScrolledHeaderAction(position: position)
-        case .onShowOptionToggle:
-            onShowOptionToggle()
-        case .handlePickerSelection(let picker):
-            handlePickerSelection(picker: picker)
-        case .handleAlertToggle:
-            handleAlertToggle()
-        case .createToDo:
-            createToDo()
-        }
-    }
-    
-    private func onScrollDividerAction(position: Double) {
-        showDivider = position < -80.0 ? false : true
-    }
-    
-    private func onScrolledHeaderAction(position: Double) {
+    func handleScrollActions(position: Double) {
+        showDivider = position >= -80.0
         isScrolled = position < -10
+    }
+    
+     func onPickerSelected(picker: Picker?) {
+        if picker == .subtask {
+            createSubtask()
+        }
+        
+        onShowOptionToggle()
     }
     
     private func onShowOptionToggle() {
@@ -120,13 +89,13 @@ final class AddTaskViewModel: ViewModelInterface {
         }
     }
     
-    private func handlePickerSelection(picker: Picker) {
+    func handlePickerSelection(_ picker: Picker) {
         withAnimation(.smooth(duration: 0.7)) {
             selectedPicker = picker
         }
     }
     
-    private func handleAlertToggle() {
+    func handleAlertToggle() {
         withAnimation {
             alertToggle.toggle()
         }
@@ -155,7 +124,7 @@ extension AddTaskViewModel {
         }
     }
     
-    private func createToDo() {
+    func createToDo() {
         Task {
             do {
                 let newToDo = ToDo(
@@ -166,7 +135,8 @@ extension AddTaskViewModel {
                     executedTime: taskTime,
                     remindTime: remindTime,
                     reminderRepetition: repetition,
-                    tag: tag
+                    tag: tag,
+                    subtasks: subtasks
                 )
                 
                 try await toDoManager.createToDo(todo: newToDo)
@@ -176,5 +146,15 @@ extension AddTaskViewModel {
                 print(error.localizedDescription)
             }
         }
+    }
+    
+    private func createSubtask() {
+        guard !newSubtaskTitle.isEmpty else { return }
+        
+        let newSubtask = SubToDo(title: newSubtaskTitle)
+        
+        subtasks.append(newSubtask)
+        
+        newSubtaskTitle = ""
     }
 }

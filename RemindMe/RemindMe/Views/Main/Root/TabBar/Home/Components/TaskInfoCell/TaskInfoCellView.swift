@@ -5,6 +5,7 @@
 //  Created by Kamil Wójcicki on 29/06/2024.
 //
 
+import Components
 import Design
 import SwiftUI
 import ToDoInterface
@@ -12,30 +13,28 @@ import Utilities
 
 struct TaskInfoCellView: View {
     let task: ToDo
-    var action: () -> Void
+    let backgroundColor: Color
+    let onDetailAction: (() -> Void)?
+    @StateObject private var viewModel = TaskInfoCellViewModel()
 
     init(
         task: ToDo,
-        action: @escaping () -> Void
+        backgroundColor: Color = Colors.ghostWhite,
+        onDetailAction: (() -> Void)? = nil
     ) {
         self.task = task
-        self.action = action
+        self.backgroundColor = backgroundColor
+        self.onDetailAction = onDetailAction
     }
     
     var body: some View {
-        HStack {
-            if let image = task.symbol.symbol, let uiImage = UIImage(data: image) {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .frame(width: 30, height: 30)
-                    .foregroundStyle(Colors.ghostWhite)
-                    .padding(8)
-                    .background(task.symbol.circleColor, in: .circle)
-            }
+        HStack(spacing: 20) {
+            CircularIcon(icon: task.symbol)
             
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
-                    Image(systemName: "stopwatch.fill")
+                    Symbols.stopwatchFill
+                    
                     Text(dateFormatter(dateFormat: .timeWithPeriods).string(from: task.executedTime))
                 }
                 .foregroundStyle(Colors.night.opacity(0.5))
@@ -46,44 +45,31 @@ struct TaskInfoCellView: View {
                     .font(.size22Default)
             }
             
+            Spacer()
+            
             Button {
                 withAnimation(.default) {
-                    action()
+                    viewModel.updateTask(task: task)
                 }
             } label: {
                 let image = task.isDone ? Symbols.checkmarkSealFill : Symbols.circle
                 
                 image
                     .resizable()
-                    .frame(width: 30, height: 30)
-                    .hSpacing(.trailing)
+                    .frame(width: 25, height: 25)
                     .foregroundStyle(task.isDone ? Colors.mantis : Colors.night.opacity(0.5))
             }
         }
-        .frame(minWidth: 320, maxHeight: 50)
-        .hSpacing(.leading)
+        .frame(minWidth: 325, maxHeight: 50)
         .padding()
-        .background(Colors.ghostWhite)
+        .background(backgroundColor)
         .clipShape(.rect(cornerRadius: 25))
+        .onTapGesture {
+            onDetailAction?()
+        }
     }
 }
 
 #Preview {
-//    TaskInfoCellView(
-//        task: ToDo(
-//            tag: .birthday,
-//            name: "Test",
-//            toDoDescription: "",
-//            image: Data(),
-//            executedDate: .now,
-//            startExecutedTime: nil,
-//            endExecutedTime: nil,
-//            numbersOfReminders: 0
-//        )) {
-//            
-//        }
-    
-    TaskInfoCellView(task: toDoMocks.first!) {
-        
-    }
+    TaskInfoCellView(task: toDoMocks.first!) { }
 }

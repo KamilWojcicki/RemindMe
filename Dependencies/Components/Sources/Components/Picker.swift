@@ -15,7 +15,7 @@ public struct Picker: View {
         case time(selection: Binding<Date>, dateComponents: DatePickerComponents)
         case repetition(selectedRepetition: Binding<Repetition>)
         case tag(selectedTag: Binding<Tag>)
-        case subtask
+        case subtask(textFieldText: Binding<String>)
     }
 
     private let variant: Variant
@@ -40,8 +40,8 @@ public struct Picker: View {
             buildRepetitionPicker(selectedRepetition: selectedRepetition)
         case .tag(let selectedTag):
             buildTagPicker(selectedTag: selectedTag)
-        case .subtask:
-            buildSubtaskPicker()
+        case .subtask(let textFieldText):
+            buildSubtaskPicker(textFieldText: textFieldText)
         }
     }
     
@@ -52,8 +52,6 @@ public struct Picker: View {
             ScrollView(.horizontal) {
                 HStack(spacing: 20) {
                     ForEach(Icon.allIcons, id: \.self) { icon in
-//                        RoundedRectangle(cornerRadius: 10)
-//                            .frame(width: 50, height: 50)
                         CircularIcon(icon: icon)
                             .scrollTransition { content, phase in
                                 content
@@ -90,9 +88,14 @@ public struct Picker: View {
         buildScrollPicker(selectedValue: selectedTag, title: "Choose a tag")
     }
     
-    private func buildSubtaskPicker() -> some View {
-        VStack {
-            #warning("This feature is inactive")
+    private func buildSubtaskPicker(textFieldText: Binding<String>) -> some View {
+        VStack(alignment: .leading, spacing: 20) {
+            buildText(text: "New Subtask")
+            
+            SwiftUI.TextField("Subtask...", text: textFieldText)
+            
+            Divider()
+                .padding(.top, -10)
         }
     }
     
@@ -142,6 +145,8 @@ public struct Picker: View {
         Picker(variant: .repetition(selectedRepetition: .constant(.daily)))
         
         Picker(variant: .tag(selectedTag: .constant(.all)))
+        
+        Picker(variant: .subtask(textFieldText: .constant("subtask")))
     }
     
 }

@@ -20,14 +20,6 @@ final class TabBarViewModel: ObservableObject {
     
     init() {
         self.selectedTab = "Home"
-        fetchCategory()
-    }
-    
-    private func fetchCategory() {
-        toDoManager
-            .updatedCategory
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$category)
     }
     
     func tapped(tab: String) {
