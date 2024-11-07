@@ -15,11 +15,17 @@ let package = Package(
         ),
     ],
     dependencies: [
-        
+        .package(path: "../LocalDatabase")
     ],
     targets: [
         .target(
-            name: "Utilities"
+            name: "Utilities",
+            dependencies: [
+                .product(
+                    name: "LocalDatabase",
+                    package: "LocalDatabase"
+                )
+            ]
         ),
         .testTarget(
             name: "UtilitiesTests",
