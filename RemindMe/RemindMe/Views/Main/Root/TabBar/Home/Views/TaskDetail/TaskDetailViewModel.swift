@@ -7,11 +7,13 @@
 
 import DependencyInjection
 import Foundation
+import SwiftUI
 import ToDoInterface
 import Utilities
 
 @MainActor
 final class TaskDetailViewModel: ObservableObject {
+    @Published var showFullImage: Bool = false
     @Inject private var toDoManager: ToDoManagerInterface
     
     func updateSubtask(task: ToDo, subtask: SubToDo) async throws {
@@ -20,5 +22,12 @@ final class TaskDetailViewModel: ObservableObject {
         let updates = compare(old: subtask, updated: updatedSubToDo)
         
         try await toDoManager.updateSubToDo(task: task, subToDo: subtask, data: updates)
+    }
+    
+    func onImageTapAction(task: ToDo) {
+        withAnimation {
+            guard task.image != nil else { return }
+            showFullImage.toggle()
+        }
     }
 }
