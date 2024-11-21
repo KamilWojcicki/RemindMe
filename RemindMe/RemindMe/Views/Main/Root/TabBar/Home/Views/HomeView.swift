@@ -204,7 +204,8 @@ extension HomeView {
                 .padding(.bottom, 40)
             }
             .scrollIndicators(.never)
-            .withFadeOut(topFadeLength: 10, bottomFadeLength: 20)
+            .frame(maxHeight: 260)
+            .withFadeOut(topFadeLength: 15, bottomFadeLength: 50)
         }
         .padding(.top, 10)
         .padding(.horizontal, -15)
