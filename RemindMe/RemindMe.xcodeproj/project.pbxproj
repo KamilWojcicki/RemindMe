@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -117,6 +117,11 @@
 		E7D267552C67D2470070C7BC /* AddTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
 		E7D267572C70DD530070C7BC /* AddTaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		E7296B6C2CEE7315003795EC /* Components */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Components; sourceTree = "<group>"; };
+		E7AAC1992CEFABFA001FE797 /* Components */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Components; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		E765B43A2BACD2DA00C15A9D /* Frameworks */ = {
@@ -240,6 +245,7 @@
 		E7B3E88D2CD0E6AF008EC997 /* TaskDetail */ = {
 			isa = PBXGroup;
 			children = (
+				E7296B6C2CEE7315003795EC /* Components */,
 				E7B3E88E2CD0E6D6008EC997 /* TaskDetailView.swift */,
 				E7B3E8902CD26E24008EC997 /* TaskDetailViewModel.swift */,
 			);
@@ -426,6 +432,7 @@
 		E7C105782BF20BE80010B67A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				E7AAC1992CEFABFA001FE797 /* Components */,
 				E7C1057F2BF20C5C0010B67A /* TabBarModel.swift */,
 				E7C105792BF20BF40010B67A /* TabBarViewModel.swift */,
 				E7C1057B2BF20BFC0010B67A /* TabBarView.swift */,
@@ -474,6 +481,10 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				E7296B6C2CEE7315003795EC /* Components */,
+				E7AAC1992CEFABFA001FE797 /* Components */,
 			);
 			name = RemindMe;
 			packageProductDependencies = (
