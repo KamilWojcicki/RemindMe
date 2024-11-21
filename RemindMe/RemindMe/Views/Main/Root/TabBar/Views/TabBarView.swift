@@ -27,25 +27,19 @@ public struct TabBarView: View {
         
         NavigationStack(path: $router.stack) {
             ZStack(alignment: .bottom) {
-                Colors.ghostWhite.ignoresSafeArea()
-                
-                VStack {
-                    SwiftUI.TabView(selection: selectedTab) {
-                        ForEach(viewModel.tabs, id: \.title) { tab in
-                            ZStack {
-                                Colors.ghostWhite
-                                Colors.background()
-                                    .clipShape(.rect(bottomLeadingRadius: 45, bottomTrailingRadius: 45))
-                                    .ignoresSafeArea()
-                                    
-                                tab.rootView
-                            }
+                SwiftUI.TabView(selection: selectedTab) {
+                    ForEach(viewModel.tabs, id: \.title) { tab in
+                        ZStack {
+                            Colors.background()
+                                .ignoresSafeArea()
+                            
+                            tab.rootView
                         }
                     }
-                    .ignoresSafeArea()
-                    
-                    buildTabBarView
                 }
+                .ignoresSafeArea()
+                
+                buildTabBarView
             }
             .navigationDestination(for: Routes.self) { path in
                 switch path {
@@ -60,32 +54,41 @@ public struct TabBarView: View {
 
 extension TabBarView {
     private var buildTabBarView: some View {
-        HStack {
-            ForEach(viewModel.tabs, id: \.title) { tab in
-                let isSelectedTab = viewModel.selectedTab == tab.title
-                
-                Spacer()
-
-                VStack(spacing: 7) {
-                    Image(systemName: isSelectedTab ? tab.activeImage : tab.image)
-                        .resizable()
-                        .renderingMode(.template)
-                        .frame(width: 20, height: 20)
-                        
-                    Text(tab.title)
-                        .font(.system(size: 14))
+        TabBarCurveShape()
+            .fill(Colors.ghostWhite)
+            .ignoresSafeArea()
+            .frame(maxHeight: 110)
+            .overlay {
+                VStack {
+                    Spacer()
+                    HStack {
+                        ForEach(viewModel.tabs, id: \.title) { tab in
+                            let isSelectedTab = viewModel.selectedTab == tab.title
+                            
+                            Spacer()
+                            
+                            VStack(spacing: 7) {
+                                Image(systemName: isSelectedTab ? tab.activeImage : tab.image)
+                                    .resizable()
+                                    .renderingMode(.template)
+                                    .frame(width: 20, height: 20)
+                                
+                                Text(tab.title)
+                                    .font(.system(size: 14))
+                            }
+                            .foregroundStyle(isSelectedTab ? Colors.blue : Colors.night.opacity(0.7))
+                            .padding(.horizontal)
+                            .padding(.top)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                viewModel.tapped(tab: tab.title)
+                            }
+                            
+                            Spacer()
+                        }
+                    }
                 }
-                .foregroundStyle(isSelectedTab ? Colors.blue : Colors.night.opacity(0.7))
-                .padding(.horizontal)
-                .padding(.top)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    viewModel.tapped(tab: tab.title)
-                }
-                
-                Spacer()
             }
-        }
     }
 }
 
