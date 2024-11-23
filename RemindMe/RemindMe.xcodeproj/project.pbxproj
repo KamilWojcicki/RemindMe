@@ -121,6 +121,7 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E7296B6C2CEE7315003795EC /* Components */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Components; sourceTree = "<group>"; };
 		E7AAC1992CEFABFA001FE797 /* Components */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Components; sourceTree = "<group>"; };
+		E7AAC1C22CF01343001FE797 /* Errors */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Errors; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				E73F3D432BF21E6D00E27F7D /* Language */,
+				E7AAC1C22CF01343001FE797 /* Errors */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -485,6 +487,7 @@
 			fileSystemSynchronizedGroups = (
 				E7296B6C2CEE7315003795EC /* Components */,
 				E7AAC1992CEFABFA001FE797 /* Components */,
+				E7AAC1C22CF01343001FE797 /* Errors */,
 			);
 			name = RemindMe;
 			packageProductDependencies = (
@@ -825,6 +828,8 @@
 				DEVELOPMENT_TEAM = SPT5T455X5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = RemindMe;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen";
@@ -854,6 +859,8 @@
 				DEVELOPMENT_TEAM = SPT5T455X5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = RemindMe;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen";
