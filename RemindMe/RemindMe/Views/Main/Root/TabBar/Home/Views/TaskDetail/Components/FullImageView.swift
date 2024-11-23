@@ -13,20 +13,25 @@ struct FullImageView: View {
     let image: Data?
     
     var body: some View {
-        if let uiImage = UIImage(data: image ?? Data()) {
-            Image(uiImage: uiImage)
-                .resizable()
-                .scaledToFit()
-                .clipShape(RoundedRectangle(cornerRadius: 30))
-                .padding(40)
-                
-                .onTapGesture {
-                    withAnimation {
-                        isPresented.toggle()
-                    }
+        ZStack {
+            Colors.night.opacity(0.3).ignoresSafeArea()
+            
+            if let uiImage = UIImage(data: image ?? Data()) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .scaledToFit()
+                    .clipShape(RoundedRectangle(cornerRadius: 30))
+                    .padding(40)
                     
-                }
+                    .onTapGesture {
+                        withAnimation(.snappy) {
+                            isPresented.toggle()
+                        }
+                        
+                    }
+            }
         }
+        
     }
 }
 
