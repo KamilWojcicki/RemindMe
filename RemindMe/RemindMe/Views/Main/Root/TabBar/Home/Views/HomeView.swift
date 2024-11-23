@@ -13,7 +13,6 @@ import SwiftUI
 import ToDoInterface
 
 struct HomeView: View {
-    
     @StateObject private var viewModel = HomeViewModel()
     @EnvironmentObject private var router: Router<Routes>
     @Environment(\.scenePhase) private var scenePhase
@@ -21,22 +20,31 @@ struct HomeView: View {
     var body: some View {
         ZStack {
             switch viewModel.state {
-            case .idle:
-                EmptyView()
             case .loading:
                 CustomProgressView(message: "Loading...")
             case .loaded:
                 buildHomeView
             case .error(let error):
-                Label(error.description, systemImage: "xmark.circle")
-                    .background(Color.red)
+                CustomErrorView(message: error.description) {
+                    Task {
+                        do {
+                            try await viewModel.fetchTasks()
+                        } catch {
+                            viewModel.handleError(error: error)
+                        }
+                    }
+                }
             }
         }
         .onAppear {
             viewModel.fetchWeek()
         }
         .task {
-            try? await viewModel.fetchFilteredTasks()
+            do {
+                try await viewModel.fetchTasks()
+            } catch {
+                viewModel.handleError(error: error)
+            }
         }
     }
 }
@@ -194,6 +202,8 @@ extension HomeView {
                             task: task,
                             onDetailAction: {
                                 viewModel.presentDetailViewButtonPressed(index: index)
+                            }, onErrorAction: { error in
+                                viewModel.handleError(error: error)
                             }
                         )
                         .padding(.horizontal)

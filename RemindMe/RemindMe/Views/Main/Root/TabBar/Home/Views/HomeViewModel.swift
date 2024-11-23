@@ -18,30 +18,15 @@ let toDoMocks: [ToDo] = [
     .init(name: "test3", symbol: .clipboardIcon, image: Data(), executedDate: .now, executedTime: .now, remindTime: .now, reminderRepetition: .daily, tag: .birthday, subtasks: [])
 ]
 
-enum HomeError: Error, LocalizedError {
-    case error1
-    case error2
-    
-    var errorDescription: String? {
-        switch self {
-        case .error1:
-            "dupa jasia"
-        case .error2:
-            "zupa jasia"
-        }
-    }
-}
-
 @MainActor
 final class HomeViewModel: ObservableObject {
     enum State: Equatable {
-        case idle
         case loading
         case loaded
         case error(String)
     }
     
-    @Published private(set) var state: State = .idle
+    @Published private(set) var state: State = .loading
     @Published private(set) var currentDate: Date = .init()
     @Published private(set) var weekSlider: [[Date.WeekDay]] = []
     @Published private(set) var createWeek: Bool = false
@@ -54,16 +39,15 @@ final class HomeViewModel: ObservableObject {
     @Published var isAddTaskViewPresented: Bool = false
     @Published var isDetailViewPresented: Bool = false
     @Published var selectedTaskIndex: Int? = nil
+    @Published var isErrorPresented: Bool = false
     @Inject private var toDoManager: ToDoManagerInterface
     
     var selectedTask: ToDo? {
-        guard let index = selectedTaskIndex, index < tasks.count else { return nil }
-        return tasks[index]
+        guard let index = selectedTaskIndex, index < filteredTasks.count else { return nil }
+        return filteredTasks[index]
     }
 
-    var filteredTasks: [ToDo] {
-        tasks.filter { selectedCategory == .all  || $0.tag == selectedCategory }
-    }
+    var filteredTasks: [ToDo] { tasks.filter { selectedCategory == .all  || $0.tag == selectedCategory } }
     
     var tasksByCategoryCounts: [ToDoInterface.Tag: Int] {
         var counts: [ToDoInterface.Tag: Int] = [:]
@@ -203,18 +187,21 @@ extension HomeViewModel {
 
 //MARK: Functions to service task
 extension HomeViewModel {
-    func fetchFilteredTasks() async throws {
-        guard state == .idle else { return }
-        
+    func fetchTasks() async throws {
         state = .loading
-
-        do {
-//                self.tasks = toDoMocks
-            self.tasks = try await toDoManager.readAllToDos()
-            
-            state = .loaded
-        } catch {
-            state = .error(error.localizedDescription)
+        //                self.tasks = toDoMocks
+        self.tasks = try await toDoManager.readAllToDos()
+        
+        state = .loaded
+    }
+    
+    func handleError(error: Error) {
+        withAnimation {
+            if let localizedError = error as? LocalizedError {
+                state = .error(localizedError.localizedDescription)
+            } else {
+                state = .error(AppError.unexpectedError(error.localizedDescription).errorDescription ?? error.localizedDescription)
+            }
         }
     }
 }
