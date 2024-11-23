@@ -19,65 +19,24 @@ struct TaskDetailView: View {
     
     var body: some View {
         ZStack {
-            if let task = task {
-                VStack {
-                    VStack(spacing: 0) {
-                        TaskInfoCellView(task: task, backgroundColor: .clear)
-                            .padding(.horizontal, -16)
-                        
-                        ScrollView(.vertical) {
-                            VStack(spacing: 10) {
-                                ForEach(task.subtasks.indices, id: \.self) { index in
-                                    let subtask = task.subtasks[index]
-                                    
-                                    Row(
-                                        text: subtask.title,
-                                        variant: .subtaskWithCheckmark(subtask: subtask)
-                                    ) {
-                                        Task {
-                                            try await viewModel.updateSubtask(task: task,subtask: subtask)
-                                        }
-                                    }
-                                }
-                                
-                                Button {
-                                    viewModel.onImageTapAction(task: task)
-                                } label: {
-                                    buildTappableImage(task: task)
-                                }
-
-                                HStack {
-                                    Text("\(task.reminderRepetition.description).")
-                                    Text(task.remindTime != nil ? "Remind at: \(dateFormatter(dateFormat: .timeWithPeriods).string(from: task.remindTime ?? Date()))" : "No reminder")
-                                }
-                            }
-                            .padding(.top)
-                            .padding(.horizontal)
-                        }
-                        .padding(.horizontal, -16)
-                        .scrollIndicators(.never)
-                    }
-
-                    ConfirmButton(
-                        title: "Edit Task",
-                        role: .confirm) {
-                            
-                        }
-                        .padding(.bottom)
-                }
-                .padding()
-                .blur(radius: viewModel.showFullImage ? 10.0 : 0.0)
-                .disabled(viewModel.showFullImage)
-                .animation(.default, value: viewModel.showFullImage)
+            switch viewModel.state {
+            case .loaded:
+                buildTaskDetailView
+            case .error:
+                buildTaskDetailView //background
             }
             
+            if case .error(let error) = viewModel.state {
+                CustomErrorView(message: error) {
+                    viewModel.handleDismissErrorView()
+                }
+                .transition(.opacity)
+            }
             
             if viewModel.showFullImage {
                 FullImageView(isPresented: $viewModel.showFullImage, image: task?.image)
-                    .transition(.asymmetric(insertion: .move(edge: .bottom), removal: .scale))
             }
         }
-        
     }
 }
 
@@ -86,7 +45,69 @@ struct TaskDetailView: View {
 }
 
 extension TaskDetailView {
-    func buildTappableImage(task: ToDo) -> some View {
+    @ViewBuilder
+    private var buildTaskDetailView: some View {
+        if let task = task {
+            VStack {
+                VStack(spacing: 0) {
+                    TaskInfoCellView(task: task, backgroundColor: .clear) { error in
+                        viewModel.handleError(error: error)
+                    }
+                        .padding(.horizontal, -16)
+                    
+                    ScrollView(.vertical) {
+                        VStack(spacing: 10) {
+                            ForEach(task.subtasks.indices, id: \.self) { index in
+                                let subtask = task.subtasks[index]
+                                
+                                Row(
+                                    text: subtask.title,
+                                    variant: .subtaskWithCheckmark(subtask: subtask)
+                                ) {
+                                    Task {
+                                        do {
+                                            try await viewModel.updateSubtask(task: task,subtask: subtask)
+                                        } catch {
+                                            viewModel.handleError(error: error)
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            Button {
+                                viewModel.onImageTapAction(task: task)
+                            } label: {
+                                buildTappableImage(task: task)
+                            }
+                            
+                            HStack {
+                                Text("\(task.reminderRepetition.description).")
+                                Text(task.remindTime != nil ? "Remind at: \(dateFormatter(dateFormat: .timeWithPeriods).string(from: task.remindTime ?? Date()))" : "No reminder")
+                            }
+                        }
+                        .padding(.top)
+                        .padding(.horizontal)
+                    }
+                    .padding(.horizontal, -16)
+                    .scrollIndicators(.never)
+                }
+                
+                ConfirmButton(
+                    title: "Edit Task",
+                    role: .confirm) {
+                        
+                    }
+                    .padding(.bottom)
+            }
+            .padding()
+            .blur(radius: viewModel.showFullImage ? 10.0 : 0.0)
+            .disabled(viewModel.showFullImage)
+            .animation(.default, value: viewModel.showFullImage)
+            
+        }
+    }
+    
+    private func buildTappableImage(task: ToDo) -> some View {
         Rectangle()
             .frame(maxWidth: .infinity)
             .frame(height: 340)
