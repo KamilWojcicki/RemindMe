@@ -66,13 +66,9 @@ final class ToDoManager: ToDoManagerInterface {
     func updateToDo(todo: ToDo, data: [String : Any]) async throws {
         let updatedTask = try await localDatabaseManager.update(type: todo, withUpdates: data)
         
-        if let index = tasks.firstIndex(where: { $0.id == todo.id }) {
-                    tasks[index] = updatedTask
-                }
-//        self.task = updatedTask
+        if let index = tasks.firstIndex(where: { $0.id == todo.id }) { tasks[index] = updatedTask }
         
         try await updateTaskStatistics()
-
     }
     
     func updateSubToDo(task: ToDo, subToDo: SubToDo, data: [String : Any]) async throws {

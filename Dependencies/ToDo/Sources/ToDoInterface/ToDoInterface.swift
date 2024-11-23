@@ -64,6 +64,7 @@ public enum Picker {
     case repetition
     case tag
     case subtask
+    case editSubtask
     case title
 }
 
