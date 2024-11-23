@@ -12,7 +12,7 @@ import ToDoInterface
 public struct Row: View {
     public enum Variant {
         case title(icon: Icon, instruction: String)
-        case plainText(symbol: Image)
+        case plainText(symbol: Image?)
         case subtask(symbol: Image)
         case subtaskWithCheckmark(subtask: SubToDo)
     }
@@ -56,7 +56,7 @@ public struct Row: View {
         }
     }
     
-    private func buildPlainText(symbol: Image) -> some View {
+    private func buildPlainText(symbol: Image?) -> some View {
         HStack {
             buildText(text)
             

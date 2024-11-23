@@ -11,14 +11,16 @@ import SwiftUI
 public struct CustomProgressView: View {
     
     private let message: String
+    private let background: Color?
     
-    public init(message: String) {
+    public init(message: String, background: Color? = Colors.night.opacity(0.4)) {
         self.message = message
+        self.background = background
     }
     
     public var body: some View {
         ZStack {
-            Colors.night.opacity(0.4).ignoresSafeArea()
+            background.ignoresSafeArea()
             
             VStack {
                 Text(message)

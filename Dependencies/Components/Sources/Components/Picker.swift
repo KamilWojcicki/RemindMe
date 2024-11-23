@@ -16,6 +16,7 @@ public struct Picker: View {
         case repetition(selectedRepetition: Binding<Repetition>)
         case tag(selectedTag: Binding<Tag>)
         case subtask(textFieldText: Binding<String>)
+        case editSubtask(textFieldText: Binding<String>)
     }
 
     private let variant: Variant
@@ -42,7 +43,10 @@ public struct Picker: View {
             buildTagPicker(selectedTag: selectedTag)
         case .subtask(let textFieldText):
             buildSubtaskPicker(textFieldText: textFieldText)
+        case .editSubtask(let textFieldText):
+            buildSubtaskEditPicker(text: textFieldText)
         }
+        
     }
     
     private func buildTitleAndImage(textFieldText: Binding<String>, selectedIcon: Binding<Icon>) -> some View {
@@ -93,6 +97,17 @@ public struct Picker: View {
             buildText(text: "New Subtask")
             
             SwiftUI.TextField("Subtask...", text: textFieldText)
+            
+            Divider()
+                .padding(.top, -10)
+        }
+    }
+    
+    private func buildSubtaskEditPicker(text: Binding<String>) -> some View {
+        VStack(alignment: .leading, spacing: 20) {
+            buildText(text: "Edit Subtask")
+            
+            SwiftUI.TextField("Subtask...", text: text)
             
             Divider()
                 .padding(.top, -10)
