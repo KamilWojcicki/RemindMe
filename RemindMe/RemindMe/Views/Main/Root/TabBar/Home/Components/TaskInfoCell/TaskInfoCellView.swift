@@ -15,19 +15,32 @@ struct TaskInfoCellView: View {
     let task: ToDo
     let backgroundColor: Color
     let onDetailAction: (() -> Void)?
+    let onErrorAction: (Error) -> Void
     @StateObject private var viewModel = TaskInfoCellViewModel()
 
     init(
         task: ToDo,
         backgroundColor: Color = Colors.ghostWhite,
-        onDetailAction: (() -> Void)? = nil
+        onDetailAction: (() -> Void)? = nil,
+        onErrorAction: @escaping (Error) -> Void
     ) {
         self.task = task
         self.backgroundColor = backgroundColor
         self.onDetailAction = onDetailAction
+        self.onErrorAction = onErrorAction
     }
     
     var body: some View {
+        buildTaskInfoCellView
+    }
+}
+
+#Preview {
+    TaskInfoCellView(task: toDoMocks.first!) { _ in }
+}
+
+extension TaskInfoCellView {
+    private var buildTaskInfoCellView: some View {
         HStack(spacing: 20) {
             CircularIcon(icon: task.symbol)
             
@@ -48,8 +61,12 @@ struct TaskInfoCellView: View {
             Spacer()
             
             Button {
-                withAnimation(.default) {
-                    viewModel.updateTask(task: task)
+                Task {
+                    do {
+                        try await viewModel.updateTask(task: task)
+                    } catch {
+                        onErrorAction(error)
+                    }
                 }
             } label: {
                 let image = task.isDone ? Symbols.checkmarkSealFill : Symbols.circle
@@ -68,8 +85,4 @@ struct TaskInfoCellView: View {
             onDetailAction?()
         }
     }
-}
-
-#Preview {
-    TaskInfoCellView(task: toDoMocks.first!) { }
 }
