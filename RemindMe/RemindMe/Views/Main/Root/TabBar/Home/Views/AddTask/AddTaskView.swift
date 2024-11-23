@@ -11,27 +11,27 @@ import Navigation
 import SwiftUI
 import Utilities
 
-
-
 struct AddTaskView: View {
     @StateObject private var viewModel = AddTaskViewModel()
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        VStack(spacing: 0) {
+        ZStack {
             switch viewModel.state {
-            case .idle:
-                EmptyView()
             case .loading:
                 CustomProgressView(message: "Loading...")
             case .loaded:
-                buildReadableScrollViewContent
-            case .error(let error):
-                Label(error.description, systemImage: "xmark.circle")
-                    .background(Color.red)
+                buildAddTaskView
+            case .error:
+                buildAddTaskView //background
             }
-            
-            bottomSpaceWithButton
+
+            if case .error(let error) = viewModel.state {
+                CustomErrorView(message: error) {
+                    viewModel.handleDismissErrorView()
+                }
+                .transition(.opacity)
+            }
         }
         .navigationBarBackButtonHidden()
         .background(Colors.ghostWhite)
@@ -56,46 +56,50 @@ struct AddTaskView: View {
 }
 
 extension AddTaskView {
+    @ViewBuilder
     private var picker: some View {
-        VStack(spacing: 30) {
-            switch viewModel.selectedPicker {
-            case .title:
-                Picker(
-                    variant: .titleAndImage(textFieldText: $viewModel.newTaskTitle, selectedIcon: $viewModel.newTaskSymbol)
+        switch viewModel.selectedPicker {
+        case .title:
+            Picker(
+                variant: .titleAndImage(
+                    textFieldText: $viewModel.newTaskTitle,
+                    selectedIcon: $viewModel.newTaskSymbol
                 )
-            case .date:
-                Picker(
-                    variant: .time(
-                        selection: $viewModel.taskDay,
-                        dateComponents: .date
-                    )
+            )
+        case .date:
+            Picker(
+                variant: .time(
+                    selection: $viewModel.taskDay,
+                    dateComponents: .date
                 )
-            case .time:
-                Picker(
-                    variant: .time(
-                        selection: $viewModel.taskTime,
-                        dateComponents: .hourAndMinute
-                    )
+            )
+        case .time:
+            Picker(
+                variant: .time(
+                    selection: $viewModel.taskTime,
+                    dateComponents: .hourAndMinute
                 )
-            case .reminder:
-                Picker(
-                    variant: .time(
-                        selection: Binding(
-                            get: { viewModel.remindTime ?? Date() },
-                            set: { viewModel.remindTime = $0 }
-                        ),
-                        dateComponents: .hourAndMinute
-                    )
+            )
+        case .reminder:
+            Picker(
+                variant: .time(
+                    selection: Binding(
+                        get: { viewModel.remindTime ?? Date() },
+                        set: { viewModel.remindTime = $0 }
+                    ),
+                    dateComponents: .hourAndMinute
                 )
-            case .repetition:
-                Picker(variant: .repetition(selectedRepetition: $viewModel.repetition))
-            case .tag:
-                Picker(variant: .tag(selectedTag: $viewModel.tag))
-            case .subtask:
-                Picker(variant: .subtask(textFieldText: $viewModel.newSubtaskTitle))
-            case .none:
-                EmptyView()
-            }
+            )
+        case .repetition:
+            Picker(variant: .repetition(selectedRepetition: $viewModel.repetition))
+        case .tag:
+            Picker(variant: .tag(selectedTag: $viewModel.tag))
+        case .subtask:
+            Picker(variant: .subtask(textFieldText: $viewModel.newSubtaskTitle))
+        case .editSubtask:
+            Picker(variant: .subtask(textFieldText: $viewModel.editSubtaskTextFieldText))
+        case .none:
+            EmptyView()
         }
     }
     
@@ -118,14 +122,28 @@ extension AddTaskView {
                     if viewModel.isPickerSelected.wrappedValue {
                         viewModel.onPickerSelected(picker: viewModel.selectedPicker)
                     } else {
-                        viewModel.createToDo()
-                        dismiss()
+                        Task {
+                            do {
+                                try await viewModel.createToDo()
+                                dismiss()
+                            } catch {
+                                viewModel.handleError(error: error)
+                            }
+                        }
                     }
                 }
                 .padding(.horizontal)
                 .padding(.top, 10)
                 .background(Colors.ghostWhite)
             }
+        }
+    }
+    
+    private var buildAddTaskView: some View {
+        VStack(spacing: 0) {
+            buildReadableScrollViewContent
+            
+            bottomSpaceWithButton
         }
     }
     
@@ -204,6 +222,8 @@ extension AddTaskView {
                         viewModel.handlePickerSelection(.tag)
                     }
                     
+                    buildSubtasksRows
+                    
                     Row(
                         text: "Subtask",
                         variant: .subtask(
@@ -222,6 +242,18 @@ extension AddTaskView {
             .scrollIndicators(.hidden)
             .defaultScrollAnchor(viewModel.defaultScrollAnchor)
             .disabled(viewModel.isPickerSelected.wrappedValue)
+        }
+    }
+    
+    @ViewBuilder
+    private var buildSubtasksRows: some View {
+        if !viewModel.subtasks.isEmpty {
+            ForEach(viewModel.subtasks.indices, id: \.self) { subtaskIndex in
+                let subtask = viewModel.subtasks[subtaskIndex]
+                Row(text: subtask.title, variant: .plainText(symbol: nil)) {
+                    viewModel.handlePickerSelection(.editSubtask, subtaskIndex: subtaskIndex)
+                }
+            }
         }
     }
 }
