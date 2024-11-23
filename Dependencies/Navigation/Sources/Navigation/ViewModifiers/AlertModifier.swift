@@ -10,23 +10,6 @@ import Design
 import SwiftUI
 
 public struct AlertViewModifier: ViewModifier {
-//    public enum `ButtonRole`: Hashable {
-//        var identifier: String {
-//            return UUID().uuidString
-//        }
-//        public static func == (lhs: AlertViewModifier.ButtonRole, rhs: AlertViewModifier.ButtonRole) -> Bool {
-//            return lhs.identifier == rhs.identifier
-//        }
-//
-//        public func hash(into hasher: inout Hasher) {
-//            return hasher.combine(identifier)
-//        }
-//
-//        case cancel(title: LocalizedStringKey, action: () -> ())
-//        case destructive(title: LocalizedStringKey, action: () -> ())
-//        case submit(title: LocalizedStringKey, action: () -> ())
-//    }
-    
     public enum SelectedButton: Hashable {
         var identifier: String {
             return UUID().uuidString
