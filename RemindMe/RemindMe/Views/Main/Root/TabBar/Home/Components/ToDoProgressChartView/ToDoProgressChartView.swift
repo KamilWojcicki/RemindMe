@@ -1,5 +1,5 @@
 //
-//  TaskProgressChartView.swift
+//  ToDoProgressChartView.swift
 //  RemindMe
 //
 //  Created by Kamil Wójcicki on 25/06/2024.
@@ -10,7 +10,7 @@ import Design
 import SwiftUI
 import ToDoInterface
 
-struct TaskProgressChartView: View {
+struct ToDoProgressChartView: View {
     let action: () -> Void
     @Binding var toDoDonePercentage: Double
     @Binding var categorizedCounts: [String: CategoryInfo]
@@ -57,11 +57,11 @@ struct TaskProgressChartView: View {
 #Preview {
     ZStack {
         Colors.background().ignoresSafeArea()
-        TaskProgressChartView(toDoDonePercentage: .constant(0), categorizedCounts: .constant(["": CategoryInfo(count: 1, color: .purple)])) { }
+        ToDoProgressChartView(toDoDonePercentage: .constant(0), categorizedCounts: .constant(["": CategoryInfo(count: 1, color: .purple)])) { }
     }
 }
 
-extension TaskProgressChartView {
+extension ToDoProgressChartView {
     private func CategoryNameRow(category: String, color: Color) -> some View {
         HStack(spacing: 15) {
             Circle()
