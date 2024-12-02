@@ -20,7 +20,6 @@ public struct TextField: View {
             SwiftUI.TextField("", text: $textFieldLogin)
                 .font(.system(size: 23, weight: .bold, design: .default))
                 .foregroundStyle(Colors.ghostWhite)
-            
         }
     }
 }

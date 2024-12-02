@@ -15,8 +15,8 @@ public struct PickerView: View {
         case time(selection: Binding<Date>, dateComponents: DatePickerComponents)
         case repetition(selectedRepetition: Binding<Repetition>)
         case tag(selectedTag: Binding<Tag>)
-        case subtask(textFieldText: Binding<String>)
-        case editSubtask(textFieldText: Binding<String>)
+        case subToDo(textFieldText: Binding<String>)
+        case editSubToDo(textFieldText: Binding<String>)
     }
     
     private let variant: Variant
@@ -59,10 +59,10 @@ public struct PickerView: View {
             buildRepetitionPicker(selectedRepetition: selectedRepetition)
         case .tag(let selectedTag):
             buildTagPicker(selectedTag: selectedTag)
-        case .subtask(let textFieldText):
-            buildSubtaskPicker(text: textFieldText)
-        case .editSubtask(let textFieldText):
-            buildSubtaskEditPicker(text: textFieldText)
+        case .subToDo(let textFieldText):
+            buildSubToDoPicker(text: textFieldText)
+        case .editSubToDo(let textFieldText):
+            buildSubToDoEditPicker(text: textFieldText)
         }
     }
     
@@ -105,12 +105,12 @@ public struct PickerView: View {
     }
     
     @ViewBuilder
-    private func buildSubtaskPicker(text: Binding<String>) -> some View {
+    private func buildSubToDoPicker(text: Binding<String>) -> some View {
         buildTextField(prompt: "SubToDo...", text: text)
     }
     
     @ViewBuilder
-    private func buildSubtaskEditPicker(text: Binding<String>) -> some View {
+    private func buildSubToDoEditPicker(text: Binding<String>) -> some View {
         buildTextField(prompt: "SubToDo...", text: text)
     }
     
@@ -167,6 +167,6 @@ public struct PickerView: View {
         
         PickerView(variant: .tag(selectedTag: .constant(.all)), title: "") {}
         
-        PickerView(variant: .subtask(textFieldText: .constant("subtask")), title: "") {}
+        PickerView(variant: .subToDo(textFieldText: .constant("subtask")), title: "") {}
     }
 }

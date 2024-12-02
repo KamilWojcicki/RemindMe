@@ -9,9 +9,7 @@ import Design
 import SwiftUI
 
 public struct ConfirmButton: View {
-    
     public enum `ButtonRole`: Hashable {
-        
         case cancel
         case confirm
         case destructive
