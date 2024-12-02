@@ -9,7 +9,7 @@ import Design
 import SwiftUI
 import ToDoInterface
 
-public struct Picker: View {
+public struct PickerView: View {
     public enum Variant {
         case titleAndImage(textFieldText: Binding<String>, selectedIcon: Binding<Icon>)
         case time(selection: Binding<Date>, dateComponents: DatePickerComponents)
@@ -18,16 +18,34 @@ public struct Picker: View {
         case subtask(textFieldText: Binding<String>)
         case editSubtask(textFieldText: Binding<String>)
     }
-
-    private let variant: Variant
     
-    public init(variant: Variant) {
+    private let variant: Variant
+    private let title: String
+    private let action: () -> Void
+    
+    public init(variant: Variant, title: String, onXmarkAction: @escaping () -> Void) {
         self.variant = variant
+        self.title = title
+        self.action = onXmarkAction
     }
     
     public var body: some View {
-        buildPickerView(for: variant)
-            .padding()
+        VStack(alignment: .leading, spacing: 20) {
+            HStack {
+                buildText(text: title)
+                Spacer()
+                Symbols.xmarkCircle
+                    .padding()
+                    .onTapGesture {
+                        action()
+                    }
+                    .tint(Colors.night)
+                    
+            }
+            
+            buildPickerView(for: variant)
+        }
+        .padding()
     }
     
     @ViewBuilder
@@ -42,45 +60,39 @@ public struct Picker: View {
         case .tag(let selectedTag):
             buildTagPicker(selectedTag: selectedTag)
         case .subtask(let textFieldText):
-            buildSubtaskPicker(textFieldText: textFieldText)
+            buildSubtaskPicker(text: textFieldText)
         case .editSubtask(let textFieldText):
             buildSubtaskEditPicker(text: textFieldText)
         }
-        
     }
     
+    @ViewBuilder
     private func buildTitleAndImage(textFieldText: Binding<String>, selectedIcon: Binding<Icon>) -> some View {
-        VStack(alignment: .leading, spacing: 20) {
-            buildText(text: "Change Image")
-            
-            ScrollView(.horizontal) {
-                HStack(spacing: 20) {
-                    ForEach(Icon.allIcons, id: \.self) { icon in
-                        CircularIcon(icon: icon)
-                            .scrollTransition { content, phase in
-                                content
-                                    .opacity(phase.isIdentity ? 1.0 : 0.3)
-                            }
-                            .onTapGesture {
-                                selectedIcon.wrappedValue = icon
-                            }
-                    }
+        ScrollView(.horizontal) {
+            HStack(spacing: 20) {
+                ForEach(Icon.allIcons, id: \.self) { icon in
+                    CircularIcon(icon: icon)
+                        .scrollTransition { content, phase in
+                            content
+                                .opacity(phase.isIdentity ? 1.0 : 0.3)
+                        }
+                        .onTapGesture {
+                            selectedIcon.wrappedValue = icon
+                        }
                 }
             }
-            .contentMargins(.horizontal, 10)
-            .scrollIndicators(.never)
-            .scrollTargetBehavior(.paging)
-            .padding(.horizontal, -16)
-            
-            buildText(text: "Change Title")
-            
-            SwiftUI.TextField("New title...", text: textFieldText)
-            
-            Divider()
-                .padding(.top, -10)
         }
+        .contentMargins(.horizontal, 10)
+        .scrollIndicators(.never)
+        .scrollTargetBehavior(.paging)
+        .padding(.horizontal, -16)
+        
+        buildText(text: "Change Title")
+        
+        buildTextField(prompt: "New title...", text: textFieldText)
     }
     
+    @ViewBuilder
     private func buildTimePicker(selection: Binding<Date>, dateComponents: DatePickerComponents) -> some View {
         DatePicker("", selection: selection, in: Date()..., displayedComponents: dateComponents)
             .labelsHidden()
@@ -89,33 +101,21 @@ public struct Picker: View {
     }
     
     private func buildTagPicker(selectedTag: Binding<Tag>) -> some View {
-        buildScrollPicker(selectedValue: selectedTag, title: "Choose a tag")
+        buildScrollPicker(selectedValue: selectedTag)
     }
     
-    private func buildSubtaskPicker(textFieldText: Binding<String>) -> some View {
-        VStack(alignment: .leading, spacing: 20) {
-            buildText(text: "New Subtask")
-            
-            SwiftUI.TextField("Subtask...", text: textFieldText)
-            
-            Divider()
-                .padding(.top, -10)
-        }
+    @ViewBuilder
+    private func buildSubtaskPicker(text: Binding<String>) -> some View {
+        buildTextField(prompt: "SubToDo...", text: text)
     }
     
+    @ViewBuilder
     private func buildSubtaskEditPicker(text: Binding<String>) -> some View {
-        VStack(alignment: .leading, spacing: 20) {
-            buildText(text: "Edit Subtask")
-            
-            SwiftUI.TextField("Subtask...", text: text)
-            
-            Divider()
-                .padding(.top, -10)
-        }
+        buildTextField(prompt: "SubToDo...", text: text)
     }
     
     private func buildRepetitionPicker(selectedRepetition: Binding<Repetition>) -> some View {
-        buildScrollPicker(selectedValue: selectedRepetition, title: "Choose a repetition")
+        buildScrollPicker(selectedValue: selectedRepetition)
     }
     
     private func buildText(text: String) -> some View {
@@ -123,45 +123,50 @@ public struct Picker: View {
             .font(.size23DefaultBold)
     }
     
-    private func buildScrollPicker<T: CaseIterable & RawRepresentable & Hashable>(selectedValue: Binding<T>, title: String) -> some View where T.RawValue == String {
-        VStack(alignment: .leading) {
-            buildText(text: title)
-            
-            ScrollView(.horizontal) {
-                HStack(spacing: 10) {
-                    ForEach(Array(T.allCases), id: \.self) { value in
-                        Text(value.rawValue)
-                            .padding(10)
-                            .font(.size15Default)
-                            .foregroundStyle(selectedValue.wrappedValue == value ? Colors.ghostWhite : Colors.night)
-                            .background(selectedValue.wrappedValue == value ? Colors.blue.opacity(0.75) :    Colors.blue.opacity(0.45))
-                            .clipShape(.rect(cornerRadius: 10))
-                            .onTapGesture {
-                                debugPrint("repetition: \(value.rawValue) is selected")
-                                selectedValue.wrappedValue = value
-                            }
-                    }
+    @ViewBuilder
+    private func buildTextField(prompt: String, text: Binding<String>) -> some View {
+        SwiftUI.TextField(prompt, text: text)
+            .textInputAutocapitalization(.never)
+            .disableAutocorrection(true)
+        
+        Divider()
+            .padding(.top, -10)
+    }
+    
+    private func buildScrollPicker<T: CaseIterable & RawRepresentable & Hashable>(selectedValue: Binding<T>) -> some View where T.RawValue == String {
+        ScrollView(.horizontal) {
+            HStack(spacing: 10) {
+                ForEach(Array(T.allCases), id: \.self) { value in
+                    Text(value.rawValue)
+                        .padding(10)
+                        .font(.size15Default)
+                        .foregroundStyle(selectedValue.wrappedValue == value ? Colors.ghostWhite : Colors.night)
+                        .background(selectedValue.wrappedValue == value ? Colors.blue.opacity(0.75) :    Colors.blue.opacity(0.45))
+                        .clipShape(.rect(cornerRadius: 10))
+                        .onTapGesture {
+                            debugPrint("repetition: \(value.rawValue) is selected")
+                            selectedValue.wrappedValue = value
+                        }
                 }
             }
-            .contentMargins(.horizontal, 10)
-            .scrollIndicators(.never)
-            .scrollTargetBehavior(.paging)
-            .padding(.horizontal, -16)
         }
+        .contentMargins(.horizontal, 10)
+        .scrollIndicators(.never)
+        .scrollTargetBehavior(.paging)
+        .padding(.horizontal, -16)
     }
 }
 
 #Preview {
     VStack {
-        Picker(variant: .time(selection: .constant(Date()), dateComponents: .date))
+        PickerView(variant: .time(selection: .constant(Date()), dateComponents: .date), title: "Time") {}
         
-        Picker(variant: .titleAndImage(textFieldText: .constant(""), selectedIcon: .constant(.birthdayIcon)))
+        PickerView(variant: .titleAndImage(textFieldText: .constant(""), selectedIcon: .constant(.birthdayIcon)), title: "") {}
         
-        Picker(variant: .repetition(selectedRepetition: .constant(.daily)))
+        PickerView(variant: .repetition(selectedRepetition: .constant(.daily)), title: "") {}
         
-        Picker(variant: .tag(selectedTag: .constant(.all)))
+        PickerView(variant: .tag(selectedTag: .constant(.all)), title: "") {}
         
-        Picker(variant: .subtask(textFieldText: .constant("subtask")))
+        PickerView(variant: .subtask(textFieldText: .constant("subtask")), title: "") {}
     }
-    
 }

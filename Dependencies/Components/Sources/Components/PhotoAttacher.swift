@@ -20,10 +20,12 @@ public struct PhotoAttacher: View {
     @State private var state: LoadingImageState = .none
     @State private var progress: Double = 0.6
     @Binding private var defaultScrollAnchor: UnitPoint?
+    @Binding private var photoAttacherHeight: CGFloat
     @Binding private var photoPickerSelection: PhotosPickerItem?
     
-    public init(defaultScrollAnchor: Binding<UnitPoint?>, photoPickerSelection: Binding<PhotosPickerItem?>) {
+    public init(defaultScrollAnchor: Binding<UnitPoint?>, photoAttacherHeight: Binding<CGFloat>, photoPickerSelection: Binding<PhotosPickerItem?>) {
         self._defaultScrollAnchor = defaultScrollAnchor
+        self._photoAttacherHeight = photoAttacherHeight
         self._photoPickerSelection = photoPickerSelection
     }
     
@@ -69,11 +71,12 @@ public struct PhotoAttacher: View {
         .background(Colors.ghostWhite)
         .clipShape(.rect(cornerRadius: 15))
         .shadow(radius: 10)
+        .trackGeometry(position: $photoAttacherHeight)
     }
 }
 
 #Preview {
-    PhotoAttacher(defaultScrollAnchor: .constant(.top), photoPickerSelection: .constant(.none))
+    PhotoAttacher(defaultScrollAnchor: .constant(.top), photoAttacherHeight: .constant(3), photoPickerSelection: .constant(.none))
 }
 
 extension PhotoAttacher {
