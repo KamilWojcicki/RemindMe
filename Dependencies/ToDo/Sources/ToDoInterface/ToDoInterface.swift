@@ -63,8 +63,8 @@ public enum Picker {
     case reminder
     case repetition
     case tag
-    case subtask
-    case editSubtask
+    case subToDo
+    case editSubToDo
     case title
 }
 
@@ -79,24 +79,26 @@ public struct CategoryInfo {
 }
 
 public protocol ToDoManagerInterface {
-    var updatedTask: PassthroughSubject<ToDo?, Never> { get }
-    var updatedTasks: PassthroughSubject<[ToDo], Never> { get }
-    var updatedDoneTaskPercentage: PassthroughSubject<Double, Never> { get }
+    var updatedToDo: PassthroughSubject<ToDo?, Never> { get }
+    var updatedToDos: PassthroughSubject<[ToDo], Never> { get }
+    var updatedDoneToDosPercentage: PassthroughSubject<Double, Never> { get }
     var updatedCategorizedCounts: PassthroughSubject<[String: CategoryInfo], Never> { get }
-    func createToDo(todo: ToDo) async throws
+    
+    func createToDo(toDo: ToDo) async throws
     func readToDo(primaryKey: String) async throws -> ToDo
     func readAllToDos() async throws -> [ToDo]
-    func updateToDo(todo: ToDo, data: [String : Any]) async throws
-    func updateSubToDo(task: ToDo, subToDo: SubToDo, data: [String : Any]) async throws
+    func updateToDo(toDo: ToDo, data: [String : Any]) async throws
+    func createSubToDo(toDo: ToDo, subToDos: [SubToDo]) async throws
+    func updateSubToDo(toDo: ToDo, subToDo: SubToDo, data: [String : Any]) async throws
     func deleteToDo(primaryKey: String) async throws
     func deleteAllToDos() async throws
     func getLatestToDo() async throws -> ToDo?
     func archiveToDo(toDo: ToDo) async throws
     func readActiveToDos() async throws -> [ToDo]
     func readArchiveToDos() async throws -> [ToDo]
+    func calculateDoneToDosPercentage(toDos: [ToDo]) async throws -> Double
+    func filterDoneToDos() -> [String: CategoryInfo]
     
-    func calculateDoneTaskPercentage(tasks: [ToDo]) async throws -> Double
-    func filterDoneTasks() -> [String: CategoryInfo]
 //    //delete if expired
 //    func archiveExpiredToDos() async throws
 }
