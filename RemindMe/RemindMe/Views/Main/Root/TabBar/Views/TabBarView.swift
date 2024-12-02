@@ -43,7 +43,7 @@ public struct TabBarView: View {
             }
             .navigationDestination(for: Routes.self) { path in
                 switch path {
-                case .addTask: AddTaskView()
+                case .addTask: AddToDoView()
                 }
             }
             .navigationBarBackButtonHidden(true)
