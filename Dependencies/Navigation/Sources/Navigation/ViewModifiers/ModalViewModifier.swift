@@ -29,16 +29,9 @@ struct ModalModifier<Value: View>: ViewModifier {
                             onDismiss: onDismiss
                         ) {
                             ZStack(alignment: .top) {
-                                RoundedRectangle(cornerRadius: 20)
-                                    .fill(Colors.night.opacity(0.5))
-                                    .frame(width: 30, height: 3)
-                                    .padding(.top)
-                                    .zIndex(0)
-                                
                                 destinationView
                                     .presentationDetents([presentationDetent])
                                     .presentationCornerRadius(35)
-                                    .zIndex(1)
                             }
                             .frame(maxHeight: .infinity, alignment: .top)
                             .background(Colors.ghostWhite)
@@ -46,8 +39,6 @@ struct ModalModifier<Value: View>: ViewModifier {
                         }
                         .blur(radius: isPresented ? 2 : 0)
                 }
-                
-
             }
             .if(type == .fullScreenCover) { view in
                 view
