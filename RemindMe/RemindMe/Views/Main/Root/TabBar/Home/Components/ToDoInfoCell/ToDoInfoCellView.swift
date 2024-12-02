@@ -1,5 +1,5 @@
 //
-//  TaskInfoCellView.swift
+//  ToDoInfoCellView.swift
 //  RemindMe
 //
 //  Created by Kamil Wójcicki on 29/06/2024.
@@ -11,36 +11,49 @@ import SwiftUI
 import ToDoInterface
 import Utilities
 
-struct TaskInfoCellView: View {
-    let task: ToDo
+struct ToDoInfoCellView: View {
+    let toDo: ToDo
     let backgroundColor: Color
     let onDetailAction: (() -> Void)?
-    @StateObject private var viewModel = TaskInfoCellViewModel()
+    let onErrorAction: (Error) -> Void
+    @StateObject private var viewModel = ToDoInfoCellViewModel()
 
     init(
-        task: ToDo,
+        toDo: ToDo,
         backgroundColor: Color = Colors.ghostWhite,
-        onDetailAction: (() -> Void)? = nil
+        onDetailAction: (() -> Void)? = nil,
+        onErrorAction: @escaping (Error) -> Void
     ) {
-        self.task = task
+        self.toDo = toDo
         self.backgroundColor = backgroundColor
         self.onDetailAction = onDetailAction
+        self.onErrorAction = onErrorAction
     }
     
     var body: some View {
+        buildToDoInfoCellView
+    }
+}
+
+#Preview {
+    ToDoInfoCellView(toDo: toDoMocks.first!) { _ in }
+}
+
+extension ToDoInfoCellView {
+    private var buildToDoInfoCellView: some View {
         HStack(spacing: 20) {
-            CircularIcon(icon: task.symbol)
+            CircularIcon(icon: Icon.icon(for: toDo.symbol))
             
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     Symbols.stopwatchFill
                     
-                    Text(dateFormatter(dateFormat: .timeWithPeriods).string(from: task.executedTime))
+                    Text(dateFormatter(dateFormat: .timeWithPeriods).string(from: toDo.executedTime))
                 }
                 .foregroundStyle(Colors.night.opacity(0.5))
                 .font(.size15Default)
                 
-                Text(task.name)
+                Text(toDo.name)
                     .foregroundStyle(Colors.night)
                     .font(.size22Default)
             }
@@ -48,16 +61,20 @@ struct TaskInfoCellView: View {
             Spacer()
             
             Button {
-                withAnimation(.default) {
-                    viewModel.updateTask(task: task)
+                Task {
+                    do {
+                        try await viewModel.updateToDo(toDo: toDo)
+                    } catch {
+                        onErrorAction(error)
+                    }
                 }
             } label: {
-                let image = task.isDone ? Symbols.checkmarkSealFill : Symbols.circle
+                let image = toDo.isDone ? Symbols.checkmarkSealFill : Symbols.circle
                 
                 image
                     .resizable()
                     .frame(width: 25, height: 25)
-                    .foregroundStyle(task.isDone ? Colors.mantis : Colors.night.opacity(0.5))
+                    .foregroundStyle(toDo.isDone ? Colors.mantis : Colors.night.opacity(0.5))
             }
         }
         .frame(minWidth: 325, maxHeight: 50)
@@ -68,8 +85,4 @@ struct TaskInfoCellView: View {
             onDetailAction?()
         }
     }
-}
-
-#Preview {
-    TaskInfoCellView(task: toDoMocks.first!) { }
 }

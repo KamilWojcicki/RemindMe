@@ -10,7 +10,7 @@ import LocalDatabaseInterface
 
 public struct SubToDo: LocalStorable {
     public let id: String
-    public let title: String
+    public var title: String
     public var isCompleted: Bool
     
     public init(
@@ -34,4 +34,8 @@ public struct SubToDo: LocalStorable {
         case title
         case isCompleted
     }
+}
+
+extension SubToDo {
+    public typealias ListData = SubToDo
 }

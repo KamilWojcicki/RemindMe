@@ -12,9 +12,9 @@ import ToDoInterface
 public struct Row: View {
     public enum Variant {
         case title(icon: Icon, instruction: String)
-        case plainText(symbol: Image)
-        case subtask(symbol: Image)
-        case subtaskWithCheckmark(subtask: SubToDo)
+        case plainText(symbol: Image?)
+        case subToDo(symbol: Image)
+        case subToDoWithCheckmark(subToDo: SubToDo)
     }
     
     private let text: String
@@ -49,14 +49,14 @@ public struct Row: View {
             buildTitle(icon: icon, instruction: instruction)
         case .plainText(let symbol):
             buildPlainText(symbol: symbol)
-        case .subtask(let symbol):
-            buildSubtask(symbol: symbol)
-        case .subtaskWithCheckmark(let subtask):
-            buildSubtaskWithCheckmark(subtask: subtask)
+        case .subToDo(let symbol):
+            buildSubToDo(symbol: symbol)
+        case .subToDoWithCheckmark(let subToDo):
+            buildSubToDoWithCheckmark(subToDo: subToDo)
         }
     }
     
-    private func buildPlainText(symbol: Image) -> some View {
+    private func buildPlainText(symbol: Image?) -> some View {
         HStack {
             buildText(text)
             
@@ -67,7 +67,7 @@ public struct Row: View {
         }
     }
     
-    private func buildSubtask(symbol: Image) -> some View {
+    private func buildSubToDo(symbol: Image) -> some View {
         HStack(spacing: 20) {
             symbol
                 .font(.size22Default)
@@ -77,17 +77,17 @@ public struct Row: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
     
-    private func buildSubtaskWithCheckmark(subtask: SubToDo) -> some View {
+    private func buildSubToDoWithCheckmark(subToDo: SubToDo) -> some View {
         HStack(spacing: 20) {
             Button {
                 action()
             } label: {
-                let image = subtask.isCompleted ? Symbols.checkmarkSealFill : Symbols.circle
+                let image = subToDo.isCompleted ? Symbols.checkmarkSealFill : Symbols.circle
                 
                 image
                     .resizable()
                     .frame(width: 25, height: 25)
-                    .foregroundStyle(subtask.isCompleted ? Colors.mantis : Colors.night.opacity(0.5))
+                    .foregroundStyle(subToDo.isCompleted ? Colors.mantis : Colors.night.opacity(0.5))
             }
             
             buildText(text)
@@ -122,8 +122,8 @@ public struct Row: View {
 #Preview {
     VStack(spacing: 30) {
         Row(text: "Test", variant: .title(icon: .clipboardIcon, instruction: "This is the instruction")) { }
-        Row(text: "Test", variant: .subtask(symbol: Symbols.airplaneCircleFill)) { }
+        Row(text: "Test", variant: .subToDo(symbol: Symbols.airplaneCircleFill)) { }
         Row(text: "Test", variant: .plainText(symbol: Symbols.airplaneCircleFill)) { }
-        Row(text: "Test", variant: .subtaskWithCheckmark(subtask: .init(title: "test", isCompleted: true))) { }
+        Row(text: "Test", variant: .subToDoWithCheckmark(subToDo: .init(title: "test", isCompleted: true))) { }
     }
 }

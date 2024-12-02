@@ -13,10 +13,17 @@ public protocol LocalDAOInterface: Identifiable, Object {
     init(from: LocalModel)
 }
 
-//LocalStorable: Identifiable, Codable, Equatable, Hashable
-public protocol LocalStorable: Identifiable, Equatable, Hashable {
+public protocol LocalStorable: Identifiable, Codable, Equatable, Hashable {
     associatedtype LocalDAO: LocalDAOInterface
+    associatedtype ListData: LocalStorable
+    
     init(from: LocalDAO)
+    
+    var list: [ListData] { get }
+}
+
+public extension LocalStorable {
+    var list: [ListData] { [] }
 }
 
 public protocol LocalDatabaseManagerInterface {
@@ -24,10 +31,15 @@ public protocol LocalDatabaseManagerInterface {
     func create<Object: LocalStorable>(_ objects: [Object]) async throws
     func read<Object: LocalStorable>(primaryKey: String) async throws -> Object
     func read<Object: LocalStorable>() async throws -> [Object]
-    func update<Object: LocalStorable>(type: Object, withUpdates updates: [String : Any]) async throws -> Object
-    func delete<Object: LocalStorable>(type: Object.Type, primaryKey: String) async throws
-    func deleteAllWithSpecificType<Object: LocalStorable>(type: Object.Type) async throws
+    func update<Object: LocalStorable>(object: Object, withUpdates updates: [String : Any]) async throws -> Object
+    func delete<Object: LocalStorable>(object: Object.Type, primaryKey: String) async throws
+    func deleteAllWithSpecificType<Object: LocalStorable>(object: Object.Type) async throws
     func deleteAll() async throws
+    func updateObjectWithChildren<Object: LocalStorable, ChildObject: LocalStorable>(
+        object: Object,
+        children: [ChildObject],
+        keyPath: String
+    ) async throws -> Object
 }
 
 public enum LocalDatabaseManagerError: Error {

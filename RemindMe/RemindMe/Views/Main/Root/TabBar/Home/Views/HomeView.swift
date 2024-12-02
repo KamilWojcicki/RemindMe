@@ -13,7 +13,6 @@ import SwiftUI
 import ToDoInterface
 
 struct HomeView: View {
-    
     @StateObject private var viewModel = HomeViewModel()
     @EnvironmentObject private var router: Router<Routes>
     @Environment(\.scenePhase) private var scenePhase
@@ -21,22 +20,31 @@ struct HomeView: View {
     var body: some View {
         ZStack {
             switch viewModel.state {
-            case .idle:
-                EmptyView()
             case .loading:
                 CustomProgressView(message: "Loading...")
             case .loaded:
                 buildHomeView
             case .error(let error):
-                Label(error.description, systemImage: "xmark.circle")
-                    .background(Color.red)
+                CustomErrorView(message: error.description) {
+                    Task {
+                        do {
+                            try await viewModel.fetchToDos()
+                        } catch {
+                            viewModel.handleError(error: error)
+                        }
+                    }
+                }
             }
         }
         .onAppear {
             viewModel.fetchWeek()
         }
         .task {
-            try? await viewModel.fetchFilteredTasks()
+            do {
+                try await viewModel.fetchToDos()
+            } catch {
+                viewModel.handleError(error: error)
+            }
         }
     }
 }
@@ -62,12 +70,12 @@ extension HomeView {
             .padding(.horizontal)
             .withModal(
                 .fullScreenCover,
-                destinationView: AddTaskView(),
-                isPresented: $viewModel.isAddTaskViewPresented
+                destinationView: AddToDoView(),
+                isPresented: $viewModel.isAddToDoViewPresented
             )
             .withModal(
                 .sheet,
-                destinationView: TaskDetailView(task: viewModel.selectedTask),
+                destinationView: ToDoDetailView(toDo: viewModel.selectedToDo),
                 isPresented: $viewModel.isDetailViewPresented,
                 presentationDetent: .fraction(0.99)
             )
@@ -109,13 +117,13 @@ extension HomeView {
                         .textScale(.secondary)
                     
                     Circle()
-                        .fill(Colors.ghostWhite.opacity(isSameDate(day.date, viewModel.currentDate) ? 1 : 0.17))
+                        .fill(Colors.ghostWhite.opacity(day.date.isSameDay(as: viewModel.currentDate) ? 1 : 0.17))
                         .overlay {
                             Text(day.date.format("dd"))
                                 .font(.footnote)
                         }
                 }
-                .foregroundStyle(isSameDate(day.date, viewModel.currentDate) ? Colors.night : Colors.ghostWhite.opacity(0.8))
+                .foregroundStyle(day.date.isSameDay(as: viewModel.currentDate) ? Colors.night : Colors.ghostWhite.opacity(0.8))
                 .padding(5)
                 .frame(width: 40, height: 65)
                 .background(content: {
@@ -128,7 +136,7 @@ extension HomeView {
                     }
                 })
                 .background(
-                    isSameDate(day.date, viewModel.currentDate) ? Colors.vistaBlue : Colors.night.opacity(0.9), in: .rect(cornerRadius: 20)
+                    day.date.isSameDay(as: viewModel.currentDate) ? Colors.vistaBlue : Colors.night.opacity(0.9), in: .rect(cornerRadius: 20)
                 )
                 .hSpacing(.center)
                 .contentShape(Circle())
@@ -137,21 +145,13 @@ extension HomeView {
                 }
             }
         }
-        .background {
-            GeometryReader {
-                let minX = $0.frame(in: .global).minX
-                
-                Color.clear
-                    .preference(key: OffsetKey.self, value: minX)
-                    .onPreferenceChange(OffsetKey.self) { value in
-                        viewModel.onPreferenceChangeOffsetAction(value)
-                    }
-            }
+        .onPreferenceChangeKey { value in
+            viewModel.onPreferenceChangeOffsetAction(value)
         }
     }
     
     private var taskProgress: some View {
-        TaskProgressChartView(taskDonePercentage: $viewModel.doneTaskPercentage, categorizedCounts: $viewModel.categorizedCounts) {
+        ToDoProgressChartView(toDoDonePercentage: $viewModel.doneToDoPercentage, categorizedCounts: $viewModel.categorizedCounts) {
             #warning("action to change filter not implemented")
         }
     }
@@ -188,12 +188,14 @@ extension HomeView {
             
             ScrollView(.vertical) {
                 VStack {
-                    ForEach(Array(viewModel.filteredTasks.enumerated()), id: \.element) { (index, task) in
+                    ForEach(Array(viewModel.filteredToDos.enumerated()), id: \.element) { (index, toDo) in
 
-                        TaskInfoCellView(
-                            task: task,
+                        ToDoInfoCellView(
+                            toDo: toDo,
                             onDetailAction: {
                                 viewModel.presentDetailViewButtonPressed(index: index)
+                            }, onErrorAction: { error in
+                                viewModel.handleError(error: error)
                             }
                         )
                         .padding(.horizontal)
@@ -204,7 +206,8 @@ extension HomeView {
                 .padding(.bottom, 40)
             }
             .scrollIndicators(.never)
-            .withFadeOut(topFadeLength: 10, bottomFadeLength: 20)
+            .frame(maxHeight: 260)
+            .withFadeOut(topFadeLength: 15, bottomFadeLength: 50)
         }
         .padding(.top, 10)
         .padding(.horizontal, -15)
@@ -233,7 +236,7 @@ extension HomeView {
     
     private var addButtonView: some View {
         Button {
-            viewModel.presentAddTaskViewButtonPressed()
+            viewModel.presentAddToDoViewButtonPressed()
         } label: {
             HStack(spacing: 0) {
                 Symbols.plus

@@ -19,32 +19,26 @@ struct ModalModifier<Value: View>: ViewModifier {
     func body(content: Content) -> some View {
         content
             .if(type == .sheet) { view in
-                view
-                    .sheet(
-                        isPresented: $isPresented,
-                        onDismiss: onDismiss
-                    ) {
-                        ZStack {
-                            Colors.ghostWhite.ignoresSafeArea()
-                            VStack(spacing: 10) {
-                                RoundedRectangle(cornerRadius: 20)
-                                    .fill(Colors.night.opacity(0.5))
-                                    .frame(width: 30, height: 3)
-                                
-                                
+                ZStack {
+                    if isPresented {
+                        Colors.night.opacity(0.3).ignoresSafeArea()
+                    }
+                    view
+                        .sheet(
+                            isPresented: $isPresented,
+                            onDismiss: onDismiss
+                        ) {
+                            ZStack(alignment: .top) {
                                 destinationView
                                     .presentationDetents([presentationDetent])
                                     .presentationCornerRadius(35)
-                                
                             }
                             .frame(maxHeight: .infinity, alignment: .top)
-                            .padding(.top)
                             .background(Colors.ghostWhite)
                             .ignoresSafeArea(edges: .bottom)
                         }
-                    }
-                    .blur(radius: isPresented ? 2 : 0)
-
+                        .blur(radius: isPresented ? 2 : 0)
+                }
             }
             .if(type == .fullScreenCover) { view in
                 view

@@ -55,7 +55,7 @@ extension LocalDatabaseManager: LocalDatabaseManagerInterface {
         
         do {
             try await realm?.asyncWrite {
-                realm?.add(objectDAO, update: .modified)
+                realm?.add(objectDAO)
             }
         } catch {
             throw LocalDatabaseManagerError.unableToCreate
@@ -97,9 +97,9 @@ extension LocalDatabaseManager: LocalDatabaseManagerInterface {
         return objectsDAO.map { DAOFactory.initializeObject(from: $0) }
     }
     
-    func update<Object: LocalStorable>(type: Object, withUpdates updates: [String : Any]) async throws -> Object {
+    func update<Object: LocalStorable>(object: Object, withUpdates updates: [String : Any]) async throws -> Object {
         try await ensureRealmIsOpen()
-        let primaryKey = String(describing: type.id)
+        let primaryKey = String(describing: object.id)
         let objectDAO = realm?.object(ofType: Object.LocalDAO.self, forPrimaryKey: primaryKey)
         
         do {
@@ -114,7 +114,7 @@ extension LocalDatabaseManager: LocalDatabaseManagerInterface {
         return try await read(primaryKey: primaryKey)
     }
     
-    func delete<Object: LocalStorable>(type: Object.Type, primaryKey: String) async throws {
+    func delete<Object: LocalStorable>(object: Object.Type, primaryKey: String) async throws {
         try await ensureRealmIsOpen()
         guard let objectDAO = realm?.object(ofType: Object.LocalDAO.self, forPrimaryKey: primaryKey) else {
             throw LocalDatabaseManagerError.unableToRead
@@ -129,7 +129,7 @@ extension LocalDatabaseManager: LocalDatabaseManagerInterface {
         }
     }
     
-    func deleteAllWithSpecificType<Object: LocalStorable>(type: Object.Type) async throws {
+    func deleteAllWithSpecificType<Object: LocalStorable>(object: Object.Type) async throws {
         try await ensureRealmIsOpen()
         
         do {
@@ -154,5 +154,40 @@ extension LocalDatabaseManager: LocalDatabaseManagerInterface {
         } catch {
             throw LocalDatabaseManagerError.unableToDelete
         }
+    }
+}
+
+//UPDATE CHILD OBJECT
+extension LocalDatabaseManager {
+    func updateObjectWithChildren<Object: LocalStorable, ChildObject: LocalStorable>(
+        object: Object,
+        children: [ChildObject],
+        keyPath: String
+    ) async throws -> Object {
+        try await ensureRealmIsOpen()
+
+        let primaryKey = String(describing: object.id)
+        
+        guard let objectDAO = realm?.object(ofType: Object.LocalDAO.self, forPrimaryKey: primaryKey) else {
+            throw LocalDatabaseManagerError.unableToRead
+        }
+
+        let childDAOs: [ChildObject.LocalDAO] = children.map { ChildObject.LocalDAO(from: $0 as! ChildObject.LocalDAO.LocalModel) }
+
+        try await realm?.asyncWrite {
+            guard let subObjects = objectDAO.value(forKey: keyPath) as? List<ChildObject.LocalDAO> else {
+                throw LocalDatabaseManagerError.unableToRead
+            }
+
+            for childDAO in childDAOs {
+                if let existingIndex = subObjects.firstIndex(where: { $0.id == childDAO.id }) {
+                    subObjects[existingIndex] = childDAO
+                } else {
+                    subObjects.append(childDAO)
+                }
+            }
+        }
+        
+        return try await read(primaryKey: primaryKey)
     }
 }

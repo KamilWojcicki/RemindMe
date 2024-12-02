@@ -18,10 +18,18 @@ let package = Package(
             targets: ["Swiftgen"]
         )
     ],
+    dependencies: [
+        .package(path: "../Utilities")
+    ],
     targets: [
         .target(
             name: "Design",
-            dependencies: [],
+            dependencies: [
+                .product(
+                    name: "Utilities",
+                    package: "Utilities"
+                )
+            ],
             resources: [
                 .process("Resources/")
             ]

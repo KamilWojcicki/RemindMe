@@ -37,6 +37,7 @@ public struct ReadableScrollView<Content>: View where Content: View {
                 )
         }
         .coordinateSpace(.named("scrollID"))
+        .scrollIndicators(.hidden)
     }
 }
 
