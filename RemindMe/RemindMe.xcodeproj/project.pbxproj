@@ -19,9 +19,9 @@
 		E765B45C2BACD2DB00C15A9D /* RemindMeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765B45B2BACD2DB00C15A9D /* RemindMeUITests.swift */; };
 		E765B45E2BACD2DB00C15A9D /* RemindMeUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765B45D2BACD2DB00C15A9D /* RemindMeUITestsLaunchTests.swift */; };
 		E7B3E88C2CD05124008EC997 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7B3E88B2CD05124008EC997 /* Launch Screen.storyboard */; };
-		E7B3E88F2CD0E6D6008EC997 /* TaskDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B3E88E2CD0E6D6008EC997 /* TaskDetailView.swift */; };
-		E7B3E8912CD26E24008EC997 /* TaskDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B3E8902CD26E24008EC997 /* TaskDetailViewModel.swift */; };
-		E7B3E8982CD67919008EC997 /* TaskInfoCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B3E8972CD67919008EC997 /* TaskInfoCellViewModel.swift */; };
+		E7B3E88F2CD0E6D6008EC997 /* ToDoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B3E88E2CD0E6D6008EC997 /* ToDoDetailView.swift */; };
+		E7B3E8912CD26E24008EC997 /* ToDoDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B3E8902CD26E24008EC997 /* ToDoDetailViewModel.swift */; };
+		E7B3E8982CD67919008EC997 /* ToDoInfoCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B3E8972CD67919008EC997 /* ToDoInfoCellViewModel.swift */; };
 		E7C1054C2BF204390010B67A /* LanguageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C1054B2BF204390010B67A /* LanguageButton.swift */; };
 		E7C105502BF204840010B67A /* OnboardingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C1054F2BF204840010B67A /* OnboardingScreen.swift */; };
 		E7C105522BF204940010B67A /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C105512BF204940010B67A /* OnboardingViewModel.swift */; };
@@ -45,10 +45,10 @@
 		E7D267452C1B946F0070C7BC /* RootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D267442C1B946F0070C7BC /* RootViewModel.swift */; };
 		E7D267492C28877D0070C7BC /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D267482C28877D0070C7BC /* HomeView.swift */; };
 		E7D2674B2C2887890070C7BC /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D2674A2C2887890070C7BC /* HomeViewModel.swift */; };
-		E7D2674E2C2B13330070C7BC /* TaskProgressChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D2674D2C2B13330070C7BC /* TaskProgressChartView.swift */; };
-		E7D267532C30608A0070C7BC /* TaskInfoCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D267522C30608A0070C7BC /* TaskInfoCellView.swift */; };
-		E7D267562C67D2470070C7BC /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D267552C67D2470070C7BC /* AddTaskView.swift */; };
-		E7D267582C70DD530070C7BC /* AddTaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D267572C70DD530070C7BC /* AddTaskViewModel.swift */; };
+		E7D2674E2C2B13330070C7BC /* ToDoProgressChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D2674D2C2B13330070C7BC /* ToDoProgressChartView.swift */; };
+		E7D267532C30608A0070C7BC /* ToDoInfoCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D267522C30608A0070C7BC /* ToDoInfoCellView.swift */; };
+		E7D267562C67D2470070C7BC /* AddToDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D267552C67D2470070C7BC /* AddToDoView.swift */; };
+		E7D267582C70DD530070C7BC /* AddToDoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D267572C70DD530070C7BC /* AddToDoViewModel.swift */; };
 		E7D3DBBF2BC08DF00025371B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = E7D3DBBE2BC08DF00025371B /* Dependencies */; };
 /* End PBXBuildFile section */
 
@@ -86,9 +86,9 @@
 		E765B45B2BACD2DB00C15A9D /* RemindMeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindMeUITests.swift; sourceTree = "<group>"; };
 		E765B45D2BACD2DB00C15A9D /* RemindMeUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindMeUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		E7B3E88B2CD05124008EC997 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
-		E7B3E88E2CD0E6D6008EC997 /* TaskDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailView.swift; sourceTree = "<group>"; };
-		E7B3E8902CD26E24008EC997 /* TaskDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailViewModel.swift; sourceTree = "<group>"; };
-		E7B3E8972CD67919008EC997 /* TaskInfoCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskInfoCellViewModel.swift; sourceTree = "<group>"; };
+		E7B3E88E2CD0E6D6008EC997 /* ToDoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoDetailView.swift; sourceTree = "<group>"; };
+		E7B3E8902CD26E24008EC997 /* ToDoDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoDetailViewModel.swift; sourceTree = "<group>"; };
+		E7B3E8972CD67919008EC997 /* ToDoInfoCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoInfoCellViewModel.swift; sourceTree = "<group>"; };
 		E7C1054B2BF204390010B67A /* LanguageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageButton.swift; sourceTree = "<group>"; };
 		E7C1054F2BF204840010B67A /* OnboardingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScreen.swift; sourceTree = "<group>"; };
 		E7C105512BF204940010B67A /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
@@ -112,16 +112,17 @@
 		E7D267442C1B946F0070C7BC /* RootViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
 		E7D267482C28877D0070C7BC /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		E7D2674A2C2887890070C7BC /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
-		E7D2674D2C2B13330070C7BC /* TaskProgressChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskProgressChartView.swift; sourceTree = "<group>"; };
-		E7D267522C30608A0070C7BC /* TaskInfoCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskInfoCellView.swift; sourceTree = "<group>"; };
-		E7D267552C67D2470070C7BC /* AddTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
-		E7D267572C70DD530070C7BC /* AddTaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskViewModel.swift; sourceTree = "<group>"; };
+		E7D2674D2C2B13330070C7BC /* ToDoProgressChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoProgressChartView.swift; sourceTree = "<group>"; };
+		E7D267522C30608A0070C7BC /* ToDoInfoCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoInfoCellView.swift; sourceTree = "<group>"; };
+		E7D267552C67D2470070C7BC /* AddToDoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToDoView.swift; sourceTree = "<group>"; };
+		E7D267572C70DD530070C7BC /* AddToDoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToDoViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E7296B6C2CEE7315003795EC /* Components */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Components; sourceTree = "<group>"; };
 		E7AAC1992CEFABFA001FE797 /* Components */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Components; sourceTree = "<group>"; };
 		E7AAC1C22CF01343001FE797 /* Errors */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Errors; sourceTree = "<group>"; };
+		E7D0F8ED2CFD4164002ACF7A /* ViewModifiers */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ViewModifiers; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -244,14 +245,14 @@
 			path = RemindMeUITests;
 			sourceTree = "<group>";
 		};
-		E7B3E88D2CD0E6AF008EC997 /* TaskDetail */ = {
+		E7B3E88D2CD0E6AF008EC997 /* ToDoDetail */ = {
 			isa = PBXGroup;
 			children = (
 				E7296B6C2CEE7315003795EC /* Components */,
-				E7B3E88E2CD0E6D6008EC997 /* TaskDetailView.swift */,
-				E7B3E8902CD26E24008EC997 /* TaskDetailViewModel.swift */,
+				E7B3E88E2CD0E6D6008EC997 /* ToDoDetailView.swift */,
+				E7B3E8902CD26E24008EC997 /* ToDoDetailViewModel.swift */,
 			);
-			path = TaskDetail;
+			path = ToDoDetail;
 			sourceTree = "<group>";
 		};
 		E7C105452BF203F50010B67A /* Root */ = {
@@ -350,10 +351,10 @@
 		E7C105592BF206FC0010B67A /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				E7B3E88D2CD0E6AF008EC997 /* TaskDetail */,
-				E7D267542C67D2310070C7BC /* AddTask */,
-				E7D267482C28877D0070C7BC /* HomeView.swift */,
+				E7B3E88D2CD0E6AF008EC997 /* ToDoDetail */,
+				E7D267542C67D2310070C7BC /* AddToDo */,
 				E7D2674A2C2887890070C7BC /* HomeViewModel.swift */,
+				E7D267482C28877D0070C7BC /* HomeView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -361,8 +362,9 @@
 		E7C1055A2BF207090010B67A /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				E7D267512C30602B0070C7BC /* TaskInfoCell */,
-				E7D2674C2C2B130A0070C7BC /* TaskProgressChartView */,
+				E7D0F8ED2CFD4164002ACF7A /* ViewModifiers */,
+				E7D267512C30602B0070C7BC /* ToDoInfoCell */,
+				E7D2674C2C2B130A0070C7BC /* ToDoProgressChartView */,
 				E73F3D4A2BF4C86700E27F7D /* QuickTaskTile */,
 				E7C1055B2BF2072A0010B67A /* TaskTile */,
 			);
@@ -443,30 +445,30 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		E7D2674C2C2B130A0070C7BC /* TaskProgressChartView */ = {
+		E7D2674C2C2B130A0070C7BC /* ToDoProgressChartView */ = {
 			isa = PBXGroup;
 			children = (
-				E7D2674D2C2B13330070C7BC /* TaskProgressChartView.swift */,
+				E7D2674D2C2B13330070C7BC /* ToDoProgressChartView.swift */,
 			);
-			path = TaskProgressChartView;
+			path = ToDoProgressChartView;
 			sourceTree = "<group>";
 		};
-		E7D267512C30602B0070C7BC /* TaskInfoCell */ = {
+		E7D267512C30602B0070C7BC /* ToDoInfoCell */ = {
 			isa = PBXGroup;
 			children = (
-				E7D267522C30608A0070C7BC /* TaskInfoCellView.swift */,
-				E7B3E8972CD67919008EC997 /* TaskInfoCellViewModel.swift */,
+				E7D267522C30608A0070C7BC /* ToDoInfoCellView.swift */,
+				E7B3E8972CD67919008EC997 /* ToDoInfoCellViewModel.swift */,
 			);
-			path = TaskInfoCell;
+			path = ToDoInfoCell;
 			sourceTree = "<group>";
 		};
-		E7D267542C67D2310070C7BC /* AddTask */ = {
+		E7D267542C67D2310070C7BC /* AddToDo */ = {
 			isa = PBXGroup;
 			children = (
-				E7D267552C67D2470070C7BC /* AddTaskView.swift */,
-				E7D267572C70DD530070C7BC /* AddTaskViewModel.swift */,
+				E7D267552C67D2470070C7BC /* AddToDoView.swift */,
+				E7D267572C70DD530070C7BC /* AddToDoViewModel.swift */,
 			);
-			path = AddTask;
+			path = AddToDo;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -488,6 +490,7 @@
 				E7296B6C2CEE7315003795EC /* Components */,
 				E7AAC1992CEFABFA001FE797 /* Components */,
 				E7AAC1C22CF01343001FE797 /* Errors */,
+				E7D0F8ED2CFD4164002ACF7A /* ViewModifiers */,
 			);
 			name = RemindMe;
 			packageProductDependencies = (
@@ -616,7 +619,7 @@
 				E7C105832BF20FB90010B67A /* HomeTab.swift in Sources */,
 				E7C1057A2BF20BF40010B67A /* TabBarViewModel.swift in Sources */,
 				E73F3D492BF3959B00E27F7D /* QuickTaskTile.swift in Sources */,
-				E7D267582C70DD530070C7BC /* AddTaskViewModel.swift in Sources */,
+				E7D267582C70DD530070C7BC /* AddToDoViewModel.swift in Sources */,
 				E7C105892BF210CF0010B67A /* SettingsTab.swift in Sources */,
 				E7C1056F2BF20A400010B67A /* TasksViewModel.swift in Sources */,
 				E703F2FD2BC0A6720042FBA5 /* Assembly.swift in Sources */,
@@ -628,12 +631,12 @@
 				E7D2674B2C2887890070C7BC /* HomeViewModel.swift in Sources */,
 				E7C105872BF210940010B67A /* TasksTab.swift in Sources */,
 				E7C105682BF209E10010B67A /* HistoryView.swift in Sources */,
-				E7D267532C30608A0070C7BC /* TaskInfoCellView.swift in Sources */,
+				E7D267532C30608A0070C7BC /* ToDoInfoCellView.swift in Sources */,
 				E7D267452C1B946F0070C7BC /* RootViewModel.swift in Sources */,
-				E7B3E8912CD26E24008EC997 /* TaskDetailViewModel.swift in Sources */,
+				E7B3E8912CD26E24008EC997 /* ToDoDetailViewModel.swift in Sources */,
 				E7C105712BF20A4B0010B67A /* TasksView.swift in Sources */,
-				E7D267562C67D2470070C7BC /* AddTaskView.swift in Sources */,
-				E7B3E8982CD67919008EC997 /* TaskInfoCellViewModel.swift in Sources */,
+				E7D267562C67D2470070C7BC /* AddToDoView.swift in Sources */,
+				E7B3E8982CD67919008EC997 /* ToDoInfoCellViewModel.swift in Sources */,
 				E7D267492C28877D0070C7BC /* HomeView.swift in Sources */,
 				E7C105542BF2050B0010B67A /* OnboardingModel.swift in Sources */,
 				E7C105572BF2055F0010B67A /* RootView.swift in Sources */,
@@ -644,9 +647,9 @@
 				E7C1054C2BF204390010B67A /* LanguageButton.swift in Sources */,
 				E7C105802BF20C5C0010B67A /* TabBarModel.swift in Sources */,
 				E7C105522BF204940010B67A /* OnboardingViewModel.swift in Sources */,
-				E7D2674E2C2B13330070C7BC /* TaskProgressChartView.swift in Sources */,
+				E7D2674E2C2B13330070C7BC /* ToDoProgressChartView.swift in Sources */,
 				E765B4412BACD2DA00C15A9D /* RemindMeApp.swift in Sources */,
-				E7B3E88F2CD0E6D6008EC997 /* TaskDetailView.swift in Sources */,
+				E7B3E88F2CD0E6D6008EC997 /* ToDoDetailView.swift in Sources */,
 				E73F3D4C2BF4C87B00E27F7D /* QuickTaskTileViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
