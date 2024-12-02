@@ -1,5 +1,5 @@
 //
-//  AddTaskViewModel.swift
+//  AddToDoViewModel.swift
 //  RemindMe
 //
 //  Created by Kamil Wójcicki on 17/08/2024.
@@ -16,7 +16,7 @@ import ToDoInterface
 import Utilities
 
 @MainActor
-final class AddTaskViewModel: ObservableObject {
+final class AddToDoViewModel: ObservableObject {
     enum State: Equatable {
         case loading
         case loaded
@@ -27,12 +27,12 @@ final class AddTaskViewModel: ObservableObject {
     @Published var photoAttacherHeight: CGFloat = 0
     @Published private(set) var showDivider: Bool = true
     @Published private(set) var selectedPicker: Picker?
-    @Published private(set) var selectedTaskImage: UIImage? = nil
-    @Published var taskImageSelection: PhotosPickerItem? = nil {
+    @Published private(set) var selectedToDoImage: UIImage? = nil
+    @Published var toDoImageSelection: PhotosPickerItem? = nil {
         didSet {
             Task {
                 do {
-                    try await setImage(from: taskImageSelection)
+                    try await setImage(from: toDoImageSelection)
                 } catch {
                     handleError(error: error)
                 }
@@ -40,18 +40,18 @@ final class AddTaskViewModel: ObservableObject {
         }
     }
     //TODO: add validation to newTaskTitle
-    @Published var newTaskTitle: String = ""
+    @Published var newToDoTitle: String = ""
     @Published var isScrolled: Bool = false
-    @Published var newTaskSymbol: Icon = .clipboardIcon
-    @Published var taskDay: Date = .now
-    @Published var taskTime: Date = .now
+    @Published var newToDoSymbol: Icon = .clipboardIcon
+    @Published var toDoDay: Date = .now
+    @Published var toDoTime: Date = .now
     @Published var remindTime: Date?
     @Published var repetition: Repetition = .noRepeat
     @Published var tag: Tag = .all
-    @Published var newSubtaskTitle: String = ""
-    @Published var editSubtaskTitle: String = ""
-    @Published var editingSubtaskIndex: Int? = nil
-    @Published var subtasks: [SubToDo] = []
+    @Published var newSubToDoTitle: String = ""
+    @Published var editSubToDoTitle: String = ""
+    @Published var editingSubToDoIndex: Int? = nil
+    @Published var subToDos: [SubToDo] = []
     @Published var defaultScrollAnchor: UnitPoint? = .top
     @Published var selectedToDo: ToDo?
     @Published var newSelectedToDoList: [SubToDo] = []
@@ -75,9 +75,9 @@ final class AddTaskViewModel: ObservableObject {
     
     var buttonTitle: LocalizedStringKey { selectedToDo == nil ? "Create Task" : "Update Task" }
     
-    var selectedDate: String { taskDay.isToday ? "Today" : dateFormatter(dateFormat: .dateWithDots).string(from: taskDay) }
+    var selectedDate: String { toDoDay.isToday ? "Today" : dateFormatter(dateFormat: .dateWithDots).string(from: toDoDay) }
     
-    var selectedTime: String { "Time: \(dateFormatter(dateFormat: .time).string(from: taskTime))" }
+    var selectedTime: String { "Time: \(dateFormatter(dateFormat: .time).string(from: toDoTime))" }
     
     var selectedReminder: String { remindTime != nil ? dateFormatter(dateFormat: .timeWithPeriods).string(from: remindTime ?? Date()) : "No reminder" }
     
@@ -92,19 +92,19 @@ final class AddTaskViewModel: ObservableObject {
     
     func onPickerSelected(picker: Picker?) throws {
         if picker == .title {
-            guard !newTaskTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            guard !newToDoTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                 throw AppError.unableToCreateEmptyTitle
             }
         }
         
-        if let index = editingSubtaskIndex, selectedPicker == .editSubtask {
-            guard !editSubtaskTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+        if let index = editingSubToDoIndex, selectedPicker == .editSubToDo {
+            guard !editSubToDoTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                 throw AppError.unableToCreateEmptyTitle
             }
-            selectedToDoList[index].title = editSubtaskTitle
+            selectedToDoList[index].title = editSubToDoTitle
         }
         
-        if picker == .subtask {
+        if picker == .subToDo {
             try createSubtask()
         }
         
@@ -126,8 +126,8 @@ final class AddTaskViewModel: ObservableObject {
             selectedPicker = picker
             
             if let index = subtaskIndex {
-                editingSubtaskIndex = index
-                editSubtaskTitle = subtasks[index].title
+                editingSubToDoIndex = index
+                editSubToDoTitle = subToDos[index].title
             }
         }
     }
@@ -145,7 +145,7 @@ final class AddTaskViewModel: ObservableObject {
     typealias Picker = ToDoInterface.Picker
 }
 
-extension AddTaskViewModel {
+extension AddToDoViewModel {
     private func setImage(from selection: PhotosPickerItem?) async throws {
         guard let selection else { return }
         
@@ -155,22 +155,22 @@ extension AddTaskViewModel {
             throw AppError.unableToLoadImage
         }
         
-        selectedTaskImage = uiImage
+        selectedToDoImage = uiImage
     }
     
     func createToDo() async throws {
         state = .loading
         
         let newToDo = ToDo(
-            name: newTaskTitle,
-            symbol: Icon.name(for: newTaskSymbol),
-            image: selectedTaskImage?.jpegData(compressionQuality: 0.9),
-            executedDate: taskDay,
-            executedTime: taskTime,
+            name: newToDoTitle,
+            symbol: Icon.name(for: newToDoSymbol),
+            image: selectedToDoImage?.jpegData(compressionQuality: 0.9),
+            executedDate: toDoDay,
+            executedTime: toDoTime,
             remindTime: remindTime,
             reminderRepetition: repetition,
             tag: tag,
-            subToDos: subtasks
+            subToDos: subToDos
         )
         
         try await toDoManager.createToDo(toDo: newToDo)
@@ -195,28 +195,28 @@ extension AddTaskViewModel {
     }
     
     private func createSubtask() throws {
-        guard !newSubtaskTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+        guard !newSubToDoTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             throw AppError.unableToCreateEmptyTitle
         }
         
         guard selectedToDo != nil else {
-            let newSubtask = SubToDo(title: newSubtaskTitle)
-            subtasks.append(newSubtask)
+            let newSubtask = SubToDo(title: newSubToDoTitle)
+            subToDos.append(newSubtask)
             selectedToDoList.append(newSubtask)
-            newSubtaskTitle = ""
+            newSubToDoTitle = ""
             return
         }
         
-        let newSubToDo = SubToDo(title: newSubtaskTitle)
+        let newSubToDo = SubToDo(title: newSubToDoTitle)
         selectedToDoList.append(newSubToDo)
         newSelectedToDoList.append(newSubToDo)
         
-        newSubtaskTitle = ""
+        newSubToDoTitle = ""
     }
 }
 
 //MARK: Updating ToDo
-extension AddTaskViewModel {
+extension AddToDoViewModel {
     func updateToDo() async throws {
         guard let selectedToDo else { return }
         
@@ -228,15 +228,15 @@ extension AddTaskViewModel {
         
         let updatedToDo = ToDo(
             id: selectedToDo.id,
-            name: newTaskTitle,
-            symbol: Icon.name(for: newTaskSymbol),
-            image: selectedTaskImage?.jpegData(compressionQuality: 0.9),
-            executedDate: taskDay,
-            executedTime: taskTime,
+            name: newToDoTitle,
+            symbol: Icon.name(for: newToDoSymbol),
+            image: selectedToDoImage?.jpegData(compressionQuality: 0.9),
+            executedDate: toDoDay,
+            executedTime: toDoTime,
             remindTime: remindTime,
             reminderRepetition: repetition,
             tag: tag,
-            subToDos: subtasks
+            subToDos: subToDos
         )
         
         let updates = compare(old: selectedToDo, updated: updatedToDo)
@@ -265,20 +265,20 @@ extension AddTaskViewModel {
 }
 
 //Initializer
-extension AddTaskViewModel {
+extension AddToDoViewModel {
     private func configureForEdit(toDo: ToDo?) {
         guard let toDo else { return }
         
         self.selectedToDo = toDo
-        self.newTaskTitle = toDo.name
-        self.newTaskSymbol = Icon.icon(for: toDo.symbol)
-        self.selectedTaskImage = UIImage(data: toDo.image ?? Data())
-        self.taskDay = toDo.executedDate
-        self.taskTime = toDo.executedTime
+        self.newToDoTitle = toDo.name
+        self.newToDoSymbol = Icon.icon(for: toDo.symbol)
+        self.selectedToDoImage = UIImage(data: toDo.image ?? Data())
+        self.toDoDay = toDo.executedDate
+        self.toDoTime = toDo.executedTime
         self.remindTime = toDo.remindTime
         self.repetition = toDo.reminderRepetition
         self.tag = toDo.tag
-        self.subtasks = toDo.list
-        self.selectedToDoList = subtasks
+        self.subToDos = toDo.list
+        self.selectedToDoList = subToDos
     }
 }

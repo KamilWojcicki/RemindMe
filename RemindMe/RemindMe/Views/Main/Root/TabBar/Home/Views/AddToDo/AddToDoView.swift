@@ -1,5 +1,5 @@
 //
-//  AddTaskView.swift
+//  AddToDoView.swift
 //  RemindMe
 //
 //  Created by Kamil Wójcicki on 10/08/2024.
@@ -12,13 +12,13 @@ import SwiftUI
 import ToDoInterface
 import Utilities
 
-struct AddTaskView: View {
-    @StateObject private var viewModel = AddTaskViewModel()
+struct AddToDoView: View {
+    @StateObject private var viewModel = AddToDoViewModel()
     @Environment(\.dismiss) private var dismiss
     @Binding var isEditing: Bool?
     
     init(selectedToDo: ToDo? = nil, isEditing: Binding<Bool?> = .constant(nil)) {
-        self._viewModel = StateObject(wrappedValue: AddTaskViewModel(toDoToEdit: selectedToDo))
+        self._viewModel = StateObject(wrappedValue: AddToDoViewModel(toDoToEdit: selectedToDo))
         self._isEditing = isEditing
     }
     
@@ -46,25 +46,25 @@ struct AddTaskView: View {
 }
 
 #Preview {
-    AddTaskView()
+    AddToDoView()
 }
 
-extension AddTaskView {
+extension AddToDoView {
     @ViewBuilder
     private var picker: some View {
         switch viewModel.selectedPicker {
         case .title:
             viewModel.createPicker(
                 variant: .titleAndImage(
-                    textFieldText: $viewModel.newTaskTitle,
-                    selectedIcon: $viewModel.newTaskSymbol
+                    textFieldText: $viewModel.newToDoTitle,
+                    selectedIcon: $viewModel.newToDoSymbol
                 ),
                 title: "Change Image"
             )
         case .date:
             viewModel.createPicker(
                 variant: .time(
-                    selection: $viewModel.taskDay,
+                    selection: $viewModel.toDoDay,
                     dateComponents: .date
                 ),
                 title: "Choose a date"
@@ -72,7 +72,7 @@ extension AddTaskView {
         case .time:
             viewModel.createPicker(
                 variant: .time(
-                    selection: $viewModel.taskTime,
+                    selection: $viewModel.toDoTime,
                     dateComponents: .hourAndMinute
                 ),
                 title: "Choose a time"
@@ -98,14 +98,14 @@ extension AddTaskView {
                 variant: .tag(selectedTag: $viewModel.tag),
                 title: "Choose a tag"
             )
-        case .subtask:
+        case .subToDo:
             viewModel.createPicker(
-                variant: .subtask(textFieldText: $viewModel.newSubtaskTitle),
+                variant: .subToDo(textFieldText: $viewModel.newSubToDoTitle),
                 title: "New SubToDo"
             )
-        case .editSubtask:
+        case .editSubToDo:
             viewModel.createPicker(
-                variant: .subtask(textFieldText: $viewModel.editSubtaskTitle),
+                variant: .subToDo(textFieldText: $viewModel.editSubToDoTitle),
                 title: "Edit SubToDo"
             )
         case .none:
@@ -198,9 +198,9 @@ extension AddTaskView {
             ReadableScrollView(content: {
                 VStack(spacing: 15) {
                     Row(
-                        text: viewModel.newTaskTitle,
+                        text: viewModel.newToDoTitle,
                         variant: .title(
-                            icon: viewModel.newTaskSymbol,
+                            icon: viewModel.newToDoSymbol,
                             instruction: "Tap to rename and change the image"
                         )
                     ) {
@@ -255,15 +255,15 @@ extension AddTaskView {
                     buildSubtasksRows
                     
                     Row(
-                        text: "Subtask",
-                        variant: .subtask(
+                        text: "SubToDo",
+                        variant: .subToDo(
                             symbol: Symbols.plus
                         )
                     ) {
-                        viewModel.handlePickerSelection(.subtask)
+                        viewModel.handlePickerSelection(.subToDo)
                     }
                     
-                    PhotoAttacher(defaultScrollAnchor: $viewModel.defaultScrollAnchor, photoAttacherHeight: $viewModel.photoAttacherHeight, photoPickerSelection: $viewModel.taskImageSelection)
+                    PhotoAttacher(defaultScrollAnchor: $viewModel.defaultScrollAnchor, photoAttacherHeight: $viewModel.photoAttacherHeight, photoPickerSelection: $viewModel.toDoImageSelection)
                 }
                 .padding()
             }, onScroll: { position in
@@ -277,10 +277,10 @@ extension AddTaskView {
     @ViewBuilder
     private var buildSubtasksRows: some View {
         if !viewModel.selectedToDoList.isEmpty {
-            ForEach(viewModel.selectedToDoList.indices, id: \.self) { subtaskIndex in
-                let subtask = viewModel.selectedToDoList[subtaskIndex]
-                Row(text: subtask.title, variant: .plainText(symbol: nil)) {
-                    viewModel.handlePickerSelection(.editSubtask, subtaskIndex: subtaskIndex)
+            ForEach(viewModel.selectedToDoList.indices, id: \.self) { subToDoIndex in
+                let subToDo = viewModel.selectedToDoList[subToDoIndex]
+                Row(text: subToDo.title, variant: .plainText(symbol: nil)) {
+                    viewModel.handlePickerSelection(.editSubToDo, subtaskIndex: subToDoIndex)
                 }
             }
         }

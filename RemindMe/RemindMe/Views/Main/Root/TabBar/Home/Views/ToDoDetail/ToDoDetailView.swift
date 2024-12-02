@@ -1,5 +1,5 @@
 //
-//  TaskDetailView.swift
+//  ToDoDetailView.swift
 //  RemindMe
 //
 //  Created by Kamil Wójcicki on 29/10/2024.
@@ -11,8 +11,8 @@ import SwiftUI
 import ToDoInterface
 import Utilities
 
-struct TaskDetailView: View {
-    @StateObject private var viewModel = TaskDetailViewModel()
+struct ToDoDetailView: View {
+    @StateObject private var viewModel = ToDoDetailViewModel()
     let toDo: ToDo?
     
     init(toDo: ToDo?) { self.toDo = toDo }
@@ -34,7 +34,7 @@ struct TaskDetailView: View {
             }
             
             if viewModel.showFullImage {
-                FullImageView(isPresented: $viewModel.showFullImage, image: task?.image)
+                FullImageView(isPresented: $viewModel.showFullImage, image: toDo?.image)
             }
         }
         .onAppear {
@@ -46,15 +46,15 @@ struct TaskDetailView: View {
 }
 
 #Preview {
-    TaskDetailView(task: toDoMocks.first!)
+    ToDoDetailView(toDo: toDoMocks.first!)
 }
 
-extension TaskDetailView {
+extension ToDoDetailView {
     @ViewBuilder
     private var buildWrapperForToDoDetailView: some View {
         if viewModel.isEditing {
-            if let toDo = task {
-                AddTaskView(
+            if let toDo = toDo {
+                AddToDoView(
                     selectedToDo: toDo,
                     isEditing: Binding<Bool?>(
                         get: { viewModel.isEditing },
@@ -71,28 +71,28 @@ extension TaskDetailView {
     
     @ViewBuilder
     private var buildTaskDetailView: some View {
-        if let task = task {
+        if let toDo = toDo {
             VStack(spacing: 0) {
                 Grabber()
                 
                 VStack(spacing: 0) {
-                    TaskInfoCellView(task: task, backgroundColor: .clear) { error in
+                    ToDoInfoCellView(toDo: toDo, backgroundColor: .clear) { error in
                         viewModel.handleError(error: error)
                     }
                     .padding(.horizontal, -16)
                     
                     ReadableScrollView {
                         VStack(spacing: 10) {
-                            ForEach(task.list.indices, id: \.self) { index in
-                                let subtask = task.list[index]
+                            ForEach(toDo.list.indices, id: \.self) { index in
+                                let subToDo = toDo.list[index]
                                 
                                 Row(
-                                    text: subtask.title,
-                                    variant: .subtaskWithCheckmark(subtask: subtask)
+                                    text: subToDo.title,
+                                    variant: .subToDoWithCheckmark(subToDo: subToDo)
                                 ) {
                                     Task {
                                         do {
-                                            try await viewModel.updateSubtask(task: task,subtask: subtask)
+                                            try await viewModel.updateSubToDo(toDo: toDo,subToDo: subToDo)
                                         } catch {
                                             viewModel.handleError(error: error)
                                         }
@@ -101,14 +101,14 @@ extension TaskDetailView {
                             }
                             
                             Button {
-                                viewModel.onImageTapAction(task: task)
+                                viewModel.onImageTapAction(toDo: toDo)
                             } label: {
-                                buildTappableImage(task: task)
+                                buildTappableImage(toDo: toDo)
                             }
                             
                             HStack {
-                                Text("\(task.reminderRepetition.description).")
-                                Text(task.remindTime != nil ? "Remind at: \(dateFormatter(dateFormat: .timeWithPeriods).string(from: task.remindTime ?? Date()))" : "No reminder")
+                                Text("\(toDo.reminderRepetition.description).")
+                                Text(toDo.remindTime != nil ? "Remind at: \(dateFormatter(dateFormat: .timeWithPeriods).string(from: toDo.remindTime ?? Date()))" : "No reminder")
                             }
                             .padding(.bottom)
                             .trackGeometry(position: $viewModel.contentPosition)
@@ -149,13 +149,13 @@ extension TaskDetailView {
         }
     }
     
-    private func buildTappableImage(task: ToDo) -> some View {
+    private func buildTappableImage(toDo: ToDo) -> some View {
         Rectangle()
             .frame(maxWidth: .infinity)
             .frame(height: 340)
             .opacity(0)
             .overlay {
-                if let uiImage = UIImage(data: task.image ?? Data()) {
+                if let uiImage = UIImage(data: toDo.image ?? Data()) {
                     Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFill()
