@@ -8,7 +8,6 @@
 import SwiftUI
 
 extension View {
-    
     @ViewBuilder
     public func hSpacing(_ alignment: Alignment) -> some View {
         self

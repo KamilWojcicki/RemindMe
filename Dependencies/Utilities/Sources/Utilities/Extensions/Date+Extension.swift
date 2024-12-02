@@ -24,6 +24,10 @@ extension Date {
         return Calendar.current.isDateInToday(self)
     }
     
+    public func isSameDay(as otherDate: Date) -> Bool {
+        Calendar.current.isDate(self, inSameDayAs: otherDate)
+    }
+    
     public func fetchWeek(_ date: Date = .init()) -> [WeekDay] {
         let calendar = Calendar.current
         let startOfDate = calendar.startOfDay(for: date)
