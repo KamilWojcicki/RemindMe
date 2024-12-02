@@ -35,3 +35,7 @@ public struct SubToDo: LocalStorable {
         case isCompleted
     }
 }
+
+extension SubToDo {
+    public typealias ListData = SubToDo
+}

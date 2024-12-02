@@ -1,5 +1,5 @@
 //
-//  TaskInfoCellViewModel.swift
+//  ToDoInfoCellViewModel.swift
 //  RemindMe
 //
 //  Created by Kamil Wójcicki on 02/11/2024.
@@ -12,16 +12,16 @@ import ToDoInterface
 import Utilities
 
 @MainActor
-final class TaskInfoCellViewModel: ObservableObject {
+final class ToDoInfoCellViewModel: ObservableObject {
     @Inject private var toDoManager: ToDoManagerInterface
     
-    func updateTask(task: ToDo) async throws {
-        var updatedToDo = task
+    func updateToDo(toDo: ToDo) async throws {
+        var updatedToDo = toDo
         
         updatedToDo.isDone.toggle()
         
-        let updates = compare(old: task, updated: updatedToDo)
+        let updates = compare(old: toDo, updated: updatedToDo)
         
-        try await toDoManager.updateToDo(todo: task, data: updates)
+        try await toDoManager.updateToDo(toDo: toDo, data: updates)
     }
 }

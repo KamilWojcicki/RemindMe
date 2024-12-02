@@ -13,17 +13,17 @@ import Utilities
 
 struct TaskDetailView: View {
     @StateObject private var viewModel = TaskDetailViewModel()
-    let task: ToDo?
+    let toDo: ToDo?
     
-    init(task: ToDo?) { self.task = task }
+    init(toDo: ToDo?) { self.toDo = toDo }
     
     var body: some View {
         ZStack {
             switch viewModel.state {
             case .loaded:
-                buildTaskDetailView
+                buildWrapperForToDoDetailView
             case .error:
-                buildTaskDetailView //background
+                buildWrapperForToDoDetailView //background
             }
             
             if case .error(let error) = viewModel.state {
@@ -37,6 +37,11 @@ struct TaskDetailView: View {
                 FullImageView(isPresented: $viewModel.showFullImage, image: task?.image)
             }
         }
+        .onAppear {
+            DispatchQueue.main.async {
+                viewModel.handleScrollActions()
+            }
+        }
     }
 }
 
@@ -46,19 +51,40 @@ struct TaskDetailView: View {
 
 extension TaskDetailView {
     @ViewBuilder
+    private var buildWrapperForToDoDetailView: some View {
+        if viewModel.isEditing {
+            if let toDo = task {
+                AddTaskView(
+                    selectedToDo: toDo,
+                    isEditing: Binding<Bool?>(
+                        get: { viewModel.isEditing },
+                        set: { viewModel.isEditing = $0 ?? false }
+                    )
+                )
+                .zIndex(1)
+                .transition(.move(edge: .trailing))
+            }
+        } else {
+            buildTaskDetailView
+        }
+    }
+    
+    @ViewBuilder
     private var buildTaskDetailView: some View {
         if let task = task {
-            VStack {
+            VStack(spacing: 0) {
+                Grabber()
+                
                 VStack(spacing: 0) {
                     TaskInfoCellView(task: task, backgroundColor: .clear) { error in
                         viewModel.handleError(error: error)
                     }
-                        .padding(.horizontal, -16)
+                    .padding(.horizontal, -16)
                     
-                    ScrollView(.vertical) {
+                    ReadableScrollView {
                         VStack(spacing: 10) {
-                            ForEach(task.subtasks.indices, id: \.self) { index in
-                                let subtask = task.subtasks[index]
+                            ForEach(task.list.indices, id: \.self) { index in
+                                let subtask = task.list[index]
                                 
                                 Row(
                                     text: subtask.title,
@@ -84,26 +110,42 @@ extension TaskDetailView {
                                 Text("\(task.reminderRepetition.description).")
                                 Text(task.remindTime != nil ? "Remind at: \(dateFormatter(dateFormat: .timeWithPeriods).string(from: task.remindTime ?? Date()))" : "No reminder")
                             }
+                            .padding(.bottom)
+                            .trackGeometry(position: $viewModel.contentPosition)
                         }
                         .padding(.top)
                         .padding(.horizontal)
+                        
+                    } onScroll: { _ in
+                        viewModel.handleScrollActions()
                     }
                     .padding(.horizontal, -16)
-                    .scrollIndicators(.never)
                 }
+                .padding()
+                .padding(.bottom, -16)
                 
-                ConfirmButton(
-                    title: "Edit Task",
-                    role: .confirm) {
-                        
+                VStack(spacing: 0) {
+                    if viewModel.showDivider {
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Colors.night.opacity(0.1))
+                            .frame(height: 2)
+                            .frame(maxWidth: .infinity)
                     }
-                    .padding(.bottom)
+                    
+                    ConfirmButton(
+                        title: "Edit Task",
+                        role: .confirm) {
+                            viewModel.onEditToDoButtonTap()
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, 10)
+                        .padding(.bottom, 30)
+                        .trackGeometry(position: $viewModel.buttonPosition)
+                }
             }
-            .padding()
             .blur(radius: viewModel.showFullImage ? 10.0 : 0.0)
             .disabled(viewModel.showFullImage)
             .animation(.default, value: viewModel.showFullImage)
-            
         }
     }
     

@@ -9,11 +9,18 @@ import Components
 import Design
 import Navigation
 import SwiftUI
+import ToDoInterface
 import Utilities
 
 struct AddTaskView: View {
     @StateObject private var viewModel = AddTaskViewModel()
     @Environment(\.dismiss) private var dismiss
+    @Binding var isEditing: Bool?
+    
+    init(selectedToDo: ToDo? = nil, isEditing: Binding<Bool?> = .constant(nil)) {
+        self._viewModel = StateObject(wrappedValue: AddTaskViewModel(toDoToEdit: selectedToDo))
+        self._isEditing = isEditing
+    }
     
     var body: some View {
         ZStack {
@@ -35,19 +42,6 @@ struct AddTaskView: View {
         }
         .navigationBarBackButtonHidden()
         .background(Colors.ghostWhite)
-        .withAlert(
-            errorTitle: "Warning",
-            message: "This function isn't available yet.",
-            errorToggle: $viewModel.alertToggle,
-            buttons: [
-                .submit(
-                    title: "Ok",
-                    action: {
-                        viewModel.handleAlertToggle()
-                    }
-                )
-            ]
-        )
     }
 }
 
@@ -60,72 +54,100 @@ extension AddTaskView {
     private var picker: some View {
         switch viewModel.selectedPicker {
         case .title:
-            Picker(
+            viewModel.createPicker(
                 variant: .titleAndImage(
                     textFieldText: $viewModel.newTaskTitle,
                     selectedIcon: $viewModel.newTaskSymbol
-                )
+                ),
+                title: "Change Image"
             )
         case .date:
-            Picker(
+            viewModel.createPicker(
                 variant: .time(
                     selection: $viewModel.taskDay,
                     dateComponents: .date
-                )
+                ),
+                title: "Choose a date"
             )
         case .time:
-            Picker(
+            viewModel.createPicker(
                 variant: .time(
                     selection: $viewModel.taskTime,
                     dateComponents: .hourAndMinute
-                )
+                ),
+                title: "Choose a time"
             )
         case .reminder:
-            Picker(
+            viewModel.createPicker(
                 variant: .time(
                     selection: Binding(
                         get: { viewModel.remindTime ?? Date() },
                         set: { viewModel.remindTime = $0 }
                     ),
                     dateComponents: .hourAndMinute
-                )
+                ),
+                title: "Choose a reminder time"
             )
         case .repetition:
-            Picker(variant: .repetition(selectedRepetition: $viewModel.repetition))
+            viewModel.createPicker(
+                variant: .repetition(selectedRepetition: $viewModel.repetition),
+                title: "Choose a repetition"
+            )
         case .tag:
-            Picker(variant: .tag(selectedTag: $viewModel.tag))
+            viewModel.createPicker(
+                variant: .tag(selectedTag: $viewModel.tag),
+                title: "Choose a tag"
+            )
         case .subtask:
-            Picker(variant: .subtask(textFieldText: $viewModel.newSubtaskTitle))
+            viewModel.createPicker(
+                variant: .subtask(textFieldText: $viewModel.newSubtaskTitle),
+                title: "New SubToDo"
+            )
         case .editSubtask:
-            Picker(variant: .subtask(textFieldText: $viewModel.editSubtaskTextFieldText))
+            viewModel.createPicker(
+                variant: .subtask(textFieldText: $viewModel.editSubtaskTitle),
+                title: "Edit SubToDo"
+            )
         case .none:
             EmptyView()
         }
     }
     
     private var bottomSpaceWithButton: some View {
-        ZStack {
             VStack(spacing: 0) {
-                if viewModel.showDivider {
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(Colors.night.opacity(0.1))
-                        .frame(height: 2)
-                        .frame(maxWidth: .infinity)
-                }
-                
-                if viewModel.isPickerSelected.wrappedValue {
-                    picker
-                        .transition(.asymmetric(insertion: .push(from: .bottom), removal: .identity))
-                }
-                
-                ConfirmButton(title: viewModel.isPickerSelected.wrappedValue ? "Confirm" : "Create Task", role: .confirm) {
+                VStack(spacing: 0) {
+                    if viewModel.showDivider {
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Colors.night.opacity(0.1))
+                            .frame(height: 2)
+                            .frame(maxWidth: .infinity)
+                    }
+                    
                     if viewModel.isPickerSelected.wrappedValue {
-                        viewModel.onPickerSelected(picker: viewModel.selectedPicker)
+                        picker
+                            .transition(.asymmetric(insertion: .push(from: .bottom), removal: .identity))
+                    }
+                }
+                .keyboardSpace()
+                
+                ConfirmButton(title: viewModel.isPickerSelected.wrappedValue ? "Confirm" : viewModel.buttonTitle, role: .confirm) {
+                    if viewModel.isPickerSelected.wrappedValue {
+                        do {
+                            try viewModel.onPickerSelected(picker: viewModel.selectedPicker)
+                        } catch {
+                            viewModel.handleError(error: error)
+                        }
+                       
                     } else {
                         Task {
                             do {
-                                try await viewModel.createToDo()
-                                dismiss()
+                                if viewModel.selectedToDo != nil {
+                                    try await viewModel.updateToDo()
+                                    isEditing?.toggle()
+                                } else {
+                                    try await viewModel.createToDo()
+                                    dismiss()
+                                }
                             } catch {
                                 viewModel.handleError(error: error)
                             }
@@ -134,9 +156,10 @@ extension AddTaskView {
                 }
                 .padding(.horizontal)
                 .padding(.top, 10)
+                .padding(.bottom, 30)
                 .background(Colors.ghostWhite)
+                .trackGeometry(position: $viewModel.bottomSpacePosition)
             }
-        }
     }
     
     private var buildAddTaskView: some View {
@@ -145,20 +168,27 @@ extension AddTaskView {
             
             bottomSpaceWithButton
         }
+        .ignoresSafeArea(edges: .bottom)
     }
     
     private var buildReadableScrollViewContent: some View {
         VStack(spacing: 0) {
-            ZStack {
-                Symbols.chevronBackward
-                    .padding()
-                    .onTapGesture {
-                        dismiss()
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .tint(Colors.night)
+            VStack(spacing: 0) {
+                if isEditing != nil {
+                    Grabber()
+                }
                 
-                Text("New Task")
+                ZStack {
+                    Symbols.chevronBackward
+                        .padding()
+                        .onTapGesture {
+                            viewModel.onBackButtonTap(isEditing: $isEditing, dismiss: dismiss)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .tint(Colors.night)
+                    
+                    Text(viewModel.bannerTitle)
+                }
             }
             .font(.size18Default)
             .frame(maxWidth: .infinity)
@@ -233,13 +263,12 @@ extension AddTaskView {
                         viewModel.handlePickerSelection(.subtask)
                     }
                     
-                    PhotoAttacher(defaultScrollAnchor: $viewModel.defaultScrollAnchor, photoPickerSelection: $viewModel.taskImageSelection)
+                    PhotoAttacher(defaultScrollAnchor: $viewModel.defaultScrollAnchor, photoAttacherHeight: $viewModel.photoAttacherHeight, photoPickerSelection: $viewModel.taskImageSelection)
                 }
                 .padding()
             }, onScroll: { position in
                 viewModel.handleScrollActions(position: position)
             })
-            .scrollIndicators(.hidden)
             .defaultScrollAnchor(viewModel.defaultScrollAnchor)
             .disabled(viewModel.isPickerSelected.wrappedValue)
         }
@@ -247,9 +276,9 @@ extension AddTaskView {
     
     @ViewBuilder
     private var buildSubtasksRows: some View {
-        if !viewModel.subtasks.isEmpty {
-            ForEach(viewModel.subtasks.indices, id: \.self) { subtaskIndex in
-                let subtask = viewModel.subtasks[subtaskIndex]
+        if !viewModel.selectedToDoList.isEmpty {
+            ForEach(viewModel.selectedToDoList.indices, id: \.self) { subtaskIndex in
+                let subtask = viewModel.selectedToDoList[subtaskIndex]
                 Row(text: subtask.title, variant: .plainText(symbol: nil)) {
                     viewModel.handlePickerSelection(.editSubtask, subtaskIndex: subtaskIndex)
                 }

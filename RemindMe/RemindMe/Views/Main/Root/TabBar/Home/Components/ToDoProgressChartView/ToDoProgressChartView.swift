@@ -12,11 +12,11 @@ import ToDoInterface
 
 struct TaskProgressChartView: View {
     let action: () -> Void
-    @Binding var taskDonePercentage: Double
+    @Binding var toDoDonePercentage: Double
     @Binding var categorizedCounts: [String: CategoryInfo]
     
-    init(taskDonePercentage: Binding<Double>, categorizedCounts: Binding<[String: CategoryInfo]>, action: @escaping () -> Void) {
-        self._taskDonePercentage = taskDonePercentage
+    init(toDoDonePercentage: Binding<Double>, categorizedCounts: Binding<[String: CategoryInfo]>, action: @escaping () -> Void) {
+        self._toDoDonePercentage = toDoDonePercentage
         self._categorizedCounts = categorizedCounts
         self.action = action
     }
@@ -57,7 +57,7 @@ struct TaskProgressChartView: View {
 #Preview {
     ZStack {
         Colors.background().ignoresSafeArea()
-        TaskProgressChartView(taskDonePercentage: .constant(0), categorizedCounts: .constant(["": CategoryInfo(count: 1, color: .purple)])) { }
+        TaskProgressChartView(toDoDonePercentage: .constant(0), categorizedCounts: .constant(["": CategoryInfo(count: 1, color: .purple)])) { }
     }
 }
 
@@ -84,7 +84,7 @@ extension TaskProgressChartView {
             }
             .chartLegend(.hidden)
             .overlay {
-                Text(String(format: "%.0f%%", taskDonePercentage))
+                Text(String(format: "%.0f%%", toDoDonePercentage))
                     .font(.size23Default)
             }
             

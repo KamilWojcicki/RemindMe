@@ -1,5 +1,5 @@
 //
-//  TaskDetailViewModel.swift
+//  ToDoDetailViewModel.swift
 //  RemindMe
 //
 //  Created by Kamil Wójcicki on 30/10/2024.
@@ -12,7 +12,7 @@ import ToDoInterface
 import Utilities
 
 @MainActor
-final class TaskDetailViewModel: ObservableObject {
+final class ToDoDetailViewModel: ObservableObject {
     enum State: Equatable {
         case loaded
         case error(String)
@@ -21,18 +21,25 @@ final class TaskDetailViewModel: ObservableObject {
     @Published var state: State = .loaded
     @Published var showFullImage: Bool = false
     @Published var isErrorPresented: Bool = false
+    @Published var isEditing: Bool = false
+    @Published private(set) var showDivider: Bool = false
+    @Published var contentPosition: CGFloat = 0
+    @Published var buttonPosition: CGFloat = 0
     @Inject private var toDoManager: ToDoManagerInterface
     
-    func updateSubtask(task: ToDo, subtask: SubToDo) async throws {
-        var updatedSubToDo = subtask
+    func updateSubToDo(toDo: ToDo, subToDo: SubToDo) async throws {
+        var updatedSubToDo = subToDo
         updatedSubToDo.isCompleted.toggle()
-        let updates = compare(old: subtask, updated: updatedSubToDo)
+        let updates = compare(old: subToDo, updated: updatedSubToDo)
 
-        try await toDoManager.updateSubToDo(task: task, subToDo: subtask, data: updates)
+        try await toDoManager.updateSubToDo(toDo: toDo, subToDo: subToDo, data: updates)
         
         state = .loaded
     }
-    
+}
+
+//Errors
+extension ToDoDetailViewModel {
     func handleError(error: Error) {
         withAnimation {
             if let localizedError = error as? LocalizedError {
@@ -48,11 +55,23 @@ final class TaskDetailViewModel: ObservableObject {
             state = .loaded
         }
     }
-    
-    func onImageTapAction(task: ToDo) {
+}
+
+extension ToDoDetailViewModel {
+    func onImageTapAction(toDo: ToDo) {
         withAnimation {
-            guard task.image != nil else { return }
+            guard toDo.image != nil else { return }
             showFullImage.toggle()
         }
+    }
+    
+    func onEditToDoButtonTap() {
+        withAnimation {
+            isEditing.toggle()
+        }
+    }
+    
+    func handleScrollActions() {
+        showDivider = contentPosition + 30 >= buttonPosition
     }
 }
